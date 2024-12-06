@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:loot_vault/view/login_view.dart';
+import 'package:loot_vault/view/register_view.dart';
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -11,7 +12,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       initialRoute:"/",
       routes: {
-        "/":(context)=> const LoginView(),
+        "/":(context)=> const RegisterView(),
       },
       theme: ThemeData(
         appBarTheme:const AppBarTheme(

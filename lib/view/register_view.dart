@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
+import 'package:loot_vault/widgets/shadow_inputbox.dart';
 
 class RegisterView extends StatefulWidget {
   const RegisterView({super.key});
@@ -42,21 +43,7 @@ class _RegisterViewState extends State<RegisterView> {
                   ),
                 )),
 
-                // const Text(
-                //   "Welcome to",
-                //   style: TextStyle(
-                //       color: Colors.black,
-                //       fontWeight: FontWeight.w500,
-                //       fontSize: 16),
-                // ),
-
-                // const Text(
-                //   "LootVault",
-                //   style: TextStyle(
-                //       color: Colors.black,
-                //       fontWeight: FontWeight.w800,
-                //       fontSize: 24),
-                // ),
+                
 
                 _largeGap,
 
@@ -72,182 +59,88 @@ class _RegisterViewState extends State<RegisterView> {
 
                 //username texfield
 
-                Container(
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(26),
-                    boxShadow: const [
-                      BoxShadow(
-                        color: Colors.black26,
-                        offset: Offset(0, 4),
-                        blurRadius: 6,
-                      ),
-                    ],
+                const ShadowInputbox(
+                  labelText: "Fullname",
+                  contentPadding: EdgeInsets.symmetric(
+                    vertical: 20,
+                    horizontal: 10
                   ),
-                  child: TextField(
-                    decoration: InputDecoration(
-                      enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(26),
-                        borderSide: const BorderSide(width: 0),
-                      ),
-                      filled: true,
-                      fillColor: Colors.white,
-                      prefixIcon: const Icon(
-                        Icons.abc_rounded,
-                        size: 20,
-                      ),
-                      labelText: "Fullname",
-                      labelStyle: const TextStyle(color: Colors.black),
-                      contentPadding: const EdgeInsets.symmetric(
-                          vertical: 20, horizontal: 10),
-                    ),
+                  fillColor: Colors.white,
+                  prefixIcon: Icons.abc_rounded,
+                  labelStyle: TextStyle(
+                    color: Colors.blue,
+                    fontWeight: FontWeight.bold
                   ),
+                  inputTextStyle: TextStyle(
+                    color: Colors.black,
+                    fontSize: 16
+                  ),
+                  ),
+
+                                  _normalgap,
+
+                const ShadowInputbox(
+                  labelText: "Email",
+                  contentPadding:
+                      EdgeInsets.symmetric(vertical: 20, horizontal: 10),
+                  fillColor: Colors.white,
+                  prefixIcon: Icons.email_rounded,
+                  keyboardType: TextInputType.emailAddress,
+                  labelStyle: TextStyle(
+                      color: Colors.blue, fontWeight: FontWeight.bold),
+                  inputTextStyle: TextStyle(color: Colors.black, fontSize: 16),
                 ),
+
+              
                 _normalgap,
 
-                Container(
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(26),
-                    boxShadow: const [
-                      BoxShadow(
-                        color: Colors.black26,
-                        offset: Offset(0, 4),
-                        blurRadius: 6,
-                      ),
-                    ],
+                const ShadowInputbox(
+                  labelText: "Phone Number",
+                  contentPadding:
+                      EdgeInsets.symmetric(vertical: 20, horizontal: 10),
+                  fillColor: Colors.white,
+                  prefixIcon: Icons.phone,
+                  keyboardType: TextInputType.number,
+                  labelStyle: TextStyle(
+                      color: Colors.blue, fontWeight: FontWeight.bold),
+                  inputTextStyle: TextStyle(color: Colors.black, fontSize: 16),                  
                   ),
-                  child: TextField(
-                    keyboardType: TextInputType.emailAddress,
-                    decoration: InputDecoration(
-                      enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(26),
-                        borderSide: const BorderSide(width: 0),
-                      ),
-                      filled: true,
-                      fillColor: Colors.white,
-                      prefixIcon: const Icon(
-                        Icons.email_rounded,
-                        size: 20,
-                      ),
-                      labelText: "Email",
-                      labelStyle: const TextStyle(color: Colors.black),
-                      contentPadding: const EdgeInsets.symmetric(
-                          vertical: 20, horizontal: 10),
-                    ),
-                  ),
-                ),
-                _normalgap,
 
-                Container(
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(26),
-                    boxShadow: const [
-                      BoxShadow(
-                        color: Colors.black26,
-                        offset: Offset(0, 4),
-                        blurRadius: 6,
-                      ),
-                    ],
-                  ),
-                  child: TextField(
-                    keyboardType: TextInputType.phone,
-                    decoration: InputDecoration(
-                      enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(26),
-                        borderSide: const BorderSide(width: 0),
-                      ),
-                      filled: true,
-                      fillColor: Colors.white,
-                      prefixIcon: const Icon(
-                        Icons.phone,
-                        size: 20,
-                      ),
-                      labelText: "Phone Number",
-                      labelStyle: const TextStyle(color: Colors.black),
-                      contentPadding: const EdgeInsets.symmetric(
-                          vertical: 20, horizontal: 10),
-                    ),
-                  ),
-                ),
 
                 _normalgap,
 
                 // Password TextField
-                Container(
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(26),
-                    boxShadow: const [
-                      BoxShadow(
-                        color: Colors.black26,
-                        offset: Offset(0, 4),
-                        blurRadius: 6,
-                      ),
-                    ],
-                  ),
-                  child: TextField(
-                    obscureText: true,
-                    decoration: InputDecoration(
-                      enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(26),
-                        borderSide:
-                            const BorderSide(color: Colors.grey, width: 0),
-                      ),
 
-                      filled: true,
-                      fillColor: Colors.white,
-                      prefixIcon: const Icon(
-                        Icons.password,
-                        size: 20,
-                      ),
-                      labelText: "Password",
-                      labelStyle:
-                          const TextStyle(color: Colors.black), // Label color
-                      contentPadding: const EdgeInsets.symmetric(
-                          vertical: 20, horizontal: 10),
-                    ),
-                  ),
+                  const ShadowInputbox(
+                  labelText: "Password",
+                  obscureText: true,
+                  contentPadding:
+                      EdgeInsets.symmetric(vertical: 20, horizontal: 10),
+                  fillColor: Colors.white,
+                  prefixIcon: Icons.password,
+                  keyboardType: TextInputType.number,
+                  labelStyle: TextStyle(
+                      color: Colors.blue, fontWeight: FontWeight.bold),
+                  inputTextStyle: TextStyle(color: Colors.black, fontSize: 16),
                 ),
+               
 
 
                 _normalgap,
 
-                 Container(
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(26),
-                    boxShadow: const [
-                      BoxShadow(
-                        color: Colors.black26,
-                        offset: Offset(0, 4),
-                        blurRadius: 6,
-                      ),
-                    ],
-                  ),
-                  child: TextField(
-                    obscureText: true,
-                    decoration: InputDecoration(
-                      enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(26),
-                        borderSide:
-                            const BorderSide(color: Colors.grey, width: 0),
-                      ),
-
-                      filled: true,
-                      fillColor: Colors.white,
-                      prefixIcon: const Icon(
-                        Icons.password_rounded,
-                        size: 20,
-                      ),
-                      labelText: "Re-type Password",
-                      labelStyle:
-                          const TextStyle(color: Colors.black), // Label color
-                      contentPadding: const EdgeInsets.symmetric(
-                          vertical: 20, horizontal: 10),
-                    ),
-                  ),
+                 
+                const ShadowInputbox(
+                  labelText: "Re-type Password",
+                  obscureText: true,
+                  contentPadding:
+                      EdgeInsets.symmetric(vertical: 20, horizontal: 10),
+                  fillColor: Colors.white,
+                  prefixIcon: Icons.password,
+                  keyboardType: TextInputType.number,
+                  
+                  labelStyle: TextStyle(
+                      color: Colors.blue, fontWeight: FontWeight.bold),
+                  inputTextStyle: TextStyle(color: Colors.black, fontSize: 16),
                 ),
 
 
@@ -256,7 +149,6 @@ class _RegisterViewState extends State<RegisterView> {
                 _normalgap,
 
                 // sign up button
-
                 Container(
                   alignment: Alignment.center,
                   width: double.infinity,

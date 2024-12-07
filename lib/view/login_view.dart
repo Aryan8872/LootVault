@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
+import 'package:loot_vault/widgets/shadow_inputbox.dart';
 
 class LoginView extends StatefulWidget {
   const LoginView({super.key});
@@ -19,7 +20,8 @@ class _LoginViewState extends State<LoginView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color.fromRGBO(240, 247, 255, 1), //0xFFE6E8EB  //0xFFD3D3D3  //0xFFE6E6FA
+      backgroundColor: const Color.fromRGBO(
+          240, 247, 255, 1), //0xFFE6E8EB  //0xFFD3D3D3  //0xFFE6E6FA
       body: SafeArea(
           child: Center(
         child: Padding(
@@ -40,7 +42,6 @@ class _LoginViewState extends State<LoginView> {
                             './assets/images/backgroundless_logo.png')),
                   ),
                 )),
-
 
                 // const Text(
                 //   "Welcome to",
@@ -71,92 +72,43 @@ class _LoginViewState extends State<LoginView> {
                 _largeGap,
 
                 //username texfield
-
-                 Container(
-                  decoration: BoxDecoration(
-                    color: Colors.white, 
-                    borderRadius: BorderRadius.circular(26), 
-                    boxShadow: const [
-                      BoxShadow(
-                        color: Colors.black26, 
-                        offset: Offset(0, 4), 
-                        blurRadius: 6, 
-                      ),
-                    ],
-                  ),
-                  child: TextField(
-                    keyboardType: TextInputType.emailAddress,
-                    decoration: InputDecoration(
-                      enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(26),
-                        borderSide: const BorderSide(
-                            width: 0), 
-                      ),
-
-                      filled: true,
-                      fillColor:
-                          Colors.white, 
-                      prefixIcon: const Icon(
-                        Icons.person_2_rounded,
-                        size: 20,
-                      ),
-                      labelText: "Email",
-                      labelStyle: const TextStyle(color: Colors.black), 
-                      contentPadding: const EdgeInsets.symmetric(
-                          vertical: 20,
-                          horizontal: 10), 
-                    ),
-                  ),
+                ShadowInputbox(
+                  labelText: "Enter your email",
+                  prefixIcon: Icons.email,
+                  fillColor: Colors.white,
+                  labelStyle: const TextStyle(
+                      color: Colors.blue, fontWeight: FontWeight.bold),
+                  contentPadding: const EdgeInsets.symmetric(vertical:20 ,horizontal:10 ),
+                  keyboardType: TextInputType.emailAddress,
+                  controller: TextEditingController(),
+                  inputTextStyle: const TextStyle(color: Colors.black, fontSize: 16),
                 ),
 
 
                 _normalgap,
 
+                //password field
 
-                // Password TextField
-                Container(
-                  decoration: BoxDecoration(
-                    color: Colors.white, 
-                    borderRadius: BorderRadius.circular(26), 
-                    boxShadow: const [
-                      BoxShadow(
-                        color: Colors.black26, 
-                        offset: Offset(0, 4), 
-                        blurRadius: 6, 
-                      ),
-                    ],
+                const ShadowInputbox(
+                  labelText:"Password" ,
+                  fillColor: Colors.white,
+                  keyboardType: TextInputType.visiblePassword,
+                  obscureText: true,
+                  prefixIcon: Icons.password_rounded,
+                  labelStyle: TextStyle(
+                    color: Colors.blue,
+                    fontWeight: FontWeight.bold
                   ),
-                  child: TextField(
-                    obscureText: true, 
-                    decoration: InputDecoration(
-
-                      enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(26),
-                        borderSide: const BorderSide(
-                          color: Colors.grey,
-                          width: 0 
-                        ),
-                      ),
-
-                      filled: true,
-                      fillColor:
-                          Colors.white, 
-                      prefixIcon: const Icon(
-                        Icons.password,
-                        size: 20,
-                      ),
-                      labelText: "Password",
-                      labelStyle: const TextStyle(color: Colors.black), // Label color
-                      contentPadding:const EdgeInsets.symmetric(
-                          vertical: 20,
-                          horizontal: 10), 
-                    ),
+                  inputTextStyle: TextStyle(
+                    color: Colors.black,
+                    fontSize: 16
                   ),
-                ),
+                  contentPadding: EdgeInsets.symmetric(vertical: 20,horizontal: 10),
 
+                  ),
+                       
 
                 _smallgap,
-
 
                 // forgot password area
 

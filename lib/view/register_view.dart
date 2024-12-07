@@ -149,20 +149,22 @@ class _RegisterViewState extends State<RegisterView> {
                 _normalgap,
 
                 // sign up button
-                Container(
-                  alignment: Alignment.center,
-                  width: double.infinity,
-                  height: 50,
-                  decoration: BoxDecoration(
-                    color: Color.fromRGBO(0, 107, 255, 1),
-                    borderRadius: BorderRadius.circular(_cornerRadius),
-                  ),
-                  child: const Text(
-                    "Sign up",
-                    style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 19,
-                        fontWeight: FontWeight.w700),
+                GestureDetector(
+                  child: Container(
+                    alignment: Alignment.center,
+                    width: double.infinity,
+                    height: 50,
+                    decoration: BoxDecoration(
+                      color: Color.fromRGBO(0, 107, 255, 1),
+                      borderRadius: BorderRadius.circular(_cornerRadius),
+                    ),
+                    child: const Text(
+                      "Sign up",
+                      style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 19,
+                          fontWeight: FontWeight.w700),
+                    ),
                   ),
                 ),
 
@@ -170,20 +172,33 @@ class _RegisterViewState extends State<RegisterView> {
 
                 //dont have an account section
 
-                const Row(
+                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text("Already have an account?"),
-                    SizedBox(
+                  children:  [
+                    const Text("Already have an account?"),
+                    const SizedBox(
                       width: 8,
                     ),
-                    Text(
-                      "Log in",
-                      style: TextStyle(
-                          color: Colors.lightBlue, fontWeight: FontWeight.w500),
+                    TextButton(
+                      onPressed: () =>{
+                        Navigator.pushNamed(context, "/")
+                        
+                      },
+                      style: const ButtonStyle(
+                        
+                      ),
+                      child: const Text("Login",style: TextStyle(color: Colors.lightBlue,fontWeight: FontWeight.w500),
+                      
+                      ),
+                     
                     )
                   ],
-                )
+                ),
+
+
+
+
+
               ],
             ),
           ),

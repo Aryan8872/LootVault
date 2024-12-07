@@ -121,20 +121,26 @@ class _LoginViewState extends State<LoginView> {
 
                 // sign in button
 
-                Container(
-                  alignment: Alignment.center,
-                  width: double.infinity,
-                  height: 50,
-                  decoration: BoxDecoration(
-                    color: Color.fromRGBO(0, 107, 255, 1),
-                    borderRadius: BorderRadius.circular(_cornerRadius),
-                  ),
-                  child: const Text(
-                    "Sign in",
-                    style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 19,
-                        fontWeight: FontWeight.w700),
+                GestureDetector(
+                  onTap: ()=> {
+                    Navigator.pushNamed(context, "/register")
+                    
+                  },
+                  child: Container(
+                    alignment: Alignment.center,
+                    width: double.infinity,
+                    height: 50,
+                    decoration: BoxDecoration(
+                      color: Color.fromRGBO(0, 107, 255, 1),
+                      borderRadius: BorderRadius.circular(_cornerRadius),
+                    ),
+                    child: const Text(
+                      "Sign in",
+                      style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 19,
+                          fontWeight: FontWeight.w700),
+                    ),
                   ),
                 ),
 
@@ -142,17 +148,23 @@ class _LoginViewState extends State<LoginView> {
 
                 //dont have an account section
 
-                const Row(
+                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Text("Dont have an account?"),
-                    SizedBox(
+                    const Text("Dont have an account?"),
+                    const SizedBox(
                       width: 8,
                     ),
-                    Text(
-                      "Create one",
+                    
+                    TextButton(
+                      onPressed: () => {
+                        Navigator.pushNamed(context, "/register")
+                      },
+                      child: const Text("Create one",
                       style: TextStyle(
                           color: Colors.lightBlue, fontWeight: FontWeight.w500),
+                    )
+                     
                     )
                   ],
                 )

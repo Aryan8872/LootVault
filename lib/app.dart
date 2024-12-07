@@ -12,7 +12,8 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       initialRoute:"/",
       routes: {
-        "/":(context)=> const RegisterView(),
+        "/":(context)=> const LoginView(),
+        "/register":(context) => const RegisterView(),
       },
       theme: ThemeData(
         appBarTheme:const AppBarTheme(

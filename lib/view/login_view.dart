@@ -123,7 +123,7 @@ class _LoginViewState extends State<LoginView> {
 
                 GestureDetector(
                   onTap: ()=> {
-                    Navigator.pushNamed(context, "/register")
+                    Navigator.pushNamed(context, "/home")
                     
                   },
                   child: Container(

@@ -1,18 +1,26 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 
 class HorizontalProductCard extends StatelessWidget {
   const HorizontalProductCard({
     super.key,
-    required this.giftcardData,
+    required this.cardData,
+    required this.itemName,
+    required this.price,
+    this.rating="0"
   });
 
-  final List giftcardData;
+  final List cardData;
+  final String rating;
+  final String price;
+  final String itemName;
+
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: MediaQuery.of(context).size.height * 0.26,
+      height: MediaQuery.of(context).size.height * 0.28,
       child: LayoutBuilder(
         builder: (BuildContext context, BoxConstraints constraints) {
           double parentWidth =
@@ -20,12 +28,13 @@ class HorizontalProductCard extends StatelessWidget {
           double parentHeight = constraints.maxHeight;
 
           return ListView.builder(
-            itemCount: giftcardData.length,
+            itemCount: cardData.length,
             scrollDirection: Axis.horizontal,
             itemBuilder: (context, index) {
               return Container(
+                
                 width:
-                    parentWidth * 0.4, // card container ko main parent ko width
+                    parentWidth * 0.37, // card container ko main parent ko width
                 margin: const EdgeInsets.only(right: 17),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(12),
@@ -56,19 +65,36 @@ class HorizontalProductCard extends StatelessWidget {
                         child: ClipRRect(
                           borderRadius: BorderRadius.circular(12),
                           child: Image.asset(
-                            "./assets/images/fb_image.png",
+                            cardData[index],
                             fit: BoxFit.cover,
                           ),
                         ),
                       ),
                     ),
-                    const Padding(
+
+                     Padding(
                       padding: EdgeInsets.fromLTRB(6, 4, 0, 0),
-                      child: Text("CSGO",
-                          style: TextStyle(
-                              fontWeight: FontWeight.w400, fontSize: 16)),
-                    ),
-                    const Padding(
+                  
+                       child: Row(        
+                         children: [
+                          Text(itemName,
+                              style: const TextStyle(
+                                  fontWeight: FontWeight.w400, fontSize: 16)
+                              ),
+
+                              SizedBox(width: 39,),
+
+                          rating !="0"? Icon(Icons.star_rate,color: Colors.yellow[600],):Text(" "),
+                          rating !="0"? Text(rating,style: TextStyle(),):
+                          Text(" ")
+                        
+                                             
+                                         ]),
+                     ),
+
+
+
+                     Padding(
                       padding: EdgeInsets.fromLTRB(0, 3, 0, 0),
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
@@ -79,7 +105,7 @@ class HorizontalProductCard extends StatelessWidget {
                             size: 15,
                           ),
                           Text(
-                            "98166",
+                            price,
                             style: TextStyle(
                                 color: Colors.green,
                                 fontWeight: FontWeight.w500,

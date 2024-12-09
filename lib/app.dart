@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:loot_vault/view/homepage_view.dart';
 import 'package:loot_vault/view/login_view.dart';
+import 'package:loot_vault/view/register_view.dart';
 
 
 class MyApp extends StatelessWidget {
@@ -14,6 +16,8 @@ class MyApp extends StatelessWidget {
       initialRoute:"/",
       routes: {
         "/":(context)=> const LoginView(),
+         "/register":(context) => const RegisterView(),
+        "/home":(context) => const HomePageView(),
 
       
        },

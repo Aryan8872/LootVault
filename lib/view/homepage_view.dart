@@ -243,7 +243,7 @@ void dispose() {
                     "Buy Games",
                     style: TextStyle(
                         fontSize: 20,
-                        color: Colors.blue,
+                        color: Colors.black,
                         fontWeight: FontWeight.w500),
                   ),
                   TextButton(
@@ -288,7 +288,7 @@ void dispose() {
                     " Gift Cards",
                     style: TextStyle(
                         fontSize: 20,
-                        color: Colors.blue,
+                        color: Colors.black,
                         fontWeight: FontWeight.w500),
                   ),
                   TextButton(
@@ -309,7 +309,7 @@ void dispose() {
                 ],
               ),
 
-              SizedBox(
+              const SizedBox(
                 height: 10,
               ),
 
@@ -319,10 +319,176 @@ void dispose() {
                 itemName: "csgo",
                 price: "2000",
               ),
+              
+              const SizedBox(
+                height: 30,
+              ),
+
+
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  const Text(
+                    " Most Sold",
+                    style: TextStyle(
+                        fontSize: 20,
+                        color: Colors.black,
+                        fontWeight: FontWeight.w500),
+                  ),
+                  TextButton(
+                    style: const ButtonStyle(
+                        // backgroundColor: MaterialStateProperty.all(Colors.red),
+                        ),
+                    onPressed: () => {
+                      Navigator.pushNamed(
+                        context,
+                        "/popular",
+                      )
+                    },
+                    child: const Text(
+                      "See all",
+                      style: TextStyle(color: Colors.black),
+                    ),
+                  )
+                ],
+              ),
+
+
+              const SizedBox(
+                height: 10,
+              ),
+
+              HorizontalCardList()
+
+            
 
               //skins and game items
             ]),
           ),
+        ),
+      ),
+    );
+  }
+}
+
+
+
+class HorizontalCardList extends StatelessWidget {
+  final List<Map<String, String>> appList = [
+    {
+      'name': 'Google',
+      'description': 'Google LLC \u2022 Communication \u2022 Tools',
+      'rating': '4.3',
+      'size': '75 MB',
+      'icon': 'https://www.gstatic.com/images/branding/product/1x/google_g_64dp.png',
+    },
+    {
+      'name': 'Google Pay',
+      'description': 'Google LLC \u2022 Finance \u2022 Digital wallets',
+      'rating': '4.6',
+      'size': '83 MB',
+      'icon': 'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d7/Google_Pay_Logo.svg/512px-Google_Pay_Logo.svg.png',
+    },
+    {
+      'name': 'Discord',
+      'description': 'Discord Inc \u2022 Communication \u2022 Chat',
+      'rating': '4.6',
+      'size': '33 MB',
+      'icon': 'https://upload.wikimedia.org/wikipedia/commons/9/98/Discord_logo.svg',
+    },
+  ];
+
+  @override
+  Widget build(BuildContext context) {
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      child: Row(
+        children: appList.map((app) => AppCard(app: app)).toList(),
+      ),
+    );
+  }
+}
+
+
+class AppCard extends StatelessWidget {
+  final Map<String, String> app;
+
+  AppCard({required this.app});
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Container(
+        width: MediaQuery.of(context).size.width * 0.8, // Responsive width
+        decoration: BoxDecoration(
+          color: Colors.black,
+          borderRadius: BorderRadius.circular(10),
+        ),
+        child: Row(
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Image.network(
+                app['icon']!,
+                width: 50,
+                height: 50,
+                errorBuilder: (context, error, stackTrace) {
+                  // Display a placeholder image if the image fails to load
+                  return Icon(
+                    Icons.broken_image,
+                    size: 50,
+                    color: Colors.grey,
+                  );
+                },
+              ),
+            ),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    app['name']!,
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  Text(
+                    app['description']!,
+                    style: TextStyle(
+                      color: Colors.white70,
+                      fontSize: 12,
+                    ),
+                  ),
+                  Row(
+                    children: [
+                      Icon(
+                        Icons.star,
+                        color: Colors.yellow,
+                        size: 16,
+                      ),
+                      SizedBox(width: 4),
+                      Text(
+                        app['rating']!,
+                        style: TextStyle(
+                          color: Colors.white,
+                        ),
+                      ),
+                      Spacer(),
+                      Text(
+                        app['size']!,
+                        style: TextStyle(
+                          color: Colors.white70,
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ],
         ),
       ),
     );

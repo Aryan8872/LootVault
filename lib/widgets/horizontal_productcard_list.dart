@@ -1,6 +1,5 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 
 class HorizontalProductCard extends StatelessWidget {
   const HorizontalProductCard({
@@ -8,7 +7,7 @@ class HorizontalProductCard extends StatelessWidget {
     required this.cardData,
     required this.itemName,
     required this.price,
-    this.rating="0"
+    this.rating = "0",
   });
 
   final List cardData;
@@ -16,15 +15,18 @@ class HorizontalProductCard extends StatelessWidget {
   final String price;
   final String itemName;
 
-
   @override
   Widget build(BuildContext context) {
+    // Get screen width and height for responsiveness
+    final screenWidth = MediaQuery.of(context).size.width;
+    final screenHeight = MediaQuery.of(context).size.height;
+    final isLandscape = screenWidth > screenHeight; // Detect landscape mode
+
     return Container(
-      height: MediaQuery.of(context).size.height * 0.28,
+      height: screenHeight * (isLandscape ? 0.5 : 0.3), // Adjust height based on orientation
       child: LayoutBuilder(
         builder: (BuildContext context, BoxConstraints constraints) {
-          double parentWidth =
-              constraints.maxWidth; //card haru ko horizontal container
+          double parentWidth = constraints.maxWidth;
           double parentHeight = constraints.maxHeight;
 
           return ListView.builder(
@@ -32,10 +34,8 @@ class HorizontalProductCard extends StatelessWidget {
             scrollDirection: Axis.horizontal,
             itemBuilder: (context, index) {
               return Container(
-                
-                width:
-                    parentWidth * 0.37, // card container ko main parent ko width
-                margin: const EdgeInsets.only(right: 17),
+                width: parentWidth * (isLandscape ? 0.30 : 0.37), // Adjust width based on orientation
+                margin: EdgeInsets.only(right: screenWidth * 0.05), // Responsive margin
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(12),
                 ),
@@ -45,23 +45,19 @@ class HorizontalProductCard extends StatelessWidget {
                   children: [
                     Container(
                       width: double.infinity,
-                      // padding: const EdgeInsets.fromLTRB(14, 0, 14, 0),
                       decoration: BoxDecoration(
-                        color: Colors.white,
                         boxShadow: [
                           BoxShadow(
-                            color:
-                                Colors.black.withOpacity(0.2), // Shadow color
-                            blurRadius: 8, // How much the shadow is blurred
-                            offset: Offset(0, 4), // Position of the shadow
+                            color: Colors.black.withOpacity(0.2),
+                            blurRadius: 8,
+                            offset: Offset(0, 4),
                           ),
                         ],
                       ),
                       child: Container(
-                        //clip rect ko child
-                        height: parentHeight * 0.76,
-                        decoration: const BoxDecoration(),
-
+                        height: parentHeight * 0.76, // Adjust height of image container
+                        decoration: BoxDecoration(
+                        ),
                         child: ClipRRect(
                           borderRadius: BorderRadius.circular(12),
                           child: Image.asset(
@@ -71,45 +67,70 @@ class HorizontalProductCard extends StatelessWidget {
                         ),
                       ),
                     ),
-
-                     Padding(
-                      padding: EdgeInsets.fromLTRB(6, 4, 0, 0),
-                  
-                       child: Row(        
-                         children: [
-                          Text(itemName,
-                              style: const TextStyle(
-                                  fontWeight: FontWeight.w400, fontSize: 16)
+                    // Item name and rating row
+                    Padding(
+                      padding: EdgeInsets.fromLTRB(
+                        3,
+                         2,
+                        0,
+                        0,
+                      ),
+                      child: Row(
+                        children: [
+                          
+                          Text(
+                              itemName,
+                              style: TextStyle(
+                                fontWeight: FontWeight.w400,
+                                fontSize: (isLandscape ?17 : 18), // Responsive font size
                               ),
+                              // overflow: TextOverflow.ellipsis, // Prevent text overflow
+                            ),
+                            Spacer(),
+                          
+                          if (rating != "0")
+                            Row(
+                              children: [
+                                Icon(
+                                  Icons.star_rate,
+                                  color: Colors.yellow[600],
+                                  size: (isLandscape ?17 : 17), // Responsive icon size
+                                ),
+                                SizedBox(width: screenWidth * 0.01),
+                                Text(
+                                  rating,
+                                  style: TextStyle(fontSize:(isLandscape ? 17 : 15)),
+                                ),
+                              ],
+                            ),
+                        ],
+                      ),
+                    ),
+                    // Price row
 
-                              SizedBox(width: 39,),
 
-                          rating !="0"? Icon(Icons.star_rate,color: Colors.yellow[600],):Text(" "),
-                          rating !="0"? Text(rating,style: TextStyle(),):
-                          Text(" ")
-                        
-                                             
-                                         ]),
-                     ),
-
-
-
-                     Padding(
-                      padding: EdgeInsets.fromLTRB(0, 3, 0, 0),
+                    Padding(
+                      padding: EdgeInsets.fromLTRB(
+                      0,
+                      0,
+                        0,
+                        0,
+                      ),
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           Icon(
                             Icons.attach_money_rounded,
                             color: Colors.green,
-                            size: 15,
+                            size: (isLandscape ? 0.05 : 16.6), // Responsive icon size
                           ),
                           Text(
                             price,
                             style: TextStyle(
-                                color: Colors.green,
-                                fontWeight: FontWeight.w500,
-                                fontSize: 15),
+                              color: Colors.green,
+                              fontWeight: FontWeight.w500,
+                              fontSize: (isLandscape ? 16 : 15), // Responsive font size
+                            ),
                           ),
                         ],
                       ),

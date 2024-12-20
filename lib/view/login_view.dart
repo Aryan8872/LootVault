@@ -12,13 +12,11 @@ class _LoginViewState extends State<LoginView> {
   final _largeGap = const SizedBox(height: 25);
   final _normalgap = const SizedBox(height: 18);
   final _smallgap = const SizedBox(height: 10);
-  final _cornerRadius = 10.0;
 
-  // Define controllers for the input fields
-  final TextEditingController _emailController = TextEditingController(text: "hello@gmail.com");
+  final TextEditingController _emailController =
+      TextEditingController(text: "hello@gmail.com");
   final TextEditingController _passwordController = TextEditingController();
 
-  // Create a GlobalKey for the Form widget
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   // Function to handle form submission and validation
@@ -39,7 +37,7 @@ class _LoginViewState extends State<LoginView> {
             padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 30),
             child: SingleChildScrollView(
               child: Form(
-                key: _formKey, 
+                key: _formKey,
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
@@ -78,16 +76,20 @@ class _LoginViewState extends State<LoginView> {
                         color: Colors.blue,
                         fontWeight: FontWeight.bold,
                       ),
-                      contentPadding: const EdgeInsets.symmetric(vertical: 20, horizontal: 10),
+                      contentPadding: const EdgeInsets.symmetric(
+                          vertical: 20, horizontal: 10),
                       keyboardType: TextInputType.emailAddress,
                       controller: _emailController,
-                      inputTextStyle: const TextStyle(color: Colors.black, fontSize: 16),
+                      inputTextStyle:
+                          const TextStyle(color: Colors.black, fontSize: 16),
                       validator: (value) {
                         if (value == null || value.isEmpty) {
                           return 'Please enter your email';
                         }
                         // Simple email validation
-                        if (!RegExp(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$').hasMatch(value)) {
+                        if (!RegExp(
+                                r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$')
+                            .hasMatch(value)) {
                           return 'Please enter a valid email address';
                         }
                         return null;
@@ -110,7 +112,8 @@ class _LoginViewState extends State<LoginView> {
                         color: Colors.black,
                         fontSize: 16,
                       ),
-                      contentPadding: const EdgeInsets.symmetric(vertical: 20, horizontal: 10),
+                      contentPadding: const EdgeInsets.symmetric(
+                          vertical: 20, horizontal: 10),
                       controller: _passwordController,
                       validator: (value) {
                         if (value == null || value.isEmpty) {
@@ -132,23 +135,14 @@ class _LoginViewState extends State<LoginView> {
                     _normalgap,
 
                     // Sign in button
-                    GestureDetector(
-                      onTap: _submitForm,
-                      child: Container(
-                        alignment: Alignment.center,
-                        width: double.infinity,
-                        height: 50,
-                        decoration: BoxDecoration(
-                          color: const Color.fromRGBO(0, 107, 255, 1),
-                          borderRadius: BorderRadius.circular(_cornerRadius),
-                        ),
-                        child: const Text(
-                          "Sign in",
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 19,
-                            fontWeight: FontWeight.w700,
-                          ),
+                    ElevatedButton(
+                      onPressed: _submitForm,
+                      child: const Text(
+                        "Sign in",
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 19,
+                          fontWeight: FontWeight.w700,
                         ),
                       ),
                     ),
@@ -163,9 +157,8 @@ class _LoginViewState extends State<LoginView> {
                           width: 8,
                         ),
                         TextButton(
-                          onPressed: () => {
-                            Navigator.pushNamed(context, "/register")
-                          },
+                          onPressed: () =>
+                              {Navigator.pushNamed(context, "/register")},
                           child: const Text(
                             "Create one",
                             style: TextStyle(

@@ -36,14 +36,6 @@ class _HomePageViewState extends State<HomePageView> {
     "./assets/images/giftcard7.jpg",
   ];
 
-  final List<String> popularTags = [
-    'Action Games',
-    'RPG',
-    'Adventure',
-    'Strategy',
-    'Sports'
-  ];
-
   int pageNo = 0;
 
   @override
@@ -82,45 +74,6 @@ class _HomePageViewState extends State<HomePageView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color.fromRGBO(240, 247, 255, 1),
-      bottomNavigationBar: ClipRRect(
-        borderRadius: BorderRadius.circular(18),
-        child: NavigationBar(
-          onDestinationSelected: (int index) {
-            setState(() {});
-          },
-          indicatorColor: Colors.blue,
-          backgroundColor: Colors.white,
-          height: MediaQuery.of(context).size.height * 0.07,
-          elevation: 8,
-          shadowColor: Colors.black,
-          destinations: const <Widget>[
-            NavigationDestination(
-              selectedIcon: Icon(Icons.home),
-              icon: Icon(Icons.home_outlined),
-              label: 'Home',
-            ),
-            NavigationDestination(
-              icon: Icon(Icons.explore),
-              label: 'Explore',
-            ),
-            NavigationDestination(
-              icon: Icon(Icons.forum),
-              label: 'Forum',
-            ),
-            NavigationDestination(
-              icon: Icon(Icons.person),
-              label: 'Profile',
-            ),
-          ],
-        ),
-      ),
-      appBar: AppBar(
-        title: const Text(
-          "LOOTVAULT",
-        ),
-        automaticallyImplyLeading: false,
-      ),
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(12),
@@ -182,45 +135,7 @@ class _HomePageViewState extends State<HomePageView> {
                 },
               ),
 
-              const SizedBox(
-                height: 20,
-              ),
-
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Text(
-                      'Popular Tags',
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    const SizedBox(height: 8),
-                    SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
-                      child: Row(
-                        children: popularTags
-                            .map(
-                              (tag) => Container(
-                                margin: const EdgeInsets.only(right: 8),
-                                child: ActionChip(
-                                  label: Text(tag),
-                                  onPressed: () {
-                                    // _searchController.text = tag;
-                                    // Implement search functionality
-                                  },
-                                ),
-                              ),
-                            )
-                            .toList(),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
+             
               const SizedBox(
                 height: 30,
               ),
@@ -299,12 +214,10 @@ class _HomePageViewState extends State<HomePageView> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  const Text(
+                  Text(
                     "Buy Games",
-                    style: TextStyle(
-                        fontSize: 20,
-                        color: Colors.black,
-                        fontWeight: FontWeight.w500),
+                    style:
+                        Theme.of(context).textTheme.displayMedium!.copyWith(),
                   ),
                   TextButton(
                     style: const ButtonStyle(
@@ -344,13 +257,11 @@ class _HomePageViewState extends State<HomePageView> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  const Text(
-                    " Gift Cards",
-                    style: TextStyle(
-                        fontSize: 20,
-                        color: Colors.black,
-                        fontWeight: FontWeight.w500),
-                  ),
+                  Text(" Gift Cards",
+                      style: Theme.of(context)
+                          .textTheme
+                          .displayMedium!
+                          .copyWith()),
                   TextButton(
                     style: const ButtonStyle(
                         // backgroundColor: MaterialStateProperty.all(Colors.red),
@@ -387,13 +298,11 @@ class _HomePageViewState extends State<HomePageView> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  const Text(
-                    " Most Sold",
-                    style: TextStyle(
-                        fontSize: 20,
-                        color: Colors.black,
-                        fontWeight: FontWeight.w500),
-                  ),
+                  Text(" Most Sold",
+                      style: Theme.of(context)
+                          .textTheme
+                          .displayMedium!
+                          .copyWith()),
                   TextButton(
                     style: const ButtonStyle(
                         // backgroundColor: MaterialStateProperty.all(Colors.red),
@@ -404,9 +313,9 @@ class _HomePageViewState extends State<HomePageView> {
                         "/popular",
                       )
                     },
-                    child: const Text(
+                    child:  Text(
                       "See all",
-                      style: TextStyle(color: Colors.black),
+                      style: Theme.of(context).textTheme.titleSmall!.copyWith(),
                     ),
                   )
                 ],

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:loot_vault/core/app_theme/app_theme.dart';
+import 'package:loot_vault/view/bottom_navbar.dart';
 import 'package:loot_vault/view/homepage_view.dart';
 import 'package:loot_vault/view/login_view.dart';
 import 'package:loot_vault/view/onboarding_screen.dart';
@@ -18,7 +19,7 @@ class MyApp extends StatelessWidget {
         "/": (context) => OnboardingScreen(),
         "/login": (context) => const LoginView(),
         "/register": (context) => const RegisterView(),
-        "/home": (context) => const HomePageView(),
+        "/home": (context) =>  BottomNavbar(),
       },
       theme: getApplicationTheme(),
     );

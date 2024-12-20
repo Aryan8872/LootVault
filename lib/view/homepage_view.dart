@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:loot_vault/core/common/horizontal_productcard_list.dart';
+import 'package:loot_vault/view/skin_carousel.dart';
 
 class HomePageView extends StatefulWidget {
   const HomePageView({super.key});
@@ -27,13 +28,15 @@ class _HomePageViewState extends State<HomePageView> {
   }
 
   final List heroSlider = [
-    "./assets/images/giftcard1.jpg",
-    "./assets/images/giftcard2.jpg",
-    "./assets/images/giftcard3.jpg",
-    "./assets/images/giftcard4.jpg",
-    "./assets/images/giftcard5.jpg",
-    "./assets/images/giftcard6.jpg",
-    "./assets/images/giftcard7.jpg",
+    "https://i.pinimg.com/736x/29/c5/48/29c548cfeadcd3dd44458d1ce5be3a0a.jpg",
+    "https://xxboxnews.blob.core.windows.net/prod/sites/2/2021/11/Black-Friday-Hero-Image.jpg",
+    "https://xxboxnews.blob.core.windows.net/prod/sites/2/2021/02/Xbox-Lunar-New-Year-16x9-NA.jpg",
+    "https://media.rockstargames.com/rockstargames/img/global/news/upload/actual_1345843377.jpg",
+    "https://2game.com/wp/wp-content/uploads/2022/06/TestBanner1.jpg",
+    "https://i.ytimg.com/vi/ILDRSvXJIsM/maxresdefault.jpg",
+    "https://www.pcworld.com/wp-content/uploads/2023/07/epic-games-sale-header-image.jpg?quality=50&strip=all&w=1024",
+    "https://cdn.europosters.eu/image/hp/106405.jpg",
+    "https://sm.ign.com/t/ign_in/screenshot/default/steam_kd57.1280.jpg",
   ];
 
   int pageNo = 0;
@@ -54,11 +57,13 @@ class _HomePageViewState extends State<HomePageView> {
   }
 
   final List popularGameData = [
-    "call of duty",
-    "gta 5",
-    "last of us",
-    "CSGO",
-    "Valorant"
+    "https://i.pinimg.com/736x/40/dd/1f/40dd1ff8dd574aaaeb3e5e9eabffab9c.jpg",
+    "https://i.pinimg.com/736x/7f/f0/18/7ff018e5d55e5d537d23ae652d586756.jpg",
+    "https://i.pinimg.com/736x/62/2c/d7/622cd7673afb853f034ceaadd690c8b1.jpg",
+    "https://i.pinimg.com/736x/33/45/e3/3345e363bc0079349e43fedd2ecf6c5d.jpg",
+    "https://i.pinimg.com/736x/7c/02/15/7c0215275347ca42a7d208e3ae596b59.jpg",
+    "https://i.pinimg.com/736x/d7/4f/f9/d74ff99b4deb5189b3ea809705912bd7.jpg",
+    "https://i.pinimg.com/736x/1d/39/36/1d393626b103b734b93e960ac33dd6c7.jpg"
   ];
 
   final List giftcardData = [
@@ -135,7 +140,6 @@ class _HomePageViewState extends State<HomePageView> {
                 },
               ),
 
-             
               const SizedBox(
                 height: 30,
               ),
@@ -172,8 +176,8 @@ class _HomePageViewState extends State<HomePageView> {
                             ),
                             child: ClipRRect(
                                 borderRadius: BorderRadius.circular(12),
-                                child: Image.asset(
-                                  "./assets/images/cod.jpg",
+                                child: Image.network(
+                                  heroSlider[index],
                                   fit: BoxFit.cover,
                                 )),
                           ),
@@ -244,14 +248,14 @@ class _HomePageViewState extends State<HomePageView> {
               //***************************************BUY GAMES CARDS*****************************************************************
 
               HorizontalProductCard(
-                cardData: giftcardData,
+                cardData: popularGameData,
                 itemName: "csgo",
                 price: "2000",
-                rating: "4.6",
+                type: "game",
               ),
 
               const SizedBox(
-                height: 30,
+                height: 20,
               ),
 
               Row(
@@ -288,11 +292,50 @@ class _HomePageViewState extends State<HomePageView> {
               HorizontalProductCard(
                 cardData: giftcardData,
                 itemName: "csgo",
-                price: "2000",
+                price: "1225",
+                rating: "4.5",
+                type: "giftcard",
               ),
 
               const SizedBox(
-                height: 30,
+                height: 20,
+              ),
+              ////////////////////////////////////////////////////////skins///////////////////////////////
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(" Game Skins",
+                      style: Theme.of(context)
+                          .textTheme
+                          .displayMedium!
+                          .copyWith()),
+                  TextButton(
+                    style: const ButtonStyle(
+                        // backgroundColor: MaterialStateProperty.all(Colors.red),
+                        ),
+                    onPressed: () => {
+                      Navigator.pushNamed(
+                        context,
+                        "/popular",
+                      )
+                    },
+                    child: Text(
+                      "See all",
+                      style: Theme.of(context).textTheme.titleSmall!.copyWith(),
+                    ),
+                  )
+                ],
+              ),
+
+              const SizedBox(
+                height: 10,
+              ),
+
+              //////////////////////////////////////////////////////skins and game items
+              const SkinCarousel(),
+
+              const SizedBox(
+                height: 20,
               ),
 
               Row(
@@ -313,7 +356,7 @@ class _HomePageViewState extends State<HomePageView> {
                         "/popular",
                       )
                     },
-                    child:  Text(
+                    child: Text(
                       "See all",
                       style: Theme.of(context).textTheme.titleSmall!.copyWith(),
                     ),
@@ -321,13 +364,8 @@ class _HomePageViewState extends State<HomePageView> {
                 ],
               ),
 
-              const SizedBox(
-                height: 10,
-              ),
-
-              HorizontalCardList()
-
-              //skins and game items
+              // most sold
+              HorizontalCardList(),
             ]),
           ),
         ),
@@ -335,6 +373,8 @@ class _HomePageViewState extends State<HomePageView> {
     );
   }
 }
+
+//////////////////////////////////////////////////////////////////most sold////////////////////////////////////////////////////////////////
 
 class HorizontalCardList extends StatelessWidget {
   final List<Map<String, String>> appList = [

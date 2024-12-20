@@ -5,6 +5,7 @@ ThemeData getApplicationTheme() {
   return ThemeData(
     scaffoldBackgroundColor: const Color.fromRGBO(240, 247, 255, 1),
     fontFamily: 'Nunito Regular',
+
     appBarTheme: AppBarTheme(
       backgroundColor: Colors.white,
       titleTextStyle: GoogleFonts.poppins(
@@ -18,7 +19,7 @@ ThemeData getApplicationTheme() {
         backgroundColor: const Color.fromRGBO(0, 107, 255, 1),
         shape: RoundedRectangleBorder(
           borderRadius:
-              BorderRadius.circular(10), // Adjust this to match `_cornerRadius`
+              BorderRadius.circular(10), 
         ),
         minimumSize: const Size(double.infinity, 50),
         textStyle: const TextStyle(

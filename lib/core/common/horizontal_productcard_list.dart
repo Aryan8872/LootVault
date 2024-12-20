@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 
 class HorizontalProductCard extends StatelessWidget {
-  const HorizontalProductCard({
+  HorizontalProductCard({
     super.key,
     required this.cardData,
     required this.itemName,
     required this.price,
+    required this.type,
     this.rating = "0",
   });
 
@@ -13,6 +14,27 @@ class HorizontalProductCard extends StatelessWidget {
   final String rating;
   final String price;
   final String itemName;
+  final String type;
+
+  List<String> gamename = [
+    "Dark Souls",
+    "God of war",
+    "Last of us",
+    "Assasins creed",
+    "Elden ring",
+    "Farcry 3",
+    "Plague tale"
+  ];
+
+  List<String> cardname = [
+    "Fantasy card",
+    "Discord Nitro",
+    "Fortnite card",
+    "Roblox card",
+    "LOL card",
+    "Valo card",
+    "PS card"
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -58,18 +80,50 @@ class HorizontalProductCard extends StatelessWidget {
                           ),
                         ],
                       ),
-                      child: Container(
-                        height: parentHeight *
-                            0.76, // Adjust height of image container
-                        decoration: const BoxDecoration(),
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(12),
-                          child: Image.asset(
-                            cardData[index],
-                            fit: BoxFit.cover,
+                      child: Stack(children: [
+                        Container(
+                          height: parentHeight *
+                              0.76, // Adjust height of image container
+                          decoration: const BoxDecoration(),
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(12),
+                            child: type == "game"
+                                ? Image.network(
+                                    cardData[index],
+                                    fit: BoxFit.cover,
+                                  )
+                                : Image.asset(cardData[index]),
                           ),
                         ),
-                      ),
+                        type == "giftcard"
+                            ? Container(
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(5),
+                                  color: Colors.white,
+                                ),
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 4, vertical: 4),
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Icon(
+                                      Icons.star_rate,
+                                      color: Colors.yellow[600],
+                                      size: (isLandscape
+                                          ? 17
+                                          : 20), // Responsive icon size
+                                    ),
+                                    SizedBox(width: screenWidth * 0.01),
+                                    Text(rating,
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .titleMedium!
+                                            .copyWith(fontSize: 15)),
+                                  ],
+                                ),
+                              )
+                            : Container(),
+                      ]),
                     ),
                     // Item name and rating row
                     Padding(
@@ -81,30 +135,14 @@ class HorizontalProductCard extends StatelessWidget {
                       ),
                       child: Row(
                         children: [
-                          Text(itemName,
+                          Text(
+                              type == "game"
+                                  ? gamename[index]
+                                  : cardname[index],
                               style: Theme.of(context)
                                   .textTheme
                                   .titleMedium!
                                   .copyWith()),
-                          const Spacer(),
-                          if (rating != "0")
-                            Row(
-                              children: [
-                                Icon(
-                                  Icons.star_rate,
-                                  color: Colors.yellow[600],
-                                  size: (isLandscape
-                                      ? 17
-                                      : 17), // Responsive icon size
-                                ),
-                                SizedBox(width: screenWidth * 0.01),
-                                Text(rating,
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .titleSmall!
-                                        .copyWith()),
-                              ],
-                            ),
                         ],
                       ),
                     ),
@@ -128,6 +166,7 @@ class HorizontalProductCard extends StatelessWidget {
                                 : 16.6), // Responsive icon size
                           ),
                           Text(price,
+                              overflow: TextOverflow.ellipsis,
                               style: Theme.of(context)
                                   .textTheme
                                   .titleSmall!

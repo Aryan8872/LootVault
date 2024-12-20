@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:loot_vault/widgets/shadow_inputbox.dart';
+import 'package:loot_vault/core/common/shadow_inputbox.dart';
 
 class LoginView extends StatefulWidget {
   const LoginView({super.key});
@@ -15,7 +15,7 @@ class _LoginViewState extends State<LoginView> {
   final _cornerRadius = 10.0;
 
   // Define controllers for the input fields
-  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController(text: "hello@gmail.com");
   final TextEditingController _passwordController = TextEditingController();
 
   // Create a GlobalKey for the Form widget
@@ -39,7 +39,7 @@ class _LoginViewState extends State<LoginView> {
             padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 30),
             child: SingleChildScrollView(
               child: Form(
-                key: _formKey, // Add the form key here
+                key: _formKey, 
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [

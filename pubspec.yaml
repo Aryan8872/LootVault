@@ -77,9 +77,18 @@ flutter:
   # list giving the asset and other descriptors for the font. For
   # example:
   fonts:
-    - family: Poppins
+    - family: Montserrat Bold
       fonts:
-        - asset: assets/fonts/Poppins-Semibold.ttf
+        - asset: assets/fonts/Montserrat-Bold.ttf
+
+    - family: Montserrat Italic
+      fonts:
+        - asset: assets/fonts/Montserrat-Italic.ttf
+
+    - family: Montserrat Regular
+      fonts:
+        - asset: assets/fonts/Montserrat-Regular.ttf
+    
    
   #   - family: Trajan Pro
   #     fonts:

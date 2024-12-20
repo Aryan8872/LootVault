@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:loot_vault/widgets/shadow_inputbox.dart';
+import 'package:loot_vault/core/common/shadow_inputbox.dart';
 
 class RegisterView extends StatefulWidget {
   const RegisterView({super.key});
@@ -21,11 +21,11 @@ class _RegisterViewState extends State<RegisterView> {
 
 
  final _formKey = GlobalKey<FormState>();
-  final TextEditingController _phoneController = TextEditingController();
-  final TextEditingController _passwordController = TextEditingController();
-  final TextEditingController _retypePasswordController = TextEditingController();
-  final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _fullNameController = TextEditingController();
+  final TextEditingController _phoneController = TextEditingController(text: "9815935689");
+  final TextEditingController _passwordController = TextEditingController(text: "hari123");
+  final TextEditingController _retypePasswordController = TextEditingController(text: "hari123");
+  final TextEditingController _emailController = TextEditingController(text: "hari@gmail.com");
+  final TextEditingController _fullNameController = TextEditingController(text: "hari bahadur");
 
 
   @override
@@ -204,7 +204,7 @@ class _RegisterViewState extends State<RegisterView> {
                         if (_formKey.currentState!.validate()) {
                           // If the form is valid, perform actions
                           ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(content: Text('Processing Data',style: TextStyle(backgroundColor: Colors.green,color: Colors.white),)));
+                              const SnackBar(content: Text('Account created sucessfully',style: TextStyle(color: Colors.white),),backgroundColor: Colors.green,));
                         }
                       },
                       child: Container(

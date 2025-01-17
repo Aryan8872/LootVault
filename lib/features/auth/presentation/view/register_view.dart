@@ -1,6 +1,10 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:loot_vault/core/common/shadow_inputbox.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:loot_vault/app/di/di.dart';
+import 'package:loot_vault/app/widget/shadow_inputbox.dart';
+import 'package:loot_vault/features/auth/presentation/view/login_view.dart';
+import 'package:loot_vault/features/auth/presentation/view_model/login/login_bloc.dart';
+import 'package:loot_vault/features/auth/presentation/view_model/register/register_bloc.dart';
 
 class RegisterView extends StatefulWidget {
   const RegisterView({super.key});
@@ -10,23 +14,25 @@ class RegisterView extends StatefulWidget {
 }
 
 class _RegisterViewState extends State<RegisterView> {
-
-
   final _largeGap = const SizedBox(height: 25);
   final _normalgap = const SizedBox(height: 18);
   final _smallgap = const SizedBox(height: 10);
   final _cornerRadius = 10.0;
 
+  final _formKey = GlobalKey<FormState>();
+  final TextEditingController _phoneController =
+      TextEditingController();
+  final TextEditingController _passwordController =
+      TextEditingController();
+  final TextEditingController _retypePasswordController =
+      TextEditingController();
+  final TextEditingController _emailController =
+      TextEditingController();
+  final TextEditingController _fullNameController =
+      TextEditingController();
 
-
-
- final _formKey = GlobalKey<FormState>();
-  final TextEditingController _phoneController = TextEditingController(text: "9815935689");
-  final TextEditingController _passwordController = TextEditingController(text: "hari123");
-  final TextEditingController _retypePasswordController = TextEditingController(text: "hari123");
-  final TextEditingController _emailController = TextEditingController(text: "hari@gmail.com");
-  final TextEditingController _fullNameController = TextEditingController(text: "hari bahadur");
-
+    final TextEditingController _usernameController =
+      TextEditingController();
 
   @override
   void dispose() {
@@ -37,6 +43,7 @@ class _RegisterViewState extends State<RegisterView> {
     _retypePasswordController.dispose();
     super.dispose();
   }
+
   // Form validators
   String? _emailValidator(String? value) {
     if (value == null || value.isEmpty) {
@@ -98,7 +105,6 @@ class _RegisterViewState extends State<RegisterView> {
     setState(() {});
   }
 
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -137,42 +143,52 @@ class _RegisterViewState extends State<RegisterView> {
                     _largeGap,
 
                     // Fullname TextField with validation
-                   ShadowInputbox(
-                    labelText: 'Full Name',
-                    prefixIcon: Icons.person,
-                    controller: _fullNameController,
-                    validator: _fullNameValidator,
-                
-                    onChanged: (value) {
-                      setState(() {});
-                    },
-                  ),
-                    _normalgap,
+                    ShadowInputbox(
+                      labelText: 'Full Name',
+                      prefixIcon: Icons.person,
+                      controller: _fullNameController,
+                      validator: _fullNameValidator,
+                      onChanged: (value) {
+                        setState(() {});
+                      },
+                    ),
 
+                    _normalgap,
+                    ShadowInputbox(
+                      labelText: 'Username',
+                      prefixIcon: Icons.person,
+                      controller: _usernameController,
+                      validator: _fullNameValidator,
+                      onChanged: (value) {
+                        setState(() {});
+                      },
+                    ),
+
+                    _normalgap,
                     // Email TextField with validation
-                     ShadowInputbox(
-                labelText: 'Email',
-                prefixIcon: Icons.email,
-                controller: _emailController,
-                keyboardType: TextInputType.emailAddress,
-                validator: _emailValidator,
-                onChanged: (value) {
-                  setState(() {});
-                },
-              ),
+                    ShadowInputbox(
+                      labelText: 'Email',
+                      prefixIcon: Icons.email,
+                      controller: _emailController,
+                      keyboardType: TextInputType.emailAddress,
+                      validator: _emailValidator,
+                      onChanged: (value) {
+                        setState(() {});
+                      },
+                    ),
                     _normalgap,
 
                     // Phone TextField with validation
                     ShadowInputbox(
-                    labelText: 'Phone Number',
-                    prefixIcon: Icons.phone,
-                    controller: _phoneController,
-                    keyboardType: TextInputType.phone,
-                    validator: _phoneValidator,
-                    onChanged: (value) {
-                    setState(() {});
-                },
-              ),
+                      labelText: 'Phone Number',
+                      prefixIcon: Icons.phone,
+                      controller: _phoneController,
+                      keyboardType: TextInputType.phone,
+                      validator: _phoneValidator,
+                      onChanged: (value) {
+                        setState(() {});
+                      },
+                    ),
                     _normalgap,
 
                     // Password TextField with validation
@@ -184,17 +200,7 @@ class _RegisterViewState extends State<RegisterView> {
                       validator: _passwordValidator,
                       onChanged: _onPasswordChanged,
                     ),
-                    _normalgap,
 
-                    // Confirm Password TextField with validation
-                   ShadowInputbox(
-                  labelText: 'Retype Password',
-                  prefixIcon: Icons.lock,
-                  controller: _retypePasswordController,
-                  obscureText: true,
-                  validator: _retypePasswordValidator,
-                  onChanged: _onRetypePasswordChanged,
-                  ),
                     _smallgap,
                     _normalgap,
 
@@ -203,8 +209,22 @@ class _RegisterViewState extends State<RegisterView> {
                       onTap: () {
                         if (_formKey.currentState!.validate()) {
                           // If the form is valid, perform actions
-                          ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(content: Text('Account created sucessfully',style: TextStyle(color: Colors.white),),backgroundColor: Colors.green,));
+
+                          context.read<RegisterBloc>().add(
+                            RegisterUser(
+                              context: context, 
+                              fullName: _fullNameController.text, 
+                              userName: _usernameController.text, 
+                              email: _emailController.text, phoneNo: _phoneController.text, password: _passwordController.text)
+                          );
+                          // ScaffoldMessenger.of(context)
+                          //     .showSnackBar(const SnackBar(
+                          //   content: Text(
+                          //     'Account created sucessfully',
+                          //     style: TextStyle(color: Colors.white),
+                          //   ),
+                          //   backgroundColor: Colors.green,
+                          // ));
                         }
                       },
                       child: Container(
@@ -236,7 +256,7 @@ class _RegisterViewState extends State<RegisterView> {
                         ),
                         TextButton(
                           onPressed: () {
-                            Navigator.pushNamed(context, "/login");
+                            Navigator.push(context,MaterialPageRoute(builder: (context) => BlocProvider.value(value: getIt<LoginBloc>(),child: LoginView(),),));
                           },
                           child: const Text(
                             "Login",

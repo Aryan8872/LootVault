@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:loot_vault/core/common/shadow_inputbox.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:loot_vault/app/widget/shadow_inputbox.dart';
+import 'package:loot_vault/features/auth/presentation/view/register_view.dart';
+import 'package:loot_vault/features/auth/presentation/view_model/login/login_bloc.dart';
 
 class LoginView extends StatefulWidget {
   const LoginView({super.key});
@@ -18,14 +21,6 @@ class _LoginViewState extends State<LoginView> {
   final TextEditingController _passwordController = TextEditingController();
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-
-  // Function to handle form submission and validation
-  void _submitForm() {
-    if (_formKey.currentState?.validate() ?? false) {
-      // If the form is valid, navigate to the home screen
-      Navigator.pushNamed(context, "/home");
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -136,7 +131,15 @@ class _LoginViewState extends State<LoginView> {
 
                     // Sign in button
                     ElevatedButton(
-                      onPressed: _submitForm,
+                      onPressed: () {
+                        if (_formKey.currentState?.validate() ?? false) {
+                          // If the form is valid, navigate to the home screen
+                          context.read<LoginBloc>().add(LoginUserEvent(
+                              context: context,
+                              email: _emailController.text,
+                              password: _passwordController.text));
+                        }
+                      },
                       child: const Text(
                         "Sign in",
                         style: TextStyle(
@@ -157,8 +160,12 @@ class _LoginViewState extends State<LoginView> {
                           width: 8,
                         ),
                         TextButton(
-                          onPressed: () =>
-                              {Navigator.pushNamed(context, "/register")},
+                          onPressed: () => {
+                            context.read<LoginBloc>().add(
+                                NavigateRegisterScreenEvent(
+                                    context: context,
+                                    destination: const RegisterView()))
+                          },
                           child: const Text(
                             "Create one",
                             style: TextStyle(

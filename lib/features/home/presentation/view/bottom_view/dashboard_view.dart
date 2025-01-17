@@ -1,17 +1,17 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:loot_vault/core/common/horizontal_productcard_list.dart';
-import 'package:loot_vault/view/skin_carousel.dart';
+import 'package:loot_vault/app/widget/horizontal_productcard_list.dart';
+import 'package:loot_vault/app/widget/skin_carousel.dart';
 
-class HomePageView extends StatefulWidget {
-  const HomePageView({super.key});
+class DashBoardView extends StatefulWidget {
+  const DashBoardView({super.key});
 
   @override
-  State<HomePageView> createState() => _HomePageViewState();
+  State<DashBoardView> createState() => _DashBoardViewState();
 }
 
-class _HomePageViewState extends State<HomePageView> {
+class _DashBoardViewState extends State<DashBoardView> {
   late final PageController pageController;
 
   late final heroSliderTimer;

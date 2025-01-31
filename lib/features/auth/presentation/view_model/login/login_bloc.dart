@@ -30,7 +30,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
       print(event.password);
       final result = await _loginUseCase(
         LoginParams(
-          username: event.email,
+          email: event.email,
           password: event.password,
         ),
       );
@@ -43,9 +43,8 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
             message: failure.message ?? "Login failed",
             color: Colors.red,
           );
-        },
+          },
         (token) {
-          if (token == "success") {
             emit(state.copyWith(isLoading: false, isSuccess: true));
             add(
               NavigateHomeScreenEvent(
@@ -53,15 +52,8 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
                 destination: const HomePageView(),
               ),
             );
-          } else {
-            emit(state.copyWith(isLoading: false, isSuccess: false));
-            showMySnackBar(
-              context: event.context,
-              message: "Unexpected login result",
-              color: Colors.red,
-            );
-          }
-        },
+          } 
+      
       );
     });
 

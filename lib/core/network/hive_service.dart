@@ -14,6 +14,7 @@ class HiveService {
 
   Future<AuthHiveModel?> login(String email, String password) async {
     try {
+      
       var box = await Hive.openBox<AuthHiveModel>(HiveTableConstant.userBox);
       var auth = box.values.firstWhere(
         (element) => element.email == email && element.password == password,

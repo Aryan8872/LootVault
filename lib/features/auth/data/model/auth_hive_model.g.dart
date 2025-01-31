@@ -22,6 +22,7 @@ class AuthHiveModelAdapter extends TypeAdapter<AuthHiveModel> {
       fullName: fields[1] as String,
       email: fields[3] as String,
       phoneNo: fields[4] as String,
+      image: fields[6] as String?,
       password: fields[5] as String,
     );
   }
@@ -29,7 +30,7 @@ class AuthHiveModelAdapter extends TypeAdapter<AuthHiveModel> {
   @override
   void write(BinaryWriter writer, AuthHiveModel obj) {
     writer
-      ..writeByte(6)
+      ..writeByte(7)
       ..writeByte(0)
       ..write(obj.userId)
       ..writeByte(1)
@@ -41,7 +42,9 @@ class AuthHiveModelAdapter extends TypeAdapter<AuthHiveModel> {
       ..writeByte(4)
       ..write(obj.phoneNo)
       ..writeByte(5)
-      ..write(obj.password);
+      ..write(obj.password)
+      ..writeByte(6)
+      ..write(obj.image);
   }
 
   @override

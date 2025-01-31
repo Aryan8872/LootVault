@@ -26,6 +26,9 @@ class AuthHiveModel extends Equatable {
 
   @HiveField(5)
   final String password;
+  @HiveField(6)
+  final String? image;
+
 
    AuthHiveModel(
       {String? userId,
@@ -33,6 +36,7 @@ class AuthHiveModel extends Equatable {
       required this.fullName,
       required this.email,
       required this.phoneNo,
+      this.image,
       required this.password}):userId= userId?? const Uuid().v4();
 
 
@@ -42,7 +46,8 @@ class AuthHiveModel extends Equatable {
     this.fullName="",
     this.email="",
     this.password="",
-    this.phoneNo = ""
+    this.phoneNo = "",
+    this.image=""
   });
 
   factory AuthHiveModel.fromEntity(AuthEntity entity){
@@ -52,7 +57,8 @@ class AuthHiveModel extends Equatable {
       email: entity.email,
       userId: entity.userId,
       password: entity.password,
-      phoneNo: entity.phoneNo
+      phoneNo: entity.phoneNo,
+      image: entity.image
     );
   }
   AuthEntity toEntity(){
@@ -62,7 +68,9 @@ class AuthHiveModel extends Equatable {
       fullName: fullName, 
       email: email, 
       phoneNo:phoneNo,
-      password: password);
+      password: password,
+      image:image
+      );
   }
 
     static List<AuthHiveModel> fromEntitytoList(List<AuthEntity> entities) {

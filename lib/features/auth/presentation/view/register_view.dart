@@ -1,10 +1,14 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:loot_vault/app/di/di.dart';
 import 'package:loot_vault/app/widget/shadow_inputbox.dart';
 import 'package:loot_vault/features/auth/presentation/view/login_view.dart';
 import 'package:loot_vault/features/auth/presentation/view_model/login/login_bloc.dart';
 import 'package:loot_vault/features/auth/presentation/view_model/register/register_bloc.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 class RegisterView extends StatefulWidget {
   const RegisterView({super.key});
@@ -20,19 +24,14 @@ class _RegisterViewState extends State<RegisterView> {
   final _cornerRadius = 10.0;
 
   final _formKey = GlobalKey<FormState>();
-  final TextEditingController _phoneController =
-      TextEditingController();
-  final TextEditingController _passwordController =
-      TextEditingController();
+  final TextEditingController _phoneController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _retypePasswordController =
       TextEditingController();
-  final TextEditingController _emailController =
-      TextEditingController();
-  final TextEditingController _fullNameController =
-      TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _fullNameController = TextEditingController();
 
-    final TextEditingController _usernameController =
-      TextEditingController();
+  final TextEditingController _usernameController = TextEditingController();
 
   @override
   void dispose() {
@@ -86,23 +85,48 @@ class _RegisterViewState extends State<RegisterView> {
     return null;
   }
 
-  String? _retypePasswordValidator(String? value) {
-    if (value == null || value.isEmpty) {
-      return 'Please re-enter your password';
-    }
-    if (value != _passwordController.text) {
-      return 'Passwords do not match';
-    }
-    return null;
-  }
-
   // Real-time validation for password and retype password
   void _onPasswordChanged(String value) {
     setState(() {});
   }
 
-  void _onRetypePasswordChanged(String value) {
-    setState(() {});
+  checkCameraPermission() async {
+    if (await Permission.camera.request().isRestricted ||
+        await Permission.camera.isDenied) {
+      await Permission.camera.request();
+    }
+  }
+
+  File? _img;
+  String? imagePath;
+
+  Future _browseImage(ImageSource imageSource) async {
+    try {
+      final image = await ImagePicker().pickImage(source: imageSource);
+      if (image != null) {
+        setState(() {
+          imagePath = image.path.split('/').last;
+          print("path set $imagePath");
+          _img = File(image.path);
+        });
+      } else {
+        return;
+      }
+    } catch (e) {
+      debugPrint(e.toString());
+    }
+  }
+
+  void _handleImageSelection(
+      BuildContext innercontext, ImageSource source) async {
+    await _browseImage(source);
+    print("Selected image: $_img");
+    if (_img != null) {
+      context.read<RegisterBloc>().add(
+            UploadImageEvent(context: context, img: _img!),
+          );
+    }
+    Navigator.pop(innercontext);
   }
 
   @override
@@ -120,15 +144,70 @@ class _RegisterViewState extends State<RegisterView> {
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
                     // Logo
-                    SizedBox(
-                      child: CircleAvatar(
-                        radius: 56,
-                        backgroundColor: Colors.green,
-                        child: Padding(
-                          padding: const EdgeInsets.all(5),
-                          child: ClipOval(
-                              child: Image.asset(
-                                  './assets/images/backgroundless_logo.png')),
+                    Container(
+                      child: GestureDetector(
+                        onTap: () {
+                          showModalBottomSheet(
+                            backgroundColor: Colors.grey[300],
+                            context: context,
+                            isScrollControlled: true,
+                            shape: const RoundedRectangleBorder(
+                              borderRadius: BorderRadius.vertical(
+                                top: Radius.circular(20),
+                              ),
+                            ),
+                            builder: (innercontext) => Padding(
+                              padding: const EdgeInsets.all(20),
+                              child: SizedBox(
+                                width: double.infinity, // Constrain the width
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceEvenly,
+                                  mainAxisSize: MainAxisSize
+                                      .min, // Prevent infinite width
+                                  children: [
+                                    Flexible(
+                                      // Add Flexible to buttons
+                                      child: ElevatedButton.icon(
+                                        
+                                        onPressed: () {
+                                          checkCameraPermission();
+                                          _handleImageSelection(
+                                              context, ImageSource.camera);
+                                        },
+                                        icon: const Icon(Icons.camera,color: Colors.white,),
+                                        label: const Text('Camera',style:TextStyle(color: Colors.white)),
+                                      ),
+                                    ),
+                                    Flexible(
+                                      // Add Flexible to buttons
+                                      child: ElevatedButton.icon(
+                                        onPressed: () {
+                                          checkCameraPermission();
+                                          _handleImageSelection(
+                                              context, ImageSource.gallery);
+                                        },
+                                        icon: const Icon(Icons.image,color: Colors.white),
+                                        label: const Text('Gallery',style:TextStyle(color: Colors.white)),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          );
+                        },
+                        child: SizedBox(
+                          width: 144, // Fixed width
+                          height: 144, // Fixed height
+                          child: CircleAvatar(
+                            radius: 52,
+                            backgroundImage: _img != null
+                                ? FileImage(_img!)
+                                : const AssetImage(
+                                        'assets/images/upload_image.jpg')
+                                    as ImageProvider,
+                          ),
                         ),
                       ),
                     ),
@@ -210,20 +289,21 @@ class _RegisterViewState extends State<RegisterView> {
                         if (_formKey.currentState!.validate()) {
                           // If the form is valid, perform actions
 
-                          context.read<RegisterBloc>().add(
-                            RegisterUser(
-                              context: context, 
-                              fullName: _fullNameController.text, 
-                              userName: _usernameController.text, 
-                              email: _emailController.text, phoneNo: _phoneController.text, password: _passwordController.text)
-                          );
+                          context.read<RegisterBloc>().add(RegisterUser(
+                              context: context,
+                              fullName: _fullNameController.text,
+                              userName: _usernameController.text,
+                              image: imagePath,    
+                              email: _emailController.text,
+                              phoneNo: _phoneController.text,
+                              password: _passwordController.text));
                           // ScaffoldMessenger.of(context)
                           //     .showSnackBar(const SnackBar(
                           //   content: Text(
                           //     'Account created sucessfully',
                           //     style: TextStyle(color: Colors.white),
                           //   ),
-                          //   backgroundColor: Colors.green,
+                          //   backgroundColor: Colors.green,edge     
                           // ));
                         }
                       },
@@ -256,7 +336,14 @@ class _RegisterViewState extends State<RegisterView> {
                         ),
                         TextButton(
                           onPressed: () {
-                            Navigator.push(context,MaterialPageRoute(builder: (context) => BlocProvider.value(value: getIt<LoginBloc>(),child: LoginView(),),));
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => BlocProvider.value(
+                                    value: getIt<LoginBloc>(),
+                                    child: const LoginView(),
+                                  ),
+                                ));
                           },
                           child: const Text(
                             "Login",

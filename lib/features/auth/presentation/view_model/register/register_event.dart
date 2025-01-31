@@ -21,6 +21,7 @@ class RegisterUser extends RegisterEvent {
   final String userName;
   final String email;
   final String phoneNo;
+  final String? image;
   final String password;
 
   const RegisterUser({
@@ -28,6 +29,18 @@ class RegisterUser extends RegisterEvent {
     required this.fullName, 
     required this.userName, 
     required this.email, 
+    this.image,
     required this.phoneNo, 
     required this.password});
+}
+
+class UploadImageEvent extends RegisterEvent{
+  final BuildContext context;
+  final File img;
+
+  const UploadImageEvent({
+    required this.context,
+    required this.img
+  });
+
 }

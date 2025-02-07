@@ -5,7 +5,7 @@ class ApiEndpoints{
 
   static const Duration ConnectionTimeout = Duration(seconds: 5000);
   static const Duration receiveTimeout = Duration(seconds: 5000);
-  static const String baseUrl = "http://10.0.2.2:3000/api/";
+  static const String baseUrl = "http://10.0.2.2:3000/api";
 
 
 // ============================Auth Routes ==================================
@@ -27,7 +27,20 @@ class ApiEndpoints{
 
   static const String registerStudent="/auth/register";
   static const String loginStudent = "/auth/login";
-  static const String uploadImage = "/user/uploadImage";
+  static const String uploadImage = "/customer/uploadImage";
+
+  //games
+
+  static const String getAllgames="/game/";
+  static const String addGame = "/game/add";
+  
+
+  //gamecategory
+  static const String getallGameCategories="/category/game/all";
+
+
+
+
 
 
 }

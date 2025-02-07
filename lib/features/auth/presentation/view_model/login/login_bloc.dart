@@ -28,6 +28,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
       emit(state.copyWith(isLoading: true));
       print(event.email);
       print(event.password);
+      
       final result = await _loginUseCase(
         LoginParams(
           email: event.email,
@@ -38,11 +39,11 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
       result.fold(
         (failure) {
           emit(state.copyWith(isLoading: false, isSuccess: false));
-          showMySnackBar(
-            context: event.context,
-            message: failure.message ?? "Login failed",
-            color: Colors.red,
-          );
+          // showMySnackBar(
+          //   context: event.context,
+          //   message: failure.message ?? "Login failed",
+          //   color: Colors.red,
+          // );
           },
         (token) {
             emit(state.copyWith(isLoading: false, isSuccess: true));

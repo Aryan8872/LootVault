@@ -40,6 +40,7 @@ class AuthApiModel extends Equatable {
       email: email,
       password: password,
       phoneNo: phoneNo,
+      image: image
       );
   }
 
@@ -49,6 +50,7 @@ class AuthApiModel extends Equatable {
       fullName: entity.fullName,
       email: entity.email,
       password: entity.password,
+      image: entity.image,
       phoneNo: entity.phoneNo,
       userName: entity.username,
     );

@@ -1,6 +1,7 @@
 import 'package:hive_flutter/adapters.dart';
 import 'package:loot_vault/app/constants/hive_table_constant.dart';
 import 'package:loot_vault/features/auth/data/model/auth_hive_model.dart';
+import 'package:loot_vault/features/games/data/model/game_hive_model.dart';
 import 'package:path_provider/path_provider.dart';
 
 class HiveService {
@@ -34,5 +35,15 @@ class HiveService {
   Future<void> createUser(AuthHiveModel model) async {
     var box = await Hive.openBox<AuthHiveModel>(HiveTableConstant.userBox);
     await box.put(model.userId, model);
+  }
+
+    Future<void> createGame(GameHiveModel model) async {
+    var box = await Hive.openBox<GameHiveModel>(HiveTableConstant.gameBox);
+    await box.put(model.gameId, model);
+  }
+
+    Future<List<GameHiveModel>> getAllGames() async {
+    var box = await Hive.openBox<GameHiveModel>(HiveTableConstant.gameBox);
+    return box.values.toList();
   }
 }

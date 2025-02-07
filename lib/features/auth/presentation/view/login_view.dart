@@ -17,8 +17,8 @@ class _LoginViewState extends State<LoginView> {
   final _smallgap = const SizedBox(height: 10);
 
   final TextEditingController _emailController =
-      TextEditingController(text: "hello@gmail.com");
-  final TextEditingController _passwordController = TextEditingController();
+      TextEditingController(text: "i@gmail.com");
+  final TextEditingController _passwordController = TextEditingController(text: "ishiki123");
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 

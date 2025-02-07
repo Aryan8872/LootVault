@@ -16,7 +16,7 @@ class AuthRemoteDataSource implements IAuthDataSource {
   Future<String> uploadProfilePicture(File? file) async {
     try {
       FormData formData = FormData.fromMap({
-        "profilePicture": await MultipartFile.fromFile(
+        "image": await MultipartFile.fromFile(
           file!.path,
           filename:
               file.path.split('/').last, // Use the filename from the file path

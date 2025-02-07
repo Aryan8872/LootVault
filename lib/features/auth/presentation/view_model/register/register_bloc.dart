@@ -6,7 +6,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:loot_vault/core/common/snackbar/my_snackbar.dart';
 import 'package:loot_vault/features/auth/domain/use_case/register_user_usecase.dart';
 import 'package:loot_vault/features/auth/domain/use_case/upload_image_usecase.dart';
-import 'package:loot_vault/features/auth/presentation/view_model/login/login_bloc.dart';
 
 part 'register_event.dart';
 part 'register_state.dart';
@@ -46,8 +45,8 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
       (l) => emit(state.copyWith(isLoading: false, isSuccess: false)),
       (r) {
         emit(state.copyWith(isLoading: false, isSuccess: true));
-        showMySnackBar(
-            context: event.context, message: "Registration Successful");
+        // showMySnackBar(
+        //     context: event.context, message: "Registration Successful");
       },
     );
   }
@@ -63,8 +62,8 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
       (l) => emit(state.copyWith(isLoading: false, isSuccess: false)),
       (r) {
         emit(state.copyWith(isLoading: false, isSuccess: true));
-        showMySnackBar(
-            context: event.context, message: "image upload Successful");
+        // showMySnackBar(
+        //     context: event.context, message: "image upload Successful");
       },
     );
 

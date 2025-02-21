@@ -1,5 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:json_annotation/json_annotation.dart';
+import 'package:loot_vault/features/auth/data/model/auth_hive_model.dart';
 import 'package:loot_vault/features/auth/domain/entity/auth_entity.dart';
 
 
@@ -54,6 +55,17 @@ class AuthApiModel extends Equatable {
       phoneNo: entity.phoneNo,
       userName: entity.username,
     );
+  }
+
+    static List<AuthEntity> toEntityList(List<AuthApiModel> entityList) {
+    return entityList.map((data) => data.toEntity()).toList();
+  }
+
+  // From entity list
+  static List<AuthApiModel> fromEntityList(List<AuthEntity> entityList) {
+    return entityList
+        .map((entity) => AuthApiModel.fromEntity(entity))
+        .toList();
   }
 
   

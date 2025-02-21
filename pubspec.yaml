@@ -32,6 +32,9 @@ dependencies:
     sdk: flutter
   google_fonts: ^5.0.0
   flutter_native_splash: 2.4.0
+  flutter_vector_icons: ^1.0.0
+
+
 
 
 

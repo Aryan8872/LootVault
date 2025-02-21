@@ -5,21 +5,21 @@ void main() {
   const auth1 = AuthEntity(
     userId: "2343423123124",
     email: "e@gmail.com",
-    fullName: "Sachin Shrestha",
-    image: "image_url",
+    fullName: "aryanb",
+    image: "image",
     phoneNo: "98010119909",
-    username: "sachin",
-    password: "sachin123",
+    username: "ab",
+    password: "ab123",
   );
 
   const auth2 = AuthEntity(
     userId: "2343423123124",
     email: "e@gmail.com",
-    fullName: "Sachin Shrestha",
-    image: "image_url",
+    fullName: "aryanb",
+    image: "image",
     phoneNo: "98010119909",
-    username: "sachin",
-    password: "sachin123",
+    username: "ab",
+    password: "ab123",
   );
   test('Test 2:  Two AuthEntity objects with the same values should be equal',
       () {

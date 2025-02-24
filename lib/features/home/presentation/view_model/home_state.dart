@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:loot_vault/app/di/di.dart';
 import 'package:loot_vault/features/discover/presentation/view/discover_view.dart';
 import 'package:loot_vault/features/forum/presentation/view/forum_view.dart';
+import 'package:loot_vault/features/forum/presentation/view_model/forum_bloc.dart';
 import 'package:loot_vault/features/games/presentation/view/add_product.dart';
 import 'package:loot_vault/features/games/presentation/view_model/game_bloc.dart';
 import 'package:loot_vault/features/home/presentation/view/bottom_view/dashboard_view.dart';
@@ -29,7 +30,10 @@ class HomeState extends Equatable {
           create: (context) => getIt<GameBloc>(),
           child: const AddProductScreen(),
         ),
-        const ForumView(),
+        BlocProvider(
+          create: (context) => getIt<ForumBloc>(),
+          child: const ForumView(),
+        ),
       ],
     );
   }

@@ -1,6 +1,5 @@
 import 'package:hive_flutter/adapters.dart';
 import 'package:loot_vault/app/constants/hive_table_constant.dart';
-import 'package:loot_vault/features/auth/data/model/auth_hive_model.dart';
 import 'package:loot_vault/features/forum/domain/entity/comment_entity.dart';
 import 'package:uuid/uuid.dart';
 
@@ -11,11 +10,12 @@ class CommentHiveModel {
   @HiveField(1)
   final String content;
   @HiveField(2)
-  final AuthHiveModel commentUser;
+  final String commentUser;
   @HiveField(3)
   final String updatedAt;
   @HiveField(4)
   final String createdAt;
+  
 
   CommentHiveModel({
     String? commentId,
@@ -30,15 +30,15 @@ class CommentHiveModel {
         content = '',
         updatedAt = '',
         createdAt = '',
-        commentUser = const AuthHiveModel.initial();
+        commentUser ='';
 
   factory CommentHiveModel.fromEntity(CommentEntity entity) {
     return CommentHiveModel(
         commentId: entity.commentId,
         content: entity.content,
-        updatedAt: entity.updatedAt,
-        createdAt: entity.createdAt,
-        commentUser: AuthHiveModel.fromEntity(entity.commentUser));
+        updatedAt: entity.updatedAt!,
+        createdAt: entity.createdAt!,
+        commentUser: entity.commentUser);
   }
 
   // To Entity
@@ -48,7 +48,7 @@ class CommentHiveModel {
         content: content,
         updatedAt: updatedAt,
         createdAt: createdAt,
-        commentUser: commentUser.toEntity());
+        commentUser: commentUser);
   }
 
     static List<CommentEntity> toEntityList(List<CommentHiveModel> entityList) {

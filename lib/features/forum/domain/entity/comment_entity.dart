@@ -11,17 +11,19 @@ import 'package:loot_vault/features/auth/domain/entity/auth_entity.dart';
 
 class CommentEntity extends Equatable {
   final String? commentId;
-  final AuthEntity commentUser;
+  final String commentUser;
   final String content;
-  final String createdAt;
-  final String updatedAt;
+  final String? postId;
+  final String? createdAt;
+  final String? updatedAt;
 
   const CommentEntity(
       { this.commentId,
+       this.postId,
       required this.commentUser,
       required this.content,
-      required this.createdAt,
-      required this.updatedAt});
+       this.createdAt,
+       this.updatedAt});
 
   @override
   // TODO: implement props

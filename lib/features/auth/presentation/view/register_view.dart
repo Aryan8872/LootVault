@@ -312,7 +312,7 @@ class _RegisterViewState extends State<RegisterView> {
                         width: double.infinity,
                         height: 50,
                         decoration: BoxDecoration(
-                          color: const Color.fromRGBO(0, 107, 255, 1),
+                          color: const Color.fromARGB(255, 200, 0, 255),
                           borderRadius: BorderRadius.circular(_cornerRadius),
                         ),
                         child: const Text(

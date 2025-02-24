@@ -9,11 +9,8 @@ part of 'comment_api_model.dart';
 CommentApiModel _$CommentApiModelFromJson(Map<String, dynamic> json) =>
     CommentApiModel(
       commentId: json['_id'] as String?,
-      commentUser:
-          AuthApiModel.fromJson(json['commentUser'] as Map<String, dynamic>),
+      commentUser: json['commentUser'] as String,
       content: json['content'] as String,
-      createdAt: json['createdAt'] as String,
-      updatedAt: json['updatedAt'] as String,
     );
 
 Map<String, dynamic> _$CommentApiModelToJson(CommentApiModel instance) =>
@@ -21,6 +18,4 @@ Map<String, dynamic> _$CommentApiModelToJson(CommentApiModel instance) =>
       '_id': instance.commentId,
       'content': instance.content,
       'commentUser': instance.commentUser,
-      'createdAt': instance.createdAt,
-      'updatedAt': instance.updatedAt,
     };

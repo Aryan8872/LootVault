@@ -13,6 +13,14 @@ import 'package:loot_vault/features/auth/domain/use_case/register_user_usecase.d
 import 'package:loot_vault/features/auth/domain/use_case/upload_image_usecase.dart';
 import 'package:loot_vault/features/auth/presentation/view_model/login/login_bloc.dart';
 import 'package:loot_vault/features/auth/presentation/view_model/register/register_bloc.dart';
+import 'package:loot_vault/features/forum/data/data_source/remote_data_source/forum_remote_data_source.dart';
+import 'package:loot_vault/features/forum/data/repository/forum_remote_repository.dart';
+import 'package:loot_vault/features/forum/domain/use_case/create_comment_usecase.dart';
+import 'package:loot_vault/features/forum/domain/use_case/create_post_usecase.dart';
+import 'package:loot_vault/features/forum/domain/use_case/dislike_post_usecae.dart';
+import 'package:loot_vault/features/forum/domain/use_case/get_all_post_usecase.dart';
+import 'package:loot_vault/features/forum/domain/use_case/like_post_usecase.dart';
+import 'package:loot_vault/features/forum/presentation/view_model/forum_bloc.dart';
 import 'package:loot_vault/features/games/data/data_source/local_data_source/game_local_data_source.dart';
 import 'package:loot_vault/features/games/data/data_source/remote_data_source/game_remote_data_source.dart';
 import 'package:loot_vault/features/games/data/repository/game_local_repository.dart';
@@ -40,6 +48,7 @@ Future<void> initDependencies() async {
   await _initLoginDependencies();
   await _initGameDependencies();
   await _initOnboardingDependency();
+  await _initForumDependencies();
 }
 
 _initHiveService() {
@@ -71,6 +80,7 @@ _initLoginDependencies() async {
   // Register LoginBloc
   getIt.registerFactory<LoginBloc>(
     () => LoginBloc(
+      tokenSharedPrefs: getIt(),
       registerBloc: getIt<RegisterBloc>(),
       homeCubit: getIt<HomeCubit>(),
       loginUseCase: getIt<LoginUsecase>(),
@@ -157,7 +167,7 @@ _initGameDependencies() {
   // Register RegisterBloc
   getIt.registerFactory<GameBloc>(
     () => GameBloc(
-      getallCategoriesUsecase:getIt() ,
+        getallCategoriesUsecase: getIt(),
         createGameUseCase: getIt(),
         getAllGamesUseCase: getIt(),
         uploadImageUsecase: getIt()),
@@ -168,6 +178,63 @@ _initHomeDependencies() async {
   getIt.registerFactory<HomeCubit>(
     () => HomeCubit(),
   );
+}
+
+_initForumDependencies() async {
+  //   getIt.registerLazySingleton<GameLocalDataSource>(
+  //   () => GameLocalDataSource(hiveService: getIt<HiveService>()),
+  // );
+  getIt.registerLazySingleton<ForumRemoteDataSource>(
+      () => ForumRemoteDataSource(getIt<Dio>()));
+
+  // getIt.registerLazySingleton<GameLocalRepository>(
+  //     () => GameLocalRepository(gameLocalDataSource: getIt()));
+
+  getIt.registerLazySingleton<ForumRemoteRepository>(
+      () => ForumRemoteRepository(remoteDataSource: getIt()));
+
+  // Register IAuthRepository
+  // getIt.registerLazySingleton<IForumRepository>(
+  //   () =>
+  //       GameLocalRepository(gameLocalDataSource: getIt<GameLocalDataSource>()),
+  // );
+
+  // Register RegisterUserUsecase
+  getIt.registerLazySingleton<CreatePostUsecase>(
+    () => CreatePostUsecase(repositoy: getIt<ForumRemoteRepository>()),
+  );
+  getIt.registerLazySingleton<GetAllPostUsecase>(
+      () => GetAllPostUsecase(repository: getIt<ForumRemoteRepository>()));
+
+  getIt.registerLazySingleton<LikePostUsecase>(
+    () => LikePostUsecase(repository: getIt<ForumRemoteRepository>()),
+  );
+  getIt.registerLazySingleton<DislikePostUsecase>(
+    () => DislikePostUsecase(repository: getIt<ForumRemoteRepository>()),
+  );
+  getIt.registerLazySingleton<CreateCommentUsecase>(
+    () => CreateCommentUsecase(repository: getIt<ForumRemoteRepository>()),
+  );
+
+  // getIt.registerLazySingleton<UploadGameImageUsecase>(
+  //     () => UploadGameImageUsecase(repository: getIt<GameRemoteRepository>()));
+
+  // getIt.registerLazySingleton<GetallgamesUsecase>(() => GetallgamesUsecase(
+  //     gameRepository: getIt<GameRemoteRepository>(),
+  //     tokenSharedPrefs: getIt()));
+  // getIt.registerLazySingleton<GetallCategoriesUsecase>(() =>
+  //     GetallCategoriesUsecase(
+  //         gameRepository: getIt<GameRemoteRepository>(),
+  //         tokenSharedPrefs: getIt()));
+
+  // Register RegisterBloc
+  getIt.registerFactory<ForumBloc>(() => ForumBloc(
+        createCommentUsecase: getIt(),
+        createPostUseCase: getIt(),
+        dislikePostUseCse: getIt(),
+        likePostUseCase: getIt(),
+        getallPostUseCase: getIt()
+      ));
 }
 
 // _initSplashScreenDependencies() async {

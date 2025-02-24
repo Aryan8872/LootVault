@@ -10,16 +10,13 @@ class CommentApiModel extends Equatable {
   @JsonKey(name: "_id")
   final String? commentId;
   final String content;
-  final AuthApiModel commentUser;
-  final String createdAt;
-  final String updatedAt;
+  final String commentUser;
 
   const CommentApiModel(
       {this.commentId,
       required this.commentUser,
       required this.content,
-      required this.createdAt,
-      required this.updatedAt});
+    });
 
   factory CommentApiModel.fromJson(Map<String, dynamic> json) =>
       _$CommentApiModelFromJson(json);
@@ -29,20 +26,17 @@ class CommentApiModel extends Equatable {
   CommentEntity toEntity() {
     return CommentEntity(
       commentId: commentId,
-      commentUser: commentUser.toEntity(),
-      createdAt: createdAt,
+      commentUser: commentUser,
       content: content,
-      updatedAt: updatedAt,
     );
   }
 
   factory CommentApiModel.fromEntity(CommentEntity entity) {
     return CommentApiModel(
       commentId: entity.commentId,
-      commentUser: AuthApiModel.fromEntity(entity.commentUser),
+      commentUser: entity.commentUser,
       content: entity.content,
-      createdAt: entity.createdAt,
-      updatedAt: entity.updatedAt,
+ 
     );
   }
 

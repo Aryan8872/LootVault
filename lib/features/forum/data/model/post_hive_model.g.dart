@@ -18,14 +18,14 @@ class PostHiveModelAdapter extends TypeAdapter<PostHiveModel> {
     };
     return PostHiveModel(
       postId: fields[0] as String?,
-      postUser: fields[1] as AuthHiveModel,
+      postUser: fields[1] as String,
       title: fields[2] as String,
       content: fields[3] as String,
-      likes: (fields[4] as List).cast<AuthHiveModel>(),
-      dislikes: (fields[5] as List).cast<AuthHiveModel>(),
-      postComments: (fields[6] as List).cast<CommentHiveModel>(),
-      createdAt: fields[7] as String,
-      updatedAt: fields[8] as String,
+      likes: (fields[4] as List?)?.cast<String>(),
+      dislikes: (fields[5] as List?)?.cast<String>(),
+      postComments: (fields[6] as List?)?.cast<CommentHiveModel>(),
+      createdAt: fields[7] as String?,
+      updatedAt: fields[8] as String?,
     );
   }
 

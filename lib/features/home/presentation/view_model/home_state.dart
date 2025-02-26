@@ -28,7 +28,7 @@ class HomeState extends Equatable {
         const DiscoverView(),
         BlocProvider(
           create: (context) => getIt<GameBloc>(),
-          child: const AddProductScreen(),
+          child: const AddGameScreen(),
         ),
         BlocProvider(
           create: (context) => getIt<ForumBloc>()..add(const GetAllPostEvent()),

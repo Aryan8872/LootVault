@@ -30,6 +30,10 @@ class ApiEndpoints {
   //gamecategory
   static const String getallGameCategories = "/category/game/all";
 
+  //skins
+  static const String getAllSkins = "/game/";
+  static const String addSkins = "/game/add";
+
   //forum
   static const String getAllPosts = "/forum/posts/";
   static const String createPost = "/forum/posts";

@@ -5,10 +5,10 @@ import 'package:loot_vault/app/di/di.dart';
 import 'package:loot_vault/features/discover/presentation/view/discover_view.dart';
 import 'package:loot_vault/features/forum/presentation/view/forum_view.dart';
 import 'package:loot_vault/features/forum/presentation/view_model/forum_bloc.dart';
+import 'package:loot_vault/features/forum/presentation/view_model/forum_event.dart';
 import 'package:loot_vault/features/games/presentation/view/add_product.dart';
 import 'package:loot_vault/features/games/presentation/view_model/game_bloc.dart';
 import 'package:loot_vault/features/home/presentation/view/bottom_view/dashboard_view.dart';
-import 'package:loot_vault/features/user_profile/presentation/view/profile_view.dart';
 
 class HomeState extends Equatable {
   final int selectedIndex;
@@ -31,7 +31,7 @@ class HomeState extends Equatable {
           child: const AddProductScreen(),
         ),
         BlocProvider(
-          create: (context) => getIt<ForumBloc>(),
+          create: (context) => getIt<ForumBloc>()..add(const GetAllPostEvent()),
           child: const ForumView(),
         ),
       ],

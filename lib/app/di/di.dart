@@ -19,7 +19,9 @@ import 'package:loot_vault/features/forum/domain/use_case/create_comment_usecase
 import 'package:loot_vault/features/forum/domain/use_case/create_post_usecase.dart';
 import 'package:loot_vault/features/forum/domain/use_case/dislike_post_usecae.dart';
 import 'package:loot_vault/features/forum/domain/use_case/get_all_post_usecase.dart';
+import 'package:loot_vault/features/forum/domain/use_case/get_comments_usecase.dart';
 import 'package:loot_vault/features/forum/domain/use_case/like_post_usecase.dart';
+import 'package:loot_vault/features/forum/domain/use_case/reply_comment_usecase.dart';
 import 'package:loot_vault/features/forum/presentation/view_model/forum_bloc.dart';
 import 'package:loot_vault/features/games/data/data_source/local_data_source/game_local_data_source.dart';
 import 'package:loot_vault/features/games/data/data_source/remote_data_source/game_remote_data_source.dart';
@@ -215,6 +217,10 @@ _initForumDependencies() async {
   getIt.registerLazySingleton<CreateCommentUsecase>(
     () => CreateCommentUsecase(repository: getIt<ForumRemoteRepository>()),
   );
+  getIt.registerLazySingleton<ReplyCommentUsecase>(
+    ()=>ReplyCommentUsecase(repository: getIt<ForumRemoteRepository>())
+  );
+  getIt.registerLazySingleton<GetCommentsUseCase>(()=>GetCommentsUseCase(repositoy: getIt<ForumRemoteRepository>()));
 
   // getIt.registerLazySingleton<UploadGameImageUsecase>(
   //     () => UploadGameImageUsecase(repository: getIt<GameRemoteRepository>()));
@@ -233,7 +239,9 @@ _initForumDependencies() async {
         createPostUseCase: getIt(),
         dislikePostUseCse: getIt(),
         likePostUseCase: getIt(),
-        getallPostUseCase: getIt()
+        getallPostUseCase: getIt(),
+        replyCommentUsecase: getIt(),
+        getCommentsUseCase: getIt()
       ));
 }
 

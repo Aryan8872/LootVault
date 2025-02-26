@@ -62,3 +62,29 @@ class NavigateToAddPost extends ForumBlocEvent {
 
   const NavigateToAddPost({required this.destination, required this.context});
 }
+
+class CreateReplyEvent extends ForumBlocEvent {
+  final String postId;
+  final String commentId;
+  final String userId;
+  final String reply;
+
+  const CreateReplyEvent({
+    required this.postId,
+    required this.commentId,
+    required this.userId,
+    required this.reply,
+  });
+}
+
+class ResetSuccessEvent extends ForumBlocEvent {
+  const ResetSuccessEvent();
+}
+
+class GetCommentsEvent extends ForumBlocEvent {
+  final String postId;
+
+  const GetCommentsEvent({required this.postId});
+
+ 
+}

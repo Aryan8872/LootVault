@@ -32,10 +32,14 @@ class ApiEndpoints {
 
   //forum
   static const String getAllPosts = "/forum/posts/";
-  static const String createPost = "/forum/posts";  
+  static const String createPost = "/forum/posts";
   static const String likePost = "/forum/posts/like/";
   static const String disLikePost = "/forum/posts/dislike/";
   static const String createComment = "/forum/posts/comments/";
   static const String editPost = "/forum/posts/";
   static const String deletePost = "/forum/posts/";
+  static const String replyComment =
+      "/forum/posts/{postId}/comments/{commentId}/reply";
+
+  static const String getComments = "/forum/posts/comments/get/";
 }

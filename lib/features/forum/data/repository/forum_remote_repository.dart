@@ -10,9 +10,22 @@ class ForumRemoteRepository implements IForumRepository {
 
   ForumRemoteRepository({required this.remoteDataSource});
   @override
-  Future<Either<Failure, void>> commentPost(CommentEntity entity) {
-    // TODO: implement commentPost
-    throw UnimplementedError();
+  Future<Either<Failure, void>> commentPost(CommentEntity entity) async {
+    try {
+      await remoteDataSource.commentPost(entity);
+      return const Right(null);
+    } catch (e) {
+      return Left(ApiFailure(message: e.toString()));
+    }
+  }
+  @override
+  Future<Either<Failure, List<CommentEntity>>> getComments(String postId) async {
+    try {
+      final comments = await remoteDataSource.getComments(postId);
+      return Right(comments);
+    } catch (e) {
+      return Left(ApiFailure(message: e.toString()));
+    }
   }
 
   @override
@@ -32,7 +45,6 @@ class ForumRemoteRepository implements IForumRepository {
       print(dislikedpost);
       return dislikedpost.toEntity();
     } catch (e) {
-
       throw ApiFailure(message: e.toString());
     }
   }
@@ -54,11 +66,22 @@ class ForumRemoteRepository implements IForumRepository {
   }
 
   @override
-  Future<Either<Failure, dynamic>> getAllPosts(
-      {int page = 1, int limit = 2}) async {
+  Future<Either<Failure, dynamic>> getAllPosts() async {
     try {
       final posts = await remoteDataSource.getAllPosts();
       return Right(posts);
+    } catch (e) {
+      return Left(ApiFailure(message: e.toString()));
+    }
+  }
+
+  @override
+  Future<Either<Failure, PostEntity>> replyComment(
+      String postId, String commentId, String userId, String reply) async {
+    try {
+      final updatedPost =
+          await remoteDataSource.replyComment(postId, commentId, userId, reply);
+      return Right(updatedPost.toEntity());
     } catch (e) {
       return Left(ApiFailure(message: e.toString()));
     }

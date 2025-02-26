@@ -1,5 +1,6 @@
 // lib/features/forum/presentation/view_model/forum_state.dart
 import 'package:equatable/equatable.dart';
+import 'package:loot_vault/features/forum/domain/entity/comment_entity.dart';
 import 'package:loot_vault/features/forum/domain/entity/post_entity.dart';
 
 class ForumState extends Equatable {
@@ -8,14 +9,25 @@ class ForumState extends Equatable {
   final String? error;
   final List<PostEntity> posts;
   final int currentPage;
+  final String? postId;
+  final int? commentLength;
   final int totalPosts;
+  final bool? isLoaded;
   final bool hasMore;
+  final bool? shouldRefresh;
+  final List<CommentEntity> comments; // Store the list of comments here.
+
   final int limit; // Added limit to state
 
-   ForumState({
+  const ForumState({
     required this.isLoading,
     required this.isSuccess,
     required this.posts,
+    this.commentLength,
+    this.isLoaded,
+    this.postId,
+    this.shouldRefresh,
+    this.comments = const [],
     required this.currentPage,
     required this.totalPosts,
     required this.hasMore,
@@ -23,12 +35,17 @@ class ForumState extends Equatable {
     this.error,
   });
 
-   ForumState.initial()
+  const ForumState.initial()
       : isLoading = false,
         isSuccess = false,
         posts = const [],
         currentPage = 1,
+        postId = "",
+        shouldRefresh = false,
         totalPosts = 0,
+        isLoaded = false,
+        comments = const [],
+        commentLength = 0,
         hasMore = true,
         limit = 2, // Default limit
         error = null;
@@ -39,18 +56,28 @@ class ForumState extends Equatable {
     List<PostEntity>? posts,
     int? currentPage,
     int? totalPosts,
+    bool? isLoaded,
     bool? hasMore,
+    bool? shouldRefresh,
+    String? postId,
     int? limit,
+    List<CommentEntity>? comments, // Store the list of comments here.
+
     String? error,
+    int? commentLength,
   }) {
     return ForumState(
       isLoading: isLoading ?? this.isLoading,
       isSuccess: isSuccess ?? this.isSuccess,
       posts: posts ?? this.posts,
+      shouldRefresh: shouldRefresh ?? this.shouldRefresh,
+      isLoaded: isLoaded ?? this.isLoaded,
+      comments: comments??this.comments,
       currentPage: currentPage ?? this.currentPage,
       totalPosts: totalPosts ?? this.totalPosts,
       hasMore: hasMore ?? this.hasMore,
       limit: limit ?? this.limit,
+      postId: postId??this.postId,
       error: error,
     );
   }
@@ -61,9 +88,12 @@ class ForumState extends Equatable {
         isSuccess,
         posts,
         currentPage,
+        shouldRefresh,
         totalPosts,
         hasMore,
+        comments,
         limit,
+        postId,
         error,
       ];
 }

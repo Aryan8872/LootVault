@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:loot_vault/app/constants/api_endpoints.dart';
 import 'package:loot_vault/features/forum/data/data_source/forum_data_source.dart';
+import 'package:loot_vault/features/forum/data/dto/get_all_comments_dto.dart';
 import 'package:loot_vault/features/forum/data/dto/get_all_post_dto.dart';
 import 'package:loot_vault/features/forum/data/model/post_api_model.dart';
 import 'package:loot_vault/features/forum/domain/entity/comment_entity.dart';
@@ -15,8 +16,12 @@ class ForumRemoteDataSource implements IForumDataSource {
   Future<String> commentPost(CommentEntity entity) async {
     try {
       Response response = await _dio.post(
-          ApiEndpoints.createComment + entity.postId!,
-          data: {"content": entity.content});
+        ApiEndpoints.createComment + entity.postId!,
+        data: {
+          "content": entity.content,
+          "user": {"id": entity.commentUser}
+        },
+      );
       if (response.statusCode == 201) {
         return "comment created";
       } else {
@@ -52,8 +57,10 @@ class ForumRemoteDataSource implements IForumDataSource {
   @override
   Future<PostApiModel> disLikePost(String userId, String postId) async {
     try {
-      Response response = await _dio
-          .put('${ApiEndpoints.disLikePost}$postId',  data:{ "user": { "id": userId } });
+      Response response =
+          await _dio.put('${ApiEndpoints.disLikePost}$postId', data: {
+        "user": {"id": userId}
+      });
       print(response.data);
       if (response.statusCode == 200) {
         print("sucess ");
@@ -79,7 +86,6 @@ class ForumRemoteDataSource implements IForumDataSource {
     try {
       var response = await _dio.get(
         ApiEndpoints.getAllPosts,
-        queryParameters: {'page': page, 'limit': limit},
       );
       if (response.statusCode == 200) {
         GetAllPostDTO postAddDTO = GetAllPostDTO.fromJson(response.data);
@@ -132,4 +138,53 @@ class ForumRemoteDataSource implements IForumDataSource {
       throw Exception('Unexpected error: $e');
     }
   }
+
+  @override
+  Future<PostApiModel> replyComment(
+      String postId, String commentId, String userId, String reply) async {
+    final response = await _dio.post(
+      '${ApiEndpoints.createComment}$postId/comments/$commentId/reply',
+      data: {
+        'userId': userId,
+        'reply': reply,
+      },
+    );
+    return PostApiModel.fromJson(response.data); // Ass
+  }
+  
+  @override
+  Future<List<CommentEntity>> getComments(String postId)async {
+    try {
+      var response = await _dio.get(
+        '${ApiEndpoints.getComments}$postId',
+      );
+      if (response.statusCode == 200) {
+        List<GetAllCommentDTO> commentDTOs = (response.data as List)
+          .map((data) => GetAllCommentDTO.fromJson(data))
+          .toList();
+
+      List<CommentEntity> comments = commentDTOs
+          .map((commentDTO) => CommentEntity(
+                commentId: commentDTO.id,
+                commentUser: commentDTO.user.id,
+                content: commentDTO.content,
+                createdAt: commentDTO.createdAt,
+                updatedAt: commentDTO.updatedAt,
+                replies: commentDTO.replies, // Assuming it's already in the correct format
+              ))
+          .toList();
+
+      return comments;
+        
+      } else {
+        throw Exception(response.statusMessage);
+      }
+    } on DioException catch (e) {
+      print("DioException: ${e.message}");
+      throw Exception(e.message);
+    } catch (e) {
+      print("Unexpected error: $e");
+      throw Exception(e.toString());
+    }
+   }
 }

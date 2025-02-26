@@ -63,8 +63,6 @@ class ForumView extends StatelessWidget {
                             padding: const EdgeInsets.all(16.0),
                             itemCount: state.posts.length,
                             itemBuilder: (context, index) {
-                              print("state ko post comment");
-                              print(state.posts[index]);
                               final post = state.posts[index];
                               return _buildPostCard(
                                   context,
@@ -78,6 +76,7 @@ class ForumView extends StatelessWidget {
                             },
                           ),
                         ),
+       
                 ],
               );
             }
@@ -130,7 +129,7 @@ class ForumView extends StatelessWidget {
             context,
             MaterialPageRoute(
               builder: (context) => BlocProvider.value(
-                value: getIt<ForumBloc>()..add(const GetAllPostEvent())..add(GetCommentsEvent(postId: postId)),
+                value: getIt<ForumBloc>()..add(const GetAllPostEvent()),
                 child: PostDetailScreen(
                   postId: postId,
                   title: title,
@@ -276,22 +275,24 @@ class PostDetailScreen extends StatelessWidget {
     final TextEditingController commentController = TextEditingController();
 
     return WillPopScope(
-      onWillPop: () async {
-        Navigator.pop(context, true);
-        return true;
-      },
-      child: Scaffold(
-        appBar: AppBar(
-          title:
-              const Text('Post Details', style: TextStyle(color: Colors.white)),
-          backgroundColor: Colors.deepPurple,
-          elevation: 10,
-          centerTitle: true,
-        ),
-        body: 
-          BlocBuilder<ForumBloc, ForumState>(
+        onWillPop: () async {
+          // Trigger the callback when navigating back
+          Navigator.pop(
+              context, true); // Pass `true` to indicate a refresh is needed
+          return true;
+        },
+        child: Scaffold(
+          appBar: AppBar(
+            title: const Text('Post Details',
+                style: TextStyle(color: Colors.white)),
+            backgroundColor: Colors.deepPurple,
+            elevation: 10,
+            centerTitle: true,
+          ),
+          body: BlocBuilder<ForumBloc, ForumState>(
             builder: (context, state) {
-      final post = state.posts.firstWhere(
+              // Ensure the post details are updated when the state changes
+              final post = state.posts.firstWhere(
                   (post) => post.postId == postId,
                   orElse: () =>
                       const PostEntity(postUser: '', title: '', content: ''));
@@ -319,7 +320,7 @@ class PostDetailScreen extends StatelessWidget {
                               style: TextStyle(
                                   fontSize: 20, fontWeight: FontWeight.bold)),
                           const SizedBox(height: 10),
-                          _buildCommentSection(state.comments),
+                          _buildCommentSection(context, post),
                         ],
                       ),
                     ),
@@ -329,9 +330,7 @@ class PostDetailScreen extends StatelessWidget {
               );
             },
           ),
-        ),
-      );
-    
+        ));
   }
 
   Widget _buildPostHeader() {
@@ -438,33 +437,91 @@ class PostDetailScreen extends StatelessWidget {
     );
   }
 
-  // ListView to display the comments
-  Widget _buildCommentSection(List<CommentEntity> comments) {
-    return ListView.builder(
-      shrinkWrap: true,
-      physics: const NeverScrollableScrollPhysics(),
-      itemCount: comments.length,
-      itemBuilder: (context, index) => ListTile(
-        leading: const CircleAvatar(child: Icon(Icons.person)),
-        title: Text(comments[index].commentUser),
-        subtitle: Text(comments[index].content),
-      ),
-    );
+Widget _buildCommentSection(BuildContext context, PostEntity post) {
+  if (post.postComments == null || post.postComments?.isEmpty == true) {
+    return const Text('No comments yet. Be the first to comment!');
   }
 
-  // Input section to write a new comment
+  return ListView.builder(
+    shrinkWrap: true,
+    physics: const NeverScrollableScrollPhysics(),
+    itemCount: post.postComments?.length,
+    itemBuilder: (context, index) => _buildComment(context, post.postComments![index]),
+  );
+}
+
+Widget _buildComment(BuildContext context, CommentEntity comment) {
+  return Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      ListTile(
+        leading: const CircleAvatar(
+          backgroundColor: Colors.deepPurple,
+          child: Icon(Icons.person, color: Colors.white),
+        ),
+        title: Text(comment.commentUser,
+            style: const TextStyle(fontWeight: FontWeight.bold)),
+        subtitle: Text(comment.content),
+        trailing: IconButton(
+          icon: const Icon(Icons.reply, size: 16),
+          onPressed: () => _showReplyInput(context, comment.commentId!),
+        ),
+      ),
+      if (comment.replies.isNotEmpty)
+        Padding(
+          padding: const EdgeInsets.only(left: 40.0),
+          child: Column(
+            children: comment.replies.map((reply) => _buildReply(context, reply)).toList(),
+          ),
+        ),
+    ],
+  );
+}
+
+Widget _buildReply(BuildContext context, CommentEntity reply) {
+  return ListTile(
+    leading: const Icon(Icons.subdirectory_arrow_right, color: Colors.deepPurple),
+    title: Text(reply.commentUser,
+        style: const TextStyle(fontWeight: FontWeight.bold)),
+    subtitle: Text(reply.content),
+  );
+}
+
+
   Widget _buildCommentInput(
       BuildContext context, TextEditingController controller) {
-    return Padding(
+    return Container(
       padding: const EdgeInsets.all(16.0),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withOpacity(0.5),
+            spreadRadius: 1,
+            blurRadius: 5,
+            offset: const Offset(0, -2),
+          ),
+        ],
+      ),
       child: Row(
         children: [
           Expanded(
             child: TextField(
               controller: controller,
-              decoration: const InputDecoration(hintText: 'Write a comment...'),
+              decoration: InputDecoration(
+                hintText: 'Add a comment...',
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(20.0),
+                  borderSide: BorderSide.none,
+                ),
+                filled: true,
+                fillColor: Colors.grey[200],
+                contentPadding: const EdgeInsets.symmetric(
+                    horizontal: 16.0, vertical: 12.0),
+              ),
             ),
           ),
+          const SizedBox(width: 8.0),
           IconButton(
             icon: const Icon(Icons.send, color: Colors.deepPurple),
             onPressed: () async {
@@ -482,24 +539,78 @@ class PostDetailScreen extends StatelessWidget {
                             userId: userId,
                             comment: controller.text,
                           ));
-                      context
-                          .read<ForumBloc>()
-                          .add(GetCommentsEvent(postId: postId));
+                      controller.clear();
                     } else {
                       showMySnackBar(
-                          context: context,
-                          message: 'Unable to like post',
-                          color: Colors.red);
+                        context: context,
+                        message: 'Unable to like post',
+                        color: Colors.red,
+                      );
                     }
                   },
                 );
-
-                controller.clear();
               }
             },
           ),
         ],
       ),
+    );
+  }
+
+  void _showReplyInput(BuildContext context, String parentCommentId) {
+    final TextEditingController replyController = TextEditingController();
+
+    showModalBottomSheet(
+      context: context,
+      builder: (context) {
+        return Container(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Row(
+                children: [
+                  const Text('Replying to comment...',
+                      style: TextStyle(color: Colors.grey)),
+                  const Spacer(),
+                  IconButton(
+                    icon: const Icon(Icons.close, size: 16),
+                    onPressed: () => Navigator.pop(context),
+                  ),
+                ],
+              ),
+              TextField(
+                controller: replyController,
+                decoration: InputDecoration(
+                  hintText: 'Write a reply...',
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(20.0),
+                  ),
+                  filled: true,
+                  fillColor: Colors.grey[200],
+                ),
+              ),
+              const SizedBox(height: 10),
+              ElevatedButton(
+                onPressed: () {
+                  if (replyController.text.isNotEmpty) {
+                    context.read<ForumBloc>().add(CreateReplyEvent(
+                          postId: postId,
+                          userId: getIt<TokenSharedPrefs>()
+                              .getUserData()
+                              .toString(),
+                          reply: replyController.text,
+                          commentId: parentCommentId,
+                        ));
+                    Navigator.pop(context);
+                  }
+                },
+                child: const Text('Submit Reply'),
+              ),
+            ],
+          ),
+        );
+      },
     );
   }
 }

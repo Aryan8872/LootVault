@@ -7,7 +7,6 @@
 // }
 
 import 'package:equatable/equatable.dart';
-import 'package:loot_vault/features/auth/domain/entity/auth_entity.dart';
 
 class CommentEntity extends Equatable {
   final String? commentId;
@@ -16,16 +15,19 @@ class CommentEntity extends Equatable {
   final String? postId;
   final String? createdAt;
   final String? updatedAt;
+  final List<dynamic> replies; // Add replies as a list of CommentEntity
 
   const CommentEntity(
-      { this.commentId,
-       this.postId,
+      {this.commentId,
+      this.postId,
       required this.commentUser,
       required this.content,
-       this.createdAt,
-       this.updatedAt});
+      this.createdAt,
+      this.replies = const[],
+      this.updatedAt});
 
   @override
   // TODO: implement props
-  List<Object?> get props => [commentId,commentUser,content,createdAt,updatedAt];
+  List<Object?> get props =>
+      [commentId, commentUser, content, createdAt, updatedAt];
 }

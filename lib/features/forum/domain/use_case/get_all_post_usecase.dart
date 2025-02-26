@@ -9,7 +9,7 @@ class GetAllPostUsecase implements UsecaseWithoutParams<dynamic>{
 
   GetAllPostUsecase({required this.repository});
   @override
-  Future<Either<Failure, dynamic>> call({int page = 1, int limit = 2}) async {
-    return await repository.getAllPosts(page: page, limit: limit);
+  Future<Either<Failure, dynamic>> call() async {
+    return await repository.getAllPosts();
   }
 }

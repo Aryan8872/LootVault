@@ -4,6 +4,7 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:loot_vault/features/games/domain/entity/game_category_entity.dart';
+import 'package:loot_vault/features/skins/domain/entity/platform_entity.dart';
 import 'package:loot_vault/features/skins/domain/entity/skin_entity.dart';
 import 'package:loot_vault/features/skins/domain/use_case/create_skins_usecase.dart';
 import 'package:loot_vault/features/skins/domain/use_case/getall_categories_usecase.dart';

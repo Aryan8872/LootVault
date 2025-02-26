@@ -54,4 +54,14 @@ class SkinRemoteRepository implements ISkinRepository {
       return Left(ApiFailure(message: e.toString()));
     }
   }
+  
+  @override
+  Future<Either<Failure, List<GameCategoryEntity>>> getAllPlatform() async{
+    try {
+      final platforms = await skinRemoteDataSource.getallSkinCategories();
+      return Right(platforms);
+    } catch (e) {
+      return Left(ApiFailure(message: e.toString()));
+    }
+  }
 }

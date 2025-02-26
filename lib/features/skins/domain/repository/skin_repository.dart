@@ -11,6 +11,8 @@ abstract interface class ISkinRepository{
   Future<Either<Failure,List<SkinEntity>>>getAllSkins(); 
   Future<Either<Failure,String>>uploadSkinPicture(File file);
   Future<Either<Failure,List<GameCategoryEntity>>>getallskinCategories();
+    Future<Either<Failure,List<GameCategoryEntity>>>getAllPlatform();
+
 
 
 }

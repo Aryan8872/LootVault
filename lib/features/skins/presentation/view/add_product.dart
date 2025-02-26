@@ -6,22 +6,26 @@ import 'package:image_picker/image_picker.dart';
 import 'package:loot_vault/core/common/snackbar/my_snackbar.dart';
 import 'package:loot_vault/features/games/domain/entity/game_category_entity.dart';
 import 'package:loot_vault/features/games/presentation/view_model/game_bloc.dart';
+import 'package:loot_vault/features/skins/domain/entity/platform_entity.dart';
+import 'package:loot_vault/features/skins/presentation/view_model/skin_bloc.dart';
 import 'package:permission_handler/permission_handler.dart';
 
-class AddProductScreen extends StatefulWidget {
-  const AddProductScreen({super.key});
+class AddSkinScreen extends StatefulWidget {
+  const AddSkinScreen({super.key});
 
   @override
-  State<AddProductScreen> createState() => _AddProductScreenState();
+  State<AddSkinScreen> createState() => _AddSkinScreenState();
 }
 
-class _AddProductScreenState extends State<AddProductScreen> {
+class _AddSkinScreenState extends State<AddSkinScreen> {
   final TextEditingController gameDescriptionController =
       TextEditingController();
   final TextEditingController gameNameController = TextEditingController();
   final TextEditingController gamePriceController = TextEditingController();
   final TextEditingController gameCategoryController = TextEditingController();
   GameCategoryEntity? _categoryDropdown;
+    PlatformEntity? _platformDropdown;
+
 
   checkCameraPermission() async {
     if (await Permission.camera.request().isRestricted ||
@@ -168,10 +172,18 @@ class _AddProductScreenState extends State<AddProductScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text(
-              'Pricing',
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-            ),
+            const Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    'Pricing',
+                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                  ),
+                  Text(
+                    "Platform",
+                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                  )
+                ]),
             const SizedBox(height: 16),
             Row(
               children: [
@@ -187,15 +199,34 @@ class _AddProductScreenState extends State<AddProductScreen> {
                   ),
                 ),
                 const SizedBox(width: 16),
-                Expanded(
-                  child: TextFormField(
-                    keyboardType: TextInputType.number,
-                    decoration: const InputDecoration(
-                      labelText: 'Discount Percentage',
-                      suffixText: '%',
-                      border: OutlineInputBorder(),
-                    ),
-                  ),
+                BlocBuilder<SkinBloc, SkinState>(
+                  builder: (context, state) {
+                    if (state.isLoading) {
+                      return const Center(child: CircularProgressIndicator());
+                    }
+
+                    if (state.platform.isEmpty) {
+                      return const Text('No platform available.');
+                    }
+                    return DropdownButtonFormField<PlatformEntity>(
+                      items: state.platform
+                          .map((e) => DropdownMenuItem<PlatformEntity>(
+                                value: e,
+                                child: Text(e.platformName),
+                              ))
+                          .toList(),
+                      decoration: const InputDecoration(
+                        labelText: 'Game Category',
+                        border: OutlineInputBorder(),
+                      ),
+                      value: _platformDropdown,
+                      onChanged: (value) {
+                        setState(() {
+                          _platformDropdown = value!;
+                        });
+                      },
+                    );
+                  },
                 ),
               ],
             ),
@@ -323,43 +354,43 @@ class _AddProductScreenState extends State<AddProductScreen> {
     );
   }
 
-Widget _buildButton() {
-  return ElevatedButton(
-    onPressed: () {
-      final gameState = context.read<GameBloc>().state;
-      final imageName = gameState.imageName;
+  Widget _buildButton() {
+    return ElevatedButton(
+      onPressed: () {
+        final gameState = context.read<GameBloc>().state;
+        final imageName = gameState.imageName;
 
-      // ✅ Null checks before proceeding
-      if (_categoryDropdown == null) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Please select a category.')),
-        );
-        return;
-      }
+        // ✅ Null checks before proceeding
+        if (_categoryDropdown == null) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Please select a category.')),
+          );
+          return;
+        }
 
-      if (imageName == null) {
-        print("image is empty--------------------------------------------------------------------------------");
-        showMySnackBar(context: context, message: "imahe name is null hyaa");
-        return;
-      }
+        if (imageName == null) {
+          print(
+              "image is empty--------------------------------------------------------------------------------");
+          showMySnackBar(context: context, message: "imahe name is null hyaa");
+          return;
+        }
 
-      context.read<GameBloc>().add(AddGame(
-          gameName: gameNameController.text,
-          gameDescription: gameDescriptionController.text,
-          gameImagePath: imageName,
-          category: _categoryDropdown!.categoryId,
-          gamePrice: gamePriceController.text));
-    },
-    style: const ButtonStyle(iconColor: WidgetStatePropertyAll(Colors.white)),
-    child: const Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Icon(Icons.save),
-        SizedBox(width: 8),
-        Text('Save', style: TextStyle(color: Colors.white)),
-      ],
-    ),
-  );
-}
-
+        context.read<GameBloc>().add(AddGame(
+            gameName: gameNameController.text,
+            gameDescription: gameDescriptionController.text,
+            gameImagePath: imageName,
+            category: _categoryDropdown!.categoryId,
+            gamePrice: gamePriceController.text));
+      },
+      style: const ButtonStyle(iconColor: WidgetStatePropertyAll(Colors.white)),
+      child: const Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(Icons.save),
+          SizedBox(width: 8),
+          Text('Save', style: TextStyle(color: Colors.white)),
+        ],
+      ),
+    );
+  }
 }

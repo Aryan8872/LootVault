@@ -8,14 +8,14 @@ import 'package:loot_vault/features/games/domain/entity/game_category_entity.dar
 import 'package:loot_vault/features/games/presentation/view_model/game_bloc.dart';
 import 'package:permission_handler/permission_handler.dart';
 
-class AddGameScreen extends StatefulWidget {
-  const AddGameScreen({super.key});
+class AddProductScreen extends StatefulWidget {
+  const AddProductScreen({super.key});
 
   @override
-  State<AddGameScreen> createState() => _AddGameScreenState();
+  State<AddProductScreen> createState() => _AddProductScreenState();
 }
 
-class _AddGameScreenState extends State<AddGameScreen> {
+class _AddProductScreenState extends State<AddProductScreen> {
   final TextEditingController gameDescriptionController =
       TextEditingController();
   final TextEditingController gameNameController = TextEditingController();
@@ -323,43 +323,43 @@ class _AddGameScreenState extends State<AddGameScreen> {
     );
   }
 
-  Widget _buildButton() {
-    return ElevatedButton(
-      onPressed: () {
-        final gameState = context.read<GameBloc>().state;
-        final imageName = gameState.imageName;
+Widget _buildButton() {
+  return ElevatedButton(
+    onPressed: () {
+      final gameState = context.read<GameBloc>().state;
+      final imageName = gameState.imageName;
 
-        // ✅ Null checks before proceeding
-        if (_categoryDropdown == null) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Please select a category.')),
-          );
-          return;
-        }
+      // ✅ Null checks before proceeding
+      if (_categoryDropdown == null) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Please select a category.')),
+        );
+        return;
+      }
 
-        if (imageName == null) {
-          print(
-              "image is empty--------------------------------------------------------------------------------");
-          showMySnackBar(context: context, message: "imahe name is null hyaa");
-          return;
-        }
+      if (imageName == null) {
+        print("image is empty--------------------------------------------------------------------------------");
+        showMySnackBar(context: context, message: "imahe name is null hyaa");
+        return;
+      }
 
-        context.read<GameBloc>().add(AddGame(
-            gameName: gameNameController.text,
-            gameDescription: gameDescriptionController.text,
-            gameImagePath: imageName,
-            category: _categoryDropdown!.categoryId,
-            gamePrice: gamePriceController.text));
-      },
-      style: const ButtonStyle(iconColor: WidgetStatePropertyAll(Colors.white)),
-      child: const Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(Icons.save),
-          SizedBox(width: 8),
-          Text('Save', style: TextStyle(color: Colors.white)),
-        ],
-      ),
-    );
-  }
+      context.read<GameBloc>().add(AddGame(
+          gameName: gameNameController.text,
+          gameDescription: gameDescriptionController.text,
+          gameImagePath: imageName,
+          category: _categoryDropdown!.categoryId,
+          gamePrice: gamePriceController.text));
+    },
+    style: const ButtonStyle(iconColor: WidgetStatePropertyAll(Colors.white)),
+    child: const Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Icon(Icons.save),
+        SizedBox(width: 8),
+        Text('Save', style: TextStyle(color: Colors.white)),
+      ],
+    ),
+  );
+}
+
 }

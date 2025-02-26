@@ -21,6 +21,7 @@ class ApiEndpoints {
   static const String registerStudent = "/auth/register";
   static const String loginStudent = "/auth/login";
   static const String uploadImage = "/customer/uploadImage";
+  static const String refreshToken = "/user/refresh";
 
   //games
 
@@ -29,10 +30,10 @@ class ApiEndpoints {
 
   //gamecategory
   static const String getallGameCategories = "/category/game/all";
-
+  static const String getAllPlatform = "/platform/game/";
   //skins
-  static const String getAllSkins = "/game/";
-  static const String addSkins = "/game/add";
+  static const String getAllSkins = "/skins/";
+  static const String addSkins = "/skins/add";
 
   //forum
   static const String getAllPosts = "/forum/posts/";

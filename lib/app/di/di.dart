@@ -35,6 +35,14 @@ import 'package:loot_vault/features/games/domain/use_case/uploadGame_image_useca
 import 'package:loot_vault/features/games/presentation/view_model/game_bloc.dart';
 import 'package:loot_vault/features/home/presentation/view_model/home_cubit.dart';
 import 'package:loot_vault/features/onboarding/presentation/view_model/onboarding_cubit.dart';
+import 'package:loot_vault/features/seller/presentation/view_model/seller_cubit.dart';
+import 'package:loot_vault/features/skins/data/data_source/remote_data_source/skin_remote_data_source.dart';
+import 'package:loot_vault/features/skins/data/repository/skin_remote_repository.dart';
+import 'package:loot_vault/features/skins/domain/repository/skin_repository.dart';
+import 'package:loot_vault/features/skins/domain/use_case/create_skins_usecase.dart';
+import 'package:loot_vault/features/skins/domain/use_case/getall_skins_usecase.dart';
+import 'package:loot_vault/features/skins/domain/use_case/upload_skin_image_usecase.dart';
+import 'package:loot_vault/features/skins/presentation/view_model/skin_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 final getIt = GetIt.instance;
@@ -49,8 +57,10 @@ Future<void> initDependencies() async {
   await __initRegisterDependencies();
   await _initLoginDependencies();
   await _initGameDependencies();
+  await _initSkinsDependencies();
   await _initOnboardingDependency();
   await _initForumDependencies();
+  await _initSellerDependencies();
 }
 
 _initHiveService() {
@@ -59,7 +69,7 @@ _initHiveService() {
 
 _initApiService() {
   getIt.registerLazySingleton<Dio>(
-    () => ApiService(Dio()).dio,
+    () => ApiService(Dio(), getIt<TokenSharedPrefs>()).dio,
   );
 }
 
@@ -176,11 +186,59 @@ _initGameDependencies() {
   );
 }
 
+_initSkinsDependencies()async{
+
+  //   getIt.registerLazySingleton<GameLocalDataSource>(
+  //   () => GameLocalDataSource(hiveService: getIt<HiveService>()),
+  // );
+  getIt.registerLazySingleton<SkinRemoteDataSource>(
+      () => SkinRemoteDataSource(getIt<Dio>()));
+
+  // getIt.registerLazySingleton<GameLocalRepository>(
+  //     () => GameLocalRepository(gameLocalDataSource: getIt()));
+
+  getIt.registerLazySingleton<SkinRemoteRepository>(() => SkinRemoteRepository(
+      skinRemoteDataSource: getIt<SkinRemoteDataSource>()));
+
+  // Register IAuthRepository
+  // getIt.registerLazySingleton<ISkinRepository>(
+  //   () =>
+  //       GameLocalRepository(gameLocalDataSource: getIt<GameLocalDataSource>()),
+  // );
+
+  // Register RegisterUserUsecase
+  getIt.registerLazySingleton<CreateskinUsecase>(
+    () => CreateskinUsecase(skinRepository: getIt<SkinRemoteRepository>()),
+  );
+
+  getIt.registerLazySingleton<UploadskinImageUsecase>(
+      () => UploadskinImageUsecase(repository: getIt<SkinRemoteRepository>()));
+
+  getIt.registerLazySingleton<GetallskinsUsecase>(() => GetallskinsUsecase(
+      skinRepository: getIt<SkinRemoteRepository>(),
+      tokenSharedPrefs: getIt()));
+  getIt.registerLazySingleton<GetallCategoriesUsecase>(() =>
+      GetallCategoriesUsecase(
+          gameRepository: getIt<GameRemoteRepository>(),
+          tokenSharedPrefs: getIt()));
+
+  // Register RegisterBloc
+  getIt.registerFactory<SkinBloc>(
+    () => SkinBloc(
+        getallCategoriesUsecase: getIt(),
+        createskinUseCase: getIt(),
+        getAllskinsUseCase: getIt(),
+        uploadImageUsecase: getIt()),
+  );
+
+}
+
 _initHomeDependencies() async {
   getIt.registerFactory<HomeCubit>(
     () => HomeCubit(),
   );
 }
+
 
 _initForumDependencies() async {
   //   getIt.registerLazySingleton<GameLocalDataSource>(
@@ -218,9 +276,9 @@ _initForumDependencies() async {
     () => CreateCommentUsecase(repository: getIt<ForumRemoteRepository>()),
   );
   getIt.registerLazySingleton<ReplyCommentUsecase>(
-    ()=>ReplyCommentUsecase(repository: getIt<ForumRemoteRepository>())
-  );
-  getIt.registerLazySingleton<GetCommentsUseCase>(()=>GetCommentsUseCase(repositoy: getIt<ForumRemoteRepository>()));
+      () => ReplyCommentUsecase(repository: getIt<ForumRemoteRepository>()));
+  getIt.registerLazySingleton<GetCommentsUseCase>(
+      () => GetCommentsUseCase(repositoy: getIt<ForumRemoteRepository>()));
 
   // getIt.registerLazySingleton<UploadGameImageUsecase>(
   //     () => UploadGameImageUsecase(repository: getIt<GameRemoteRepository>()));
@@ -235,14 +293,17 @@ _initForumDependencies() async {
 
   // Register RegisterBloc
   getIt.registerFactory<ForumBloc>(() => ForumBloc(
-        createCommentUsecase: getIt(),
-        createPostUseCase: getIt(),
-        dislikePostUseCse: getIt(),
-        likePostUseCase: getIt(),
-        getallPostUseCase: getIt(),
-        replyCommentUsecase: getIt(),
-        getCommentsUseCase: getIt()
-      ));
+      createCommentUsecase: getIt(),
+      createPostUseCase: getIt(),
+      dislikePostUseCse: getIt(),
+      likePostUseCase: getIt(),
+      getallPostUseCase: getIt(),
+      replyCommentUsecase: getIt(),
+      getCommentsUseCase: getIt()));
+}
+
+_initSellerDependencies() {
+  getIt.registerLazySingleton<SellerCubit>(() => SellerCubit());
 }
 
 // _initSplashScreenDependencies() async {

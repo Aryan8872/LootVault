@@ -4,9 +4,11 @@ import 'package:dio/dio.dart';
 import 'package:loot_vault/app/constants/api_endpoints.dart';
 import 'package:loot_vault/features/games/data/model/game_category_api_model.dart';
 import 'package:loot_vault/features/games/domain/entity/game_category_entity.dart';
-import 'package:loot_vault/features/skins/data/dto/get_all_skins_dto.dart';
-import 'package:loot_vault/features/skins/data/model/skin_api_model.dart';
 import 'package:loot_vault/features/skins/data/data_source/skins_data_source.dart';
+import 'package:loot_vault/features/skins/data/dto/get_all_skins_dto.dart';
+import 'package:loot_vault/features/skins/data/model/platform_api_model.dart';
+import 'package:loot_vault/features/skins/data/model/skin_api_model.dart';
+import 'package:loot_vault/features/skins/domain/entity/platform_entity.dart';
 import 'package:loot_vault/features/skins/domain/entity/skin_entity.dart';
 
 class SkinRemoteDataSource implements ISkinsDataSource {
@@ -24,6 +26,7 @@ class SkinRemoteDataSource implements ISkinsDataSource {
         "skinPrice": entity.skinPrice,
         "skinImagePath": entity.skinImagePath,
         "category": entity.category,
+        "skinPlatform":entity.skinPlatform
       });
       if (response.statusCode == 201) {
         return;
@@ -98,6 +101,33 @@ class SkinRemoteDataSource implements ISkinsDataSource {
 
         print("Mapped Categories: $categories");
         return GameCategoryApiModel.toEntityList(categories);
+      } else {
+        throw Exception(response.statusMessage);
+      }
+    } on DioException catch (e) {
+      print("DioException: ${e.message}");
+      throw Exception(e);
+    } catch (e) {
+      print("General Exception: $e");
+      throw Exception(e);
+    }
+  }
+
+  @override
+  Future<List<PlatformEntity>> getallPlatorm() async{
+     try {
+      print("Data source fetching categories...");
+      var response = await _dio.get(ApiEndpoints.getAllPlatform);
+
+      if (response.statusCode == 200) {
+        final List<dynamic> data = response.data;
+        print("Raw API Data: $data");
+
+        final platforms =
+            data.map((json) => PlatformApiModel.fromJson(json)).toList();
+
+        print("Mapped Categories: $platforms");
+        return PlatformApiModel.toEntityList(platforms);
       } else {
         throw Exception(response.statusMessage);
       }

@@ -1,12 +1,17 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:loot_vault/app/di/di.dart';
 import 'package:loot_vault/app/shared_prefs/token_shared_prefs.dart';
 import 'package:loot_vault/core/common/snackbar/my_snackbar.dart';
 import 'package:loot_vault/features/auth/domain/use_case/login_usecase.dart';
 import 'package:loot_vault/features/auth/presentation/view_model/register/register_bloc.dart';
 import 'package:loot_vault/features/home/presentation/view/homepage_view.dart';
 import 'package:loot_vault/features/home/presentation/view_model/home_cubit.dart';
+import 'package:loot_vault/features/seller/presentation/view/bottom_view/seller_dashboard_view.dart';
+import 'package:loot_vault/features/seller/presentation/view/seller_homepage_view.dart';
+import 'package:loot_vault/features/seller/presentation/view_model/seller_cubit.dart';
+import 'package:loot_vault/features/seller/presentation/view_model/seller_state.dart';
 
 part 'login_event.dart';
 part 'login_state.dart';
@@ -82,7 +87,10 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
             add(
               NavigateHomeScreenEvent(
                 context: event.context,
-                destination: const SellerDashboardView(),
+                destination: BlocProvider.value(
+                  value: getIt<SellerCubit>(),
+                  child: const SellerHomePageView(),
+                ),
               ),
             );
           }

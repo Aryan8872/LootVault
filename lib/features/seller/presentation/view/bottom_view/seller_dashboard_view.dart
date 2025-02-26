@@ -1,24 +1,30 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:loot_vault/app/di/di.dart';
+import 'package:loot_vault/features/seller/presentation/view_model/seller_cubit.dart';
 
 class SellerDashboardView extends StatelessWidget {
   const SellerDashboardView({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      padding: const EdgeInsets.all(16.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          _buildWelcomeCard(),
-          const SizedBox(height: 20),
-          _buildStatsRow(),
-          const SizedBox(height: 20),
-          _buildRecentSalesSection(),
-          const SizedBox(height: 20),
-          _buildQuickActionsSection(context),
-        ],
+    return Scaffold(
+      body: SafeArea(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _buildWelcomeCard(),
+              const SizedBox(height: 20),
+              _buildStatsRow(),
+              const SizedBox(height: 20),
+              _buildRecentSalesSection(),
+              const SizedBox(height: 20),
+              _buildQuickActionsSection(context),
+            ],
+          ),
+        ),
       ),
     );
   }
@@ -261,7 +267,7 @@ class SellerDashboardView extends StatelessWidget {
                   label: "Add Product",
                   color: Colors.blue,
                   onTap: () {
-                    context.read<SellerCubit>().onTabTapped(1);
+                    getIt<SellerCubit>().onTabTapped(1);
                   },
                 ),
                 _buildQuickAction(
@@ -270,7 +276,7 @@ class SellerDashboardView extends StatelessWidget {
                   label: "Edit Products",
                   color: Colors.orange,
                   onTap: () {
-                    context.read<SellerCubit>().onTabTapped(2);
+                    getIt<SellerCubit>().onTabTapped(2);
                   },
                 ),
                 _buildQuickAction(

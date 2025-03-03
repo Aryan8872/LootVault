@@ -11,12 +11,13 @@ class CreateGameParams extends Equatable {
   final String gameImagePath;
   final String category;
   final String gamePrice;
-
+  final String gamePlatform;
 
   const CreateGameParams(
       {required this.gameName,
       required this.gameDescription,
       required this.gamePrice,
+      required this.gamePlatform,
       required this.category,
       required this.gameImagePath});
 
@@ -25,15 +26,15 @@ class CreateGameParams extends Equatable {
         gameDescription = '',
         gamePrice = '',
         category = '',
+        gamePlatform = '',
         gameImagePath = '';
 
   @override
   List<Object?> get props =>
-      [gameName, gameDescription, gamePrice, category, gameImagePath];
+      [gameName, gameDescription, gamePrice, category, gameImagePath,gamePlatform];
 }
 
-class CreateGameUsecase
-    implements UsecaseWithParams<void, CreateGameParams> {
+class CreateGameUsecase implements UsecaseWithParams<void, CreateGameParams> {
   final IGameRepository gameRepository;
 
   CreateGameUsecase({required this.gameRepository});
@@ -41,13 +42,14 @@ class CreateGameUsecase
   @override
   Future<Either<Failure, void>> call(CreateGameParams params) {
     final gameEntity = GameEntity(
-        gameName: params.gameName,
-        category: params.category,
-        gameDescription: params.gameDescription,
-        gameImagePath: params.gameImagePath,
-        gamePrice: params.gamePrice,
-        
-   );
+      gameName: params.gameName,
+      gamePlatform:  params.gamePlatform,
+      category: params.category,
+      gameDescription: params.gameDescription,
+      gameImagePath: params.gameImagePath,
+      gamePrice: params.gamePrice,
+      
+    );
 
     return gameRepository.createGame(gameEntity);
   }

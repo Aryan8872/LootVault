@@ -37,5 +37,27 @@ Future<Either<Failure, String>> loginUser(String username, String password) asyn
     // TODO: implement uploadProfilePicture
     throw UnimplementedError();
   }
+  
+  @override
+  Future<void> changePassword(String userId, String currentPassword, String newPassword) {
+    // TODO: implement changePassword
+    throw UnimplementedError();
+  }
+  
+  @override
+  Future<Either<Failure, AuthEntity>> updateProfile(AuthEntity user) {
+    // TODO: implement updateProfile
+    throw UnimplementedError();
+  }
+  
+  @override
+  Future<Either<Failure, AuthEntity>> getUserdata(String userId) {
+    // TODO: implement getUserdata
+    throw UnimplementedError();
+  }
+  
+
+  
+
 
 }

@@ -5,6 +5,7 @@ import 'package:loot_vault/features/games/data/data_source/game_data_source.dart
 import 'package:loot_vault/features/games/data/model/game_hive_model.dart';
 import 'package:loot_vault/features/games/domain/entity/game_category_entity.dart';
 import 'package:loot_vault/features/games/domain/entity/game_entity.dart';
+import 'package:loot_vault/features/games/domain/entity/platform_entity.dart';
 
 class GameLocalDataSource implements IGameDataSource {
   final HiveService hiveService;
@@ -43,6 +44,12 @@ class GameLocalDataSource implements IGameDataSource {
   @override
   Future<List<GameCategoryEntity>> getallGameCategories() {
     // TODO: implement getallGameCategories
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<List<GamePlatformEntity>> getallPlatorm() {
+    // TODO: implement getallPlatorm
     throw UnimplementedError();
   }
 }

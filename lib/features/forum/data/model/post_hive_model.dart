@@ -56,14 +56,16 @@ class PostHiveModel extends Equatable {
   factory PostHiveModel.fromEntity(PostEntity entity) {
     return PostHiveModel(
       postId: entity.postId,
-      postUser: entity.postUser,
-      postComments:CommentHiveModel.fromEntityList(entity.postComments!) ,
+      postUser: entity.postUser ,
+     postComments: entity.postComments != null
+        ? CommentHiveModel.fromEntityList(entity.postComments!)
+        : [], 
       content:entity.content ,
-      createdAt: entity.createdAt,
-      dislikes: entity.dislikes!.map((e)=>e).toList(),
-      likes: entity.likes!.map((e)=>e).toList(),
+      createdAt: entity.createdAt??'',
+      dislikes: entity.dislikes?.map((e)=>e).toList() ??[],
+      likes: entity.likes?.map((e)=>e).toList() ??[],
       title:entity.title ,
-      updatedAt: entity.updatedAt
+      updatedAt: entity.updatedAt ??''
     );
   
   }

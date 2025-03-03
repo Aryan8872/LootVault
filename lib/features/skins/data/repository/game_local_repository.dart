@@ -6,28 +6,59 @@ import 'package:loot_vault/features/games/data/data_source/local_data_source/gam
 import 'package:loot_vault/features/games/domain/entity/game_category_entity.dart';
 import 'package:loot_vault/features/games/domain/entity/game_entity.dart';
 import 'package:loot_vault/features/games/domain/repository/game_repository.dart';
+import 'package:loot_vault/features/skins/data/data_source/local_data_source/skin_local_data_source.dart';
+import 'package:loot_vault/features/skins/domain/entity/platform_entity.dart';
+import 'package:loot_vault/features/skins/domain/entity/skin_entity.dart';
+import 'package:loot_vault/features/skins/domain/repository/skin_repository.dart';
 
-class GameLocalRepository implements IGameRepository{
-  final GameLocalDataSource gameLocalDataSource;
+class SkinLocalRepository implements ISkinRepository {
+  final SkinLocalDataSource gameLocalDataSource;
 
-  GameLocalRepository({required this.gameLocalDataSource});
+  SkinLocalRepository({required this.gameLocalDataSource});
 
+  // @override
+  // Future<Either<Failure, void>> createSkin(SkinEntity entity) {
+  //   try {
+  //     gameLocalDataSource.createGame(entity);
+  //     return Future.value(const Right(null));
+  //   } catch (e) {
+  //     return Future.value(Left(LocalDatabaseFailure(message: '$e')));
+  //   }
+  // }
 
   @override
-  Future<Either<Failure, void>> createGame(GameEntity entity) {
-    try{
-      gameLocalDataSource.createGame(entity);
-      return Future.value(Right(null));
-
-    }
-    catch(e){
-      return Future.value(Left(LocalDatabaseFailure(message: '${e}')));
-    }
+  Future<Either<Failure, List<SkinEntity>>> getAllSkins() {
+    // TODO: implement getAllGames
+    throw UnimplementedError();
   }
 
   @override
+  Future<Either<Failure, String>> uploadSkinPicture(File file) {
+    // TODO: implement uploadGamePicture
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<Either<Failure, List<PlatformEntity>>> getallSkinPlatform() {
+    // TODO: implement getallGameCategories
+    throw UnimplementedError();
+  }
+  
+  @override
+  Future<Either<Failure, void>> createGame(GameEntity entity) {
+    // TODO: implement createGame
+    throw UnimplementedError();
+  }
+  
+  @override
   Future<Either<Failure, List<GameEntity>>> getAllGames() {
     // TODO: implement getAllGames
+    throw UnimplementedError();
+  }
+  
+  @override
+  Future<Either<Failure, List<GameCategoryEntity>>> getallGameCategories() {
+    // TODO: implement getallGameCategories
     throw UnimplementedError();
   }
   
@@ -36,11 +67,22 @@ class GameLocalRepository implements IGameRepository{
     // TODO: implement uploadGamePicture
     throw UnimplementedError();
   }
-
+  
   @override
-  Future<Either<Failure, List<GameCategoryEntity>>> getallGameCategories() {
-    // TODO: implement getallGameCategories
+  Future<Either<Failure, void>> createSkin(SkinEntity entity) {
+    // TODO: implement createSkin
     throw UnimplementedError();
   }
-
+  
+  @override
+  Future<Either<Failure, List<PlatformEntity>>> getAllPlatform() {
+    print("hove ma xa");
+    throw UnimplementedError();
+  }
+  
+  @override
+  Future<Either<Failure, List<GameCategoryEntity>>> getallskinCategories() {
+    // TODO: implement getallskinCategories
+    throw UnimplementedError();
+  }
 }

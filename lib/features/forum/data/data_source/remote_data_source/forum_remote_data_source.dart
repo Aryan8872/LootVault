@@ -81,18 +81,16 @@ class ForumRemoteDataSource implements IForumDataSource {
   }
 
   @override
-  Future<Map<String, dynamic>> getAllPosts(
+  Future<List<PostEntity>> getAllPosts(
       {int page = 1, int limit = 2}) async {
     try {
       var response = await _dio.get(
         ApiEndpoints.getAllPosts,
       );
       if (response.statusCode == 200) {
+        print(response.data);
         GetAllPostDTO postAddDTO = GetAllPostDTO.fromJson(response.data);
-        return {
-          'posts': postAddDTO.posts.map((post) => post.toEntity()).toList(),
-          'totalPosts': postAddDTO.total,
-        };
+          return PostApiModel.toEntityList(postAddDTO.posts);
       } else {
         throw Exception(response.statusMessage);
       }

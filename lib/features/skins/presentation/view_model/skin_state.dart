@@ -31,10 +31,12 @@ class SkinState extends Equatable {
       bool? isLoading,
       String? error,
       String? imageName,
-      List<GameCategoryEntity>? categories}) {
+      List<PlatformEntity>? platform,
+      List<GameCategoryEntity>? categories,
+      }) {
     return SkinState(
       skins: skins ?? this.skins,
-      platform: platform ?? platform,
+      platform: platform ?? this.platform,
       isLoading: isLoading ?? this.isLoading,
       imageName: imageName ?? this.imageName,
       categories: categories ?? this.categories,
@@ -43,5 +45,6 @@ class SkinState extends Equatable {
   }
 
   @override
-  List<Object?> get props => [skins, isLoading,platform, categories, error, imageName];
+  List<Object?> get props =>
+      [skins, isLoading, platform, categories, error, imageName];
 }

@@ -9,11 +9,11 @@ import 'auth_repo.mock.dart';
 
 void main() {
   late MockAuthRepository repository;
-  late RegisterUserUsecase usecase;
+  late UpdateUserUsecase usecase;
 
   setUp(() {
     repository = MockAuthRepository();
-    usecase = RegisterUserUsecase(authRepository: repository);
+    usecase = UpdateUserUsecase(authRepository: repository);
     registerFallbackValue(const AuthEntity.initial());
   });
 

@@ -18,10 +18,14 @@ class SellerCubit extends Cubit<SellerState> {
                 value: getIt<GameBloc>(),
                 child: const AddGameScreen(),
               ),
-              BlocProvider.value(
-                value: getIt<SkinBloc>(),
-                child: const AddSkinScreen(),
-              ),
+              MultiBlocProvider(providers: [
+                BlocProvider<GameBloc>(
+                  create: (context) => getIt<GameBloc>(),
+                ),
+                BlocProvider<SkinBloc>(
+                  create: (context) => getIt<SkinBloc>(),
+                )
+              ], child: const AddSkinScreen()),
             ],
           ),
         );

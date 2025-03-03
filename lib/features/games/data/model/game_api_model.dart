@@ -13,9 +13,11 @@ class GameApiModel extends Equatable {
   final String gameImagePath;
   final String category;
   final String gamePrice;
+  final String gamePlatform;
 
   const GameApiModel(
       {required this.gameId,
+      required this.gamePlatform,
       required this.gameName,
       required this.gameDescription,
       required this.gamePrice,
@@ -30,6 +32,7 @@ class GameApiModel extends Equatable {
   GameEntity toEntity(){
     return GameEntity(
       gameId: gameId,
+      gamePlatform: gamePlatform,
       gameDescription: gameDescription,
       category: category,
       gamePrice: gamePrice,
@@ -40,6 +43,7 @@ class GameApiModel extends Equatable {
 
   factory GameApiModel.fromEntity(GameEntity entity){
     return GameApiModel(
+      gamePlatform: entity.gamePlatform,
       gameName: entity.gameName,
       gameDescription: entity.gameDescription,
       gameImagePath: entity.gameImagePath,
@@ -53,5 +57,5 @@ class GameApiModel extends Equatable {
   @override
   // TODO: implement props
   List<Object?> get props =>
-      [gameId, gameName, gameImagePath, gameDescription, category, gamePrice];
+      [gameId, gameName, gameImagePath,gamePlatform, gameDescription, category, gamePrice];
 }

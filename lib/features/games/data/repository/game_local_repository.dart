@@ -5,23 +5,21 @@ import 'package:loot_vault/core/error/failure.dart';
 import 'package:loot_vault/features/games/data/data_source/local_data_source/game_local_data_source.dart';
 import 'package:loot_vault/features/games/domain/entity/game_category_entity.dart';
 import 'package:loot_vault/features/games/domain/entity/game_entity.dart';
+import 'package:loot_vault/features/games/domain/entity/platform_entity.dart';
 import 'package:loot_vault/features/games/domain/repository/game_repository.dart';
 
-class GameLocalRepository implements IGameRepository{
+class GameLocalRepository implements IGameRepository {
   final GameLocalDataSource gameLocalDataSource;
 
   GameLocalRepository({required this.gameLocalDataSource});
 
-
   @override
   Future<Either<Failure, void>> createGame(GameEntity entity) {
-    try{
+    try {
       gameLocalDataSource.createGame(entity);
-      return Future.value(Right(null));
-
-    }
-    catch(e){
-      return Future.value(Left(LocalDatabaseFailure(message: '${e}')));
+      return Future.value(const Right(null));
+    } catch (e) {
+      return Future.value(Left(LocalDatabaseFailure(message: '$e')));
     }
   }
 
@@ -30,7 +28,7 @@ class GameLocalRepository implements IGameRepository{
     // TODO: implement getAllGames
     throw UnimplementedError();
   }
-  
+
   @override
   Future<Either<Failure, String>> uploadGamePicture(File file) {
     // TODO: implement uploadGamePicture
@@ -43,4 +41,9 @@ class GameLocalRepository implements IGameRepository{
     throw UnimplementedError();
   }
 
+  @override
+  Future<Either<Failure, List<GamePlatformEntity>>> getAllPlatform() {
+    // TODO: implement getAllPlatform
+    throw UnimplementedError();
+  }
 }

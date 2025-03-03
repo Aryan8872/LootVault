@@ -5,11 +5,14 @@ import 'package:loot_vault/features/games/data/data_source/game_data_source.dart
 import 'package:loot_vault/features/games/data/model/game_hive_model.dart';
 import 'package:loot_vault/features/games/domain/entity/game_category_entity.dart';
 import 'package:loot_vault/features/games/domain/entity/game_entity.dart';
+import 'package:loot_vault/features/skins/data/data_source/skins_data_source.dart';
+import 'package:loot_vault/features/skins/domain/entity/platform_entity.dart';
+import 'package:loot_vault/features/skins/domain/entity/skin_entity.dart';
 
-class GameLocalDataSource implements IGameDataSource {
+class SkinLocalDataSource implements ISkinsDataSource {
   final HiveService hiveService;
 
-  GameLocalDataSource({required this.hiveService});
+  SkinLocalDataSource({required this.hiveService});
 
   @override
   Future<List<GameEntity>> getallGames() async {
@@ -43,6 +46,36 @@ class GameLocalDataSource implements IGameDataSource {
   @override
   Future<List<GameCategoryEntity>> getallGameCategories() {
     // TODO: implement getallGameCategories
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<void> createSkin(SkinEntity entity) {
+    // TODO: implement createSkin
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<List<PlatformEntity>> getallPlatorm() {
+    // TODO: implement getallPlatorm
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<List<GameCategoryEntity>> getallSkinCategories() {
+    // TODO: implement getallSkinCategories
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<List<SkinEntity>> getallSkins() {
+    // TODO: implement getallSkins
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<String> uploadSkinPicture(File? file) {
+    // TODO: implement uploadSkinPicture
     throw UnimplementedError();
   }
 }

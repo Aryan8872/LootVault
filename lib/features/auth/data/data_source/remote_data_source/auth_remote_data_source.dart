@@ -4,9 +4,9 @@ import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:loot_vault/app/constants/api_endpoints.dart';
 import 'package:loot_vault/features/auth/data/data_source/auth_data_source.dart';
+import 'package:loot_vault/features/auth/data/model/auth_api_model.dart';
 import 'package:loot_vault/features/auth/data/model/auth_hive_model.dart';
 import 'package:loot_vault/features/auth/domain/entity/auth_entity.dart';
-
 
 class AuthRemoteDataSource implements IAuthDataSource {
   final Dio _dio;
@@ -40,7 +40,7 @@ class AuthRemoteDataSource implements IAuthDataSource {
   }
 
   @override
-  Future<void> createUser(AuthEntity entity)async {
+  Future<void> createUser(AuthEntity entity) async {
     try {
       Response response = await _dio.post(ApiEndpoints.registerStudent, data: {
         "fullName": entity.fullName,
@@ -48,7 +48,7 @@ class AuthRemoteDataSource implements IAuthDataSource {
         "email": entity.email,
         "phoneNo": entity.phoneNo,
         "password": entity.password,
-        "image":entity.image
+        "image": entity.image
       });
       if (response.statusCode == 201) {
         return;
@@ -83,5 +83,42 @@ class AuthRemoteDataSource implements IAuthDataSource {
     } catch (e) {
       throw Exception(e);
     }
+  }
+
+  @override
+  Future<void> changePassword(
+      String userId, String currentPassword, String newPassword) async {
+    final response = await _dio.post(
+      ApiEndpoints.changePassword,
+      data: {
+        'userId': userId,
+        'currentPassword': currentPassword,
+        'newPassword': newPassword,
+      },
+    );
+
+    if (response.statusCode != 200) {
+      throw Exception('Failed to change password');
+    }
+  }
+
+  @override
+  Future<AuthApiModel> updateProfile(AuthApiModel user) async {
+    final userId = user.userId;
+    final response = await _dio.put(
+      '${ApiEndpoints.getComments}$userId',
+      data: user.toJson(),
+    );
+
+    if (response.statusCode == 200) {
+      return AuthApiModel.fromJson(jsonDecode(response.data));
+    } else {
+      throw Exception('Failed to update profile');
+    }
+  }
+
+  @override
+  Future<AuthApiModel> getUserData(String userId) {
+    
   }
 }

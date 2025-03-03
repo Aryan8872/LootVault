@@ -288,6 +288,7 @@ class _RegisterViewState extends State<RegisterView> {
                       onTap: () {
                         if (_formKey.currentState!.validate()) {
                           // If the form is valid, perform actions
+                          print('register garnu agadi image imagePath');
 
                           context.read<RegisterBloc>().add(RegisterUser(
                               context: context,

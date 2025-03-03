@@ -4,6 +4,7 @@ import 'package:dartz/dartz.dart';
 import 'package:loot_vault/core/error/failure.dart';
 import 'package:loot_vault/features/games/domain/entity/game_category_entity.dart';
 import 'package:loot_vault/features/skins/data/data_source/remote_data_source/skin_remote_data_source.dart';
+import 'package:loot_vault/features/skins/domain/entity/platform_entity.dart';
 import 'package:loot_vault/features/skins/domain/entity/skin_entity.dart';
 import 'package:loot_vault/features/skins/domain/repository/skin_repository.dart';
 
@@ -56,9 +57,9 @@ class SkinRemoteRepository implements ISkinRepository {
   }
   
   @override
-  Future<Either<Failure, List<GameCategoryEntity>>> getAllPlatform() async{
+  Future<Either<Failure, List<PlatformEntity>>> getAllPlatform() async{
     try {
-      final platforms = await skinRemoteDataSource.getallSkinCategories();
+      final platforms = await skinRemoteDataSource.getallPlatorm();
       return Right(platforms);
     } catch (e) {
       return Left(ApiFailure(message: e.toString()));

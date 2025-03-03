@@ -69,28 +69,32 @@ class ForumBloc extends Bloc<ForumBlocEvent, ForumState> {
     emit(state.copyWith(isLoading: true, isSuccess: false));
     final result = await _createPostUsecase.call(CreatePostPrams(
         content: event.content, title: event.title, userId: event.postUser));
+       
     result.fold(
       (failure) =>
           emit(state.copyWith(isLoading: false, error: failure.message)),
       (batches) {
+        print("bloc ma succes ma gayo");
         emit(state.copyWith(isLoading: false, error: null));
+      
       },
     );
   }
 
-  Future<void> _onLoadPosts(
+Future<void> _onLoadPosts(
       GetAllPostEvent event, Emitter<ForumState> emit) async {
     emit(state.copyWith(isLoading: true, isSuccess: false));
 
-    final result =
-        await _getAllPostUsecase.call(); // Load all posts without pagination
+    final result = await _getAllPostUsecase.call();
 
     result.fold(
       (failure) {
         emit(state.copyWith(isLoading: false, error: failure.message));
       },
       (data) {
-        final posts = data['posts'] as List<PostEntity>;
+        print("bloc ma get all post ko data ${data}");
+        // Here's the change - don't treat data as a Map
+        final posts = data as List<PostEntity>;
 
         emit(state.copyWith(
           isLoading: false,

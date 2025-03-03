@@ -12,12 +12,14 @@ class UploadGameImageParams extends Equatable {
   const UploadGameImageParams({required this.image});
 
   //intial constructor
-  const UploadGameImageParams.initial({ required this.image});
+  const UploadGameImageParams.initial({required this.image});
 
   @override
   List<Object?> get props => [image];
 }
-class UploadGameImageUsecase implements UsecaseWithParams<void,UploadGameImageParams>{
+
+class UploadGameImageUsecase
+    implements UsecaseWithParams<void, UploadGameImageParams> {
   final IGameRepository repository;
 
   UploadGameImageUsecase({required this.repository});

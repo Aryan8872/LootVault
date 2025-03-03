@@ -6,7 +6,7 @@ import 'package:loot_vault/features/home/presentation/view_model/home_state.dart
 import 'package:loot_vault/features/discover/presentation/view/discover_view.dart';
 import 'package:loot_vault/features/forum/presentation/view/forum_view.dart';
 import 'package:loot_vault/features/home/presentation/view/homepage_view.dart';
-import 'package:loot_vault/features/user_profile/presentation/view/profile_view.dart';
+import 'package:loot_vault/features/auth/presentation/view/profile_view.dart';
 
 class HomePageView extends StatefulWidget {
   const HomePageView({Key? key}) : super(key: key);

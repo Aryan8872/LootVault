@@ -90,7 +90,7 @@ class SkinRemoteDataSource implements ISkinsDataSource {
   Future<List<GameCategoryEntity>> getallSkinCategories() async {
     try {
       print("Data source fetching categories...");
-      var response = await _dio.get(ApiEndpoints.getallGameCategories);
+      var response = await _dio.get(ApiEndpoints.getAllSkins);
 
       if (response.statusCode == 200) {
         final List<dynamic> data = response.data;

@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:loot_vault/core/common/snackbar/my_snackbar.dart';
 import 'package:loot_vault/features/games/domain/entity/game_category_entity.dart';
+import 'package:loot_vault/features/games/domain/entity/platform_entity.dart';
 import 'package:loot_vault/features/games/presentation/view_model/game_bloc.dart';
 import 'package:permission_handler/permission_handler.dart';
 
@@ -22,6 +23,7 @@ class _AddGameScreenState extends State<AddGameScreen> {
   final TextEditingController gamePriceController = TextEditingController();
   final TextEditingController gameCategoryController = TextEditingController();
   GameCategoryEntity? _categoryDropdown;
+  GamePlatformEntity? _platformDropdown;
 
   checkCameraPermission() async {
     if (await Permission.camera.request().isRestricted ||
@@ -188,13 +190,33 @@ class _AddGameScreenState extends State<AddGameScreen> {
                 ),
                 const SizedBox(width: 16),
                 Expanded(
-                  child: TextFormField(
-                    keyboardType: TextInputType.number,
-                    decoration: const InputDecoration(
-                      labelText: 'Discount Percentage',
-                      suffixText: '%',
-                      border: OutlineInputBorder(),
-                    ),
+                  child: BlocBuilder<GameBloc, GameState>(
+                    builder: (context, state) {
+                      if (state.isLoading) {
+                        return const Center(child: CircularProgressIndicator());
+                      }
+                      if (state.platform!.isEmpty) {
+                        return const Text('No platform available.');
+                      }
+                      return DropdownButtonFormField<GamePlatformEntity>(
+                        items: state.platform!
+                            .map((e) => DropdownMenuItem<GamePlatformEntity>(
+                                  value: e,
+                                  child: Text(e.platformName),
+                                ))
+                            .toList(),
+                        decoration: const InputDecoration(
+                          labelText: 'Game Category',
+                          border: OutlineInputBorder(),
+                        ),
+                        value: _platformDropdown,
+                        onChanged: (value) {
+                          setState(() {
+                            _platformDropdown = value!;
+                          });
+                        },
+                      );
+                    },
                   ),
                 ),
               ],
@@ -346,9 +368,11 @@ class _AddGameScreenState extends State<AddGameScreen> {
 
         context.read<GameBloc>().add(AddGame(
             gameName: gameNameController.text,
+            context: context,
             gameDescription: gameDescriptionController.text,
             gameImagePath: imageName,
             category: _categoryDropdown!.categoryId,
+            gamePlatform:_platformDropdown!.categoryId,
             gamePrice: gamePriceController.text));
       },
       style: const ButtonStyle(iconColor: WidgetStatePropertyAll(Colors.white)),

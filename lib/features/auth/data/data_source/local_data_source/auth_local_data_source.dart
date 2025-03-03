@@ -1,5 +1,6 @@
 import 'package:loot_vault/core/network/hive_service.dart';
 import 'package:loot_vault/features/auth/data/data_source/auth_data_source.dart';
+import 'package:loot_vault/features/auth/data/model/auth_api_model.dart';
 import 'package:loot_vault/features/auth/data/model/auth_hive_model.dart';
 import 'package:loot_vault/features/auth/domain/entity/auth_entity.dart';
 
@@ -41,6 +42,30 @@ Future<String> loginUser(String username, String password) async {
     var lest = AuthHiveModel.toEntityList(data);
     print(lest);
     return data;
+  }
+
+  @override
+  Future<void> changePassword(String userId, String currentPassword, String newPassword) {
+    // TODO: implement changePassword
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<AuthApiModel> updateProfile(AuthApiModel user) {
+    // TODO: implement updateProfile
+    throw UnimplementedError();
+  }
+  
+  @override
+  Future<void> updateUser(AuthEntity entity) {
+    // TODO: implement updateUser
+    throw UnimplementedError();
+  }
+  
+  @override
+  Future<AuthApiModel> getUserData(String userId) {
+    // TODO: implement getUserData
+    throw UnimplementedError();
   }
 
 

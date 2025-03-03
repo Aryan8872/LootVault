@@ -61,8 +61,8 @@ class _AddSkinScreenState extends State<AddSkinScreen> {
     await _browseImage(source);
     print("Selected image: $_img");
     if (_img != null) {
-      context.read<GameBloc>().add(
-            UploadGameImage(context: context, file: _img!),
+      context.read<SkinBloc>().add(
+            UploadskinImage(context: context, file: _img!),
           );
     }
     Navigator.pop(innercontext);
@@ -199,34 +199,35 @@ class _AddSkinScreenState extends State<AddSkinScreen> {
                   ),
                 ),
                 const SizedBox(width: 16),
-                BlocBuilder<SkinBloc, SkinState>(
-                  builder: (context, state) {
-                    if (state.isLoading) {
-                      return const Center(child: CircularProgressIndicator());
-                    }
-
-                    if (state.platform.isEmpty) {
-                      return const Text('No platform available.');
-                    }
-                    return DropdownButtonFormField<PlatformEntity>(
-                      items: state.platform
-                          .map((e) => DropdownMenuItem<PlatformEntity>(
-                                value: e,
-                                child: Text(e.platformName),
-                              ))
-                          .toList(),
-                      decoration: const InputDecoration(
-                        labelText: 'Game Category',
-                        border: OutlineInputBorder(),
-                      ),
-                      value: _platformDropdown,
-                      onChanged: (value) {
-                        setState(() {
-                          _platformDropdown = value!;
-                        });
-                      },
-                    );
-                  },
+                Expanded(
+                  child: BlocBuilder<SkinBloc, SkinState>(
+                    builder: (context, state) {
+                      if (state.isLoading) {
+                        return const Center(child: CircularProgressIndicator());
+                      }
+                      if (state.platform.isEmpty) {
+                        return const Text('No platform available.');
+                      }
+                      return DropdownButtonFormField<PlatformEntity>(
+                        items: state.platform
+                            .map((e) => DropdownMenuItem<PlatformEntity>(
+                                  value: e,
+                                  child: Text(e.platformName),
+                                ))
+                            .toList(),
+                        decoration: const InputDecoration(
+                          labelText: 'Game Category',
+                          border: OutlineInputBorder(),
+                        ),
+                        value: _platformDropdown,
+                        onChanged: (value) {
+                          setState(() {
+                            _platformDropdown = value!;
+                          });
+                        },
+                      );
+                    },
+                  ),
                 ),
               ],
             ),
@@ -357,7 +358,7 @@ class _AddSkinScreenState extends State<AddSkinScreen> {
   Widget _buildButton() {
     return ElevatedButton(
       onPressed: () {
-        final gameState = context.read<GameBloc>().state;
+        final gameState = context.read<SkinBloc>().state;
         final imageName = gameState.imageName;
 
         // ✅ Null checks before proceeding
@@ -375,12 +376,14 @@ class _AddSkinScreenState extends State<AddSkinScreen> {
           return;
         }
 
-        context.read<GameBloc>().add(AddGame(
-            gameName: gameNameController.text,
-            gameDescription: gameDescriptionController.text,
-            gameImagePath: imageName,
+        context.read<SkinBloc>().add(Addskin(
+            skinName: gameNameController.text,
+            skinDescription: gameDescriptionController.text,
+            skinImagePath: imageName,
+            context: context,
             category: _categoryDropdown!.categoryId,
-            gamePrice: gamePriceController.text));
+            skinPlatform: _platformDropdown!.categoryId,
+            skinPrice: gamePriceController.text));
       },
       style: const ButtonStyle(iconColor: WidgetStatePropertyAll(Colors.white)),
       child: const Row(

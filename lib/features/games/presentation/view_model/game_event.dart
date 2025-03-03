@@ -15,13 +15,17 @@ final class LoadCategories extends GameEvent {}
 final class AddGame extends GameEvent {
   final String gameName;
   final String gameDescription;
+  final BuildContext context;
   final String gameImagePath;
   final String category;
   final String gamePrice;
+  final String gamePlatform;
 
   const AddGame(
       {required this.gameName,
+      required this.context,
       required this.gameDescription,
+      required this.gamePlatform,
       required this.gameImagePath,
       required this.category,
       required this.gamePrice});
@@ -29,6 +33,9 @@ final class AddGame extends GameEvent {
   @override
   List<Object> get props => [gameName];
 }
+
+final class LoadPlatform extends GameEvent {}
+
 class UploadGameImage extends GameEvent {
   final File file;
   final BuildContext context;

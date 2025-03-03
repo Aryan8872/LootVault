@@ -5,12 +5,14 @@ class GameEntity extends Equatable {
   final String gameName;
   final String gameDescription;
   final String gameImagePath;
+  final String gamePlatform;
   final String category;
   final String gamePrice;
 
   const GameEntity(
       { this.gameId,
       required this.gameName,
+      required this.gamePlatform,
       required this.gameDescription,
       required this.gameImagePath,
       required this.gamePrice,
@@ -19,5 +21,5 @@ class GameEntity extends Equatable {
   @override
   // TODO: implement props
   List<Object?> get props =>
-      [gameId, gameName, gameDescription, gameImagePath, category,gamePrice];
+      [gameId, gameName, gameDescription,gamePlatform, gameImagePath, category,gamePrice];
 }

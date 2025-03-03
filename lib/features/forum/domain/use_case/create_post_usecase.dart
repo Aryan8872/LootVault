@@ -24,6 +24,7 @@ class CreatePostUsecase implements UsecaseWithParams<void, CreatePostPrams> {
   CreatePostUsecase({required this.repositoy});
   @override
   Future<Either<Failure, void>> call(CreatePostPrams params) async {
+    print("usecase vitra ko data ${params.content}");
     return await repositoy.createPost(PostEntity(
         postUser: params.userId, title: params.title, content: params.content));
   }

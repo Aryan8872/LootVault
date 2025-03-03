@@ -3,9 +3,12 @@ import 'dart:io';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
+import 'package:loot_vault/core/common/snackbar/my_snackbar.dart';
 import 'package:loot_vault/features/games/domain/entity/game_category_entity.dart';
 import 'package:loot_vault/features/games/domain/entity/game_entity.dart';
+import 'package:loot_vault/features/games/domain/entity/platform_entity.dart';
 import 'package:loot_vault/features/games/domain/use_case/create_game_usecase.dart';
+import 'package:loot_vault/features/games/domain/use_case/get_all_platform_usecase.dart';
 import 'package:loot_vault/features/games/domain/use_case/getallGames_usecase.dart';
 import 'package:loot_vault/features/games/domain/use_case/getall_categories_usecase.dart';
 import 'package:loot_vault/features/games/domain/use_case/uploadGame_image_usecase.dart';
@@ -16,6 +19,7 @@ part 'game_state.dart';
 class GameBloc extends Bloc<GameEvent, GameState> {
   final CreateGameUsecase _createGameUseCase;
   final GetallgamesUsecase _getAllGamesUseCase;
+  final GetallGamePlatformUsecase _getallPlatformUsecase;
   final GetallCategoriesUsecase _getallCategoriesUsecase;
   final UploadGameImageUsecase _uploadImageUsecase;
 
@@ -23,19 +27,23 @@ class GameBloc extends Bloc<GameEvent, GameState> {
     required GetallCategoriesUsecase getallCategoriesUsecase,
     required CreateGameUsecase createGameUseCase,
     required GetallgamesUsecase getAllGamesUseCase,
+    required GetallGamePlatformUsecase getallPlatformUseCase,
     required UploadGameImageUsecase uploadImageUsecase,
   })  : _createGameUseCase = createGameUseCase,
         _getAllGamesUseCase = getAllGamesUseCase,
         _getallCategoriesUsecase = getallCategoriesUsecase,
+        _getallPlatformUsecase = getallPlatformUseCase,
         _uploadImageUsecase = uploadImageUsecase,
         super(GameState.initial()) {
     on<AddGame>(_onAddGame);
     on<LoadGames>(_onLoadGames);
     on<LoadCategories>(_onLoadGameCategories);
     on<UploadGameImage>(_onLoadImage);
+    on<LoadPlatform>(_onLoadGamePlatorm);
 
     // Call this event whenever the bloc is created to load the batches
     add(LoadCategories());
+    add(LoadPlatform());
     add(LoadGames());
   }
 
@@ -57,13 +65,32 @@ class GameBloc extends Bloc<GameEvent, GameState> {
         category: event.category,
         gameDescription: event.gameDescription,
         gameImagePath: event.gameImagePath,
+        gamePlatform :event.gamePlatform,
         gamePrice: event.gamePrice));
     result.fold(
       (failure) =>
           emit(state.copyWith(isLoading: false, error: failure.message)),
       (batches) {
         emit(state.copyWith(isLoading: false, error: null));
+        showMySnackBar(context: event.context, message: "Game added successfully");
         add(LoadGames());
+      },
+    );
+  }
+
+  Future<void> _onLoadGamePlatorm(
+      LoadPlatform event, Emitter<GameState> emit) async {
+    emit(state.copyWith(isLoading: true));
+    print("load plat from trigerrred");
+    final result = await _getallPlatformUsecase.call();
+    result.fold(
+      (failure) =>
+          emit(state.copyWith(isLoading: false, error: failure.message)),
+      (categories) {
+        print("bloc ko event ma $categories");
+        emit(state.copyWith(
+            isLoading: false,
+            platform: categories));
       },
     );
   }

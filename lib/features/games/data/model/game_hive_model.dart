@@ -26,10 +26,13 @@ class GameHiveModel extends Equatable {
 
   @HiveField(5)
     final String gamePrice;
+    @HiveField(6)
+    final String gamePlatform;
 
    GameHiveModel(
       {String? gameId,
       required this.gameName,
+      required this.gamePlatform,
       required this.gameDescription,
       required this.gameImagePath,
       required this.category,
@@ -44,6 +47,7 @@ class GameHiveModel extends Equatable {
     this.gameDescription="",
     this.gameImagePath="",
     this.category="",
+    this.gamePlatform="",
     this.gamePrice=""
  
   });
@@ -51,6 +55,7 @@ class GameHiveModel extends Equatable {
   factory GameHiveModel.fromEntity(GameEntity entity){
     return GameHiveModel(
       gameName: entity.gameName,
+      gamePlatform: entity.gamePlatform,
       gameDescription: entity.gameDescription,
       gameImagePath: entity.gameImagePath,
       gameId: entity.gameId,
@@ -61,6 +66,7 @@ class GameHiveModel extends Equatable {
   GameEntity toEntity(){
     return GameEntity(
       gameId: gameId,
+      gamePlatform:  gamePlatform,
       gameDescription: gameDescription,
       category: category,
       gamePrice: gamePrice,

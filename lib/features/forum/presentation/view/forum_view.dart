@@ -130,7 +130,9 @@ class ForumView extends StatelessWidget {
             context,
             MaterialPageRoute(
               builder: (context) => BlocProvider.value(
-                value: getIt<ForumBloc>()..add(const GetAllPostEvent())..add(GetCommentsEvent(postId: postId)),
+                value: getIt<ForumBloc>()
+                  ..add(const GetAllPostEvent())
+                  ..add(GetCommentsEvent(postId: postId)),
                 child: PostDetailScreen(
                   postId: postId,
                   title: title,
@@ -288,50 +290,47 @@ class PostDetailScreen extends StatelessWidget {
           elevation: 10,
           centerTitle: true,
         ),
-        body: 
-          BlocBuilder<ForumBloc, ForumState>(
-            builder: (context, state) {
-      final post = state.posts.firstWhere(
-                  (post) => post.postId == postId,
-                  orElse: () =>
-                      const PostEntity(postUser: '', title: '', content: ''));
+        body: BlocBuilder<ForumBloc, ForumState>(
+          builder: (context, state) {
+            final post = state.posts.firstWhere((post) => post.postId == postId,
+                orElse: () =>
+                    const PostEntity(postUser: '', title: '', content: ''));
 
-              if (post.postUser == '') {
-                return const Center(child: CircularProgressIndicator());
-              }
+            if (post.postUser == '') {
+              return const Center(child: CircularProgressIndicator());
+            }
 
-              return Column(
-                children: [
-                  Expanded(
-                    child: SingleChildScrollView(
-                      padding: const EdgeInsets.all(16.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          _buildPostHeader(),
-                          _buildPostContent(),
-                          _buildPostActions(
-                              context,
-                              post.likes!.length.toString(),
-                              post.dislikes!.length.toString()),
-                          const SizedBox(height: 20),
-                          const Text('Comments',
-                              style: TextStyle(
-                                  fontSize: 20, fontWeight: FontWeight.bold)),
-                          const SizedBox(height: 10),
-                          _buildCommentSection(state.comments),
-                        ],
-                      ),
+            return Column(
+              children: [
+                Expanded(
+                  child: SingleChildScrollView(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        _buildPostHeader(),
+                        _buildPostContent(),
+                        _buildPostActions(
+                            context,
+                            post.likes!.length.toString(),
+                            post.dislikes!.length.toString()),
+                        const SizedBox(height: 20),
+                        const Text('Comments',
+                            style: TextStyle(
+                                fontSize: 20, fontWeight: FontWeight.bold)),
+                        const SizedBox(height: 10),
+                        _buildCommentSection(state.comments),
+                      ],
                     ),
                   ),
-                  _buildCommentInput(context, commentController),
-                ],
-              );
-            },
-          ),
+                ),
+                _buildCommentInput(context, commentController),
+              ],
+            );
+          },
         ),
-      );
-    
+      ),
+    );
   }
 
   Widget _buildPostHeader() {

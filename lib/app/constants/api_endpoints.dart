@@ -29,6 +29,11 @@ class ApiEndpoints {
   static const String updateProfile = "/user/";
   static const String getUserbyId = "/user/get/";
 
+
+  static const String addCart = "/cart/add";
+  static const String clearCart = "/cart/";
+  static const String getCart = "/cart/";
+
   //games
 
   static const String getAllgames = "/game/";

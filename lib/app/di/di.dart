@@ -19,6 +19,13 @@ import 'package:loot_vault/features/auth/domain/use_case/upload_image_usecase.da
 import 'package:loot_vault/features/auth/presentation/view_model/login/login_bloc.dart';
 import 'package:loot_vault/features/auth/presentation/view_model/register/register_bloc.dart';
 import 'package:loot_vault/features/auth/presentation/view_model/user_bloc.dart';
+import 'package:loot_vault/features/cart/data/data_source/cart_remote_data_source.dart';
+import 'package:loot_vault/features/cart/data/repository/cart_remote_repo.dart';
+import 'package:loot_vault/features/cart/domain/repository/cart_repo.dart';
+import 'package:loot_vault/features/cart/domain/usecase/add_to_cart_usecase.dart';
+import 'package:loot_vault/features/cart/domain/usecase/clear_cart_usecase.dart';
+import 'package:loot_vault/features/cart/domain/usecase/get_cart_items_usecase.dart';
+import 'package:loot_vault/features/cart/presentation/view_model/cart_bloc.dart';
 import 'package:loot_vault/features/forum/data/data_source/local_data_source/forum_local_data_source.dart';
 import 'package:loot_vault/features/forum/data/data_source/remote_data_source/forum_remote_data_source.dart';
 import 'package:loot_vault/features/forum/data/repository/forum_local_repository.dart';
@@ -83,7 +90,9 @@ Future<void> initDependencies() async {
   await _initSkinsDependencies();
   await _initOnboardingDependency();
   await _initForumDependencies();
+  await _initCartDependency();
   await _initSellerDependencies();
+
 }
 
 // Initialize Hive Service
@@ -329,6 +338,38 @@ _initForumDependencies() async {
       getallPostUseCase: getIt(),
       replyCommentUsecase: getIt(),
       getCommentsUseCase: getIt()));
+}
+
+_initCartDependency() async {
+   getIt.registerLazySingleton<CartRemoteDataSource>(
+      () => CartRemoteDataSource(dio: getIt<Dio>()));
+
+
+  getIt.registerLazySingleton<CartRemoteRepo>(
+      () => CartRemoteRepo(cartRemoteDataSource: getIt()));
+
+
+  // getIt.registerLazySingleton<ICartRepository>(() {
+  //   return ForumRepositoryProxy(
+  //     connectivityListener: getIt<ConnectivityListener>(),
+  //     remoteRepository: getIt<ForumRemoteRepository>(),
+  //     localRepository: getIt<ForumLocalRepository>(),
+  //   );
+  // });
+  getIt.registerLazySingleton<AddToCartUsecase>(
+    () => AddToCartUsecase(cartRepository: getIt<CartRemoteRepo>()),
+  );
+    getIt.registerLazySingleton<GetCartItemsUsecase>(
+    () => GetCartItemsUsecase(cartRepository: getIt<CartRemoteRepo>()),
+  );
+     getIt.registerLazySingleton<ClearCartUsecase>(
+    () => ClearCartUsecase(cartRepository: getIt<CartRemoteRepo>()),
+  );
+  getIt.registerFactory<CartBloc>(() => CartBloc(
+    addToCartUsecase: getIt(),
+    getCartItemsUseCase: getIt(),
+    clearCartUsecase: getIt()
+  ));
 }
 
 _initSellerDependencies() {

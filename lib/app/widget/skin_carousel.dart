@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:loot_vault/app/di/di.dart';
+import 'package:loot_vault/features/cart/presentation/view_model/cart_bloc.dart';
 import 'package:loot_vault/features/skins/domain/entity/skin_entity.dart';
+import 'package:loot_vault/features/skins/presentation/view/skin_detail_view.dart';
 
 class SkinCarousel extends StatelessWidget {
   final List<SkinEntity> skins; // Receive skins from API
@@ -46,55 +50,68 @@ class SkinCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.all(8),
-      child: Row(
-        children: [
-          ClipRRect(
-            borderRadius: BorderRadius.circular(8),
-            child: Image.network(
-              'http://192.168.1.64:3000/public/uploads/${skin.skinImagePath}',
-              width: 88,
-              height: 88,
-              fit: BoxFit.cover,
+      child: GestureDetector(
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => BlocProvider.value(
+                value: getIt<CartBloc>(),
+                child: SkinDetailView(game: skin),
+              ),
             ),
-          ),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  skin.skinName, // API skin name
-                  style: Theme.of(context)
-                      .textTheme
-                      .titleMedium!
-                      .copyWith(fontSize: 16.5),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                ),
-                const SizedBox(height: 2),
-                Text(
-                  '${skin.skinPlatform['platformName']} • ${skin.category['categoryName']}', // API platform & category
-                  style: TextStyle(
-                    color: Colors.grey[600],
-                    fontSize: 12,
-                  ),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                ),
-                const SizedBox(height: 2),
-                Text(
-                  '\$${skin.skinPrice}', // API price
-                  style: const TextStyle(
-                    color: Colors.green,
-                    fontSize: 14,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ],
+          );
+        },
+        child: Row(
+          children: [
+            ClipRRect(
+              borderRadius: BorderRadius.circular(8),
+              child: Image.network(
+                'http://192.168.1.64:3000/public/uploads/${skin.skinImagePath}',
+                width: 88,
+                height: 88,
+                fit: BoxFit.cover,
+              ),
             ),
-          ),
-        ],
+            const SizedBox(width: 12),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    skin.skinName, // API skin name
+                    style: Theme.of(context)
+                        .textTheme
+                        .titleMedium!
+                        .copyWith(fontSize: 16.5),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  const SizedBox(height: 2),
+                  Text(
+                    '${skin.skinPlatform['platformName']} • ${skin.category['categoryName']}', // API platform & category
+                    style: TextStyle(
+                      color: Colors.grey[600],
+                      fontSize: 12,
+                    ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  const SizedBox(height: 2),
+                  Text(
+                    '\$${skin.skinPrice}', // API price
+                    style: const TextStyle(
+                      color: Colors.green,
+                      fontSize: 14,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

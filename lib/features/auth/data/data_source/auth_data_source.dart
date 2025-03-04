@@ -6,7 +6,7 @@ abstract interface class IAuthDataSource {
   Future<void> createUser(AuthEntity entity);
   Future<String> loginUser(String username, String password);
   Future<List<AuthHiveModel>> getalluser();
-  Future<AuthApiModel> updateProfile(AuthApiModel user);
+  Future<AuthApiModel> updateProfile(AuthEntity user);
     Future<AuthApiModel> getUserData(String userId);
 
   Future<void> changePassword(

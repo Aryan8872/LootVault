@@ -8,16 +8,20 @@ part of 'get_all_games_dto.dart';
 
 GetAllGameDTO _$GetAllGameDTOFromJson(Map<String, dynamic> json) =>
     GetAllGameDTO(
-      success: json['success'] as bool,
-      count: (json['count'] as num).toInt(),
-      data: (json['data'] as List<dynamic>)
+      error: json['error'] as bool,
+      total: (json['total'] as num).toInt(),
+      page: (json['page'] as num).toInt(),
+      limit: (json['limit'] as num).toInt(),
+      games: (json['games'] as List<dynamic>)
           .map((e) => GameApiModel.fromJson(e as Map<String, dynamic>))
           .toList(),
     );
 
 Map<String, dynamic> _$GetAllGameDTOToJson(GetAllGameDTO instance) =>
     <String, dynamic>{
-      'success': instance.success,
-      'count': instance.count,
-      'data': instance.data,
+      'error': instance.error,
+      'total': instance.total,
+      'page': instance.page,
+      'limit': instance.limit,
+      'games': instance.games,
     };

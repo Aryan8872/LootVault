@@ -18,7 +18,7 @@ final class AddGame extends GameEvent {
   final BuildContext context;
   final String gameImagePath;
   final String category;
-  final String gamePrice;
+  final num gamePrice;
   final String gamePlatform;
 
   const AddGame(

@@ -21,13 +21,13 @@ class ApiEndpoints {
   //auth
 
   static const String registerStudent = "/auth/register";
-  static const String loginStudent = "/auth/login";
+  static const String loginStudent = "/user/login";
   static const String uploadImage = "/customer/uploadImage";
   static const String refreshToken = "/user/refresh";
 
   static const String changePassword = "/auth/change-password";
-  static const String updateProfile = "/auth/";
-  static const String getUserbyId = "/auth/";
+  static const String updateProfile = "/user/";
+  static const String getUserbyId = "/user/get/";
 
   //games
 

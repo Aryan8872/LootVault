@@ -25,7 +25,10 @@ class GameHiveModel extends Equatable {
   final String category;
 
   @HiveField(5)
-    final String gamePrice;
+    final num gamePrice;
+
+    @HiveField(6)
+    final String gamePlatform;
 
    GameHiveModel(
       {String? gameId,
@@ -33,6 +36,7 @@ class GameHiveModel extends Equatable {
       required this.gameDescription,
       required this.gameImagePath,
       required this.category,
+      required this.gamePlatform,
       required this.gamePrice,
 
       }):gameId= gameId?? const Uuid().v4();
@@ -44,7 +48,8 @@ class GameHiveModel extends Equatable {
     this.gameDescription="",
     this.gameImagePath="",
     this.category="",
-    this.gamePrice=""
+    this.gamePrice=0,
+    this.gamePlatform = ""
  
   });
 
@@ -56,6 +61,7 @@ class GameHiveModel extends Equatable {
       gameId: entity.gameId,
       category: entity.category,
       gamePrice: entity.gamePrice,
+      gamePlatform:  entity.gamePlatform,
     );
   }
   GameEntity toEntity(){
@@ -65,6 +71,7 @@ class GameHiveModel extends Equatable {
       category: category,
       gamePrice: gamePrice,
       gameImagePath: gameImagePath,
+      gamePlatform: gamePlatform,
       gameName: gameName
       );
   }

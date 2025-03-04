@@ -11,9 +11,9 @@ class GameApiModel extends Equatable {
   final String gameName;
   final String gameDescription;
   final String gameImagePath;
-  final String category;
-  final String gamePrice;
-  final String gamePlatform;
+  final dynamic category;
+  final num gamePrice;
+  final dynamic gamePlatform;
 
   const GameApiModel(
       {required this.gameId,

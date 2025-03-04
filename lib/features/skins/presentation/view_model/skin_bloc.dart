@@ -45,7 +45,6 @@ class SkinBloc extends Bloc<SkinEvent, SkinState> {
     // Call this event whenever the bloc is created to load the batches
     add(LoadCategories());
     add(LoadPlatform());
-    add(Loadskins());
   }
 
   Future<void> _onLoadskins(Loadskins event, Emitter<SkinState> emit) async {

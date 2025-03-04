@@ -11,6 +11,7 @@ import 'package:loot_vault/features/auth/data/data_source/remote_data_source/aut
 import 'package:loot_vault/features/auth/data/repository/auth_local_repository.dart';
 import 'package:loot_vault/features/auth/data/repository/auth_remote_repository.dart';
 import 'package:loot_vault/features/auth/domain/repository/auth_repository.dart';
+import 'package:loot_vault/features/auth/domain/use_case/get_user_data_usecase.dart';
 import 'package:loot_vault/features/auth/domain/use_case/login_usecase.dart';
 import 'package:loot_vault/features/auth/domain/use_case/register_user_usecase.dart';
 import 'package:loot_vault/features/auth/domain/use_case/update_user_usecase.dart';
@@ -120,7 +121,7 @@ _initGameDependencies() {
   // Conditionally provide the repository based on network connection
   getIt.registerLazySingleton<IGameRepository>(() {
     return GameRepositoryProxy(
-      internetChecker: getIt<IInternetChecker>(),
+      connectivityListener: getIt<ConnectivityListener>(),
       remoteRepository: getIt<GameRemoteRepository>(),
       localRepository: getIt<GameLocalRepository>(),
     );
@@ -206,16 +207,17 @@ __initRegisterDependencies() {
   getIt.registerLazySingleton<UpdateUserUsecase>(
     () => UpdateUserUsecase(authRepository: getIt<AuthRemoteRepository>()),
   );
-    getIt.registerLazySingleton<RegisterUserUsecase>(
+  getIt.registerLazySingleton<RegisterUserUsecase>(
     () => RegisterUserUsecase(authRepository: getIt<AuthRemoteRepository>()),
   );
-
+  getIt.registerLazySingleton<GetUserDataUsecase>(
+      () => GetUserDataUsecase(authRepository: getIt<AuthRemoteRepository>()));
 
   getIt.registerLazySingleton<UploadImageUsecase>(
       () => UploadImageUsecase(repository: getIt<AuthRemoteRepository>()));
 
   getIt.registerLazySingleton<UserBloc>(
-      () => UserBloc(updateUserUsecase: getIt(), uploadImageUsecase: getIt()));
+      () => UserBloc(updateUserUsecase: getIt(), uploadImageUsecase: getIt(),getUserDataUsecase: getIt()));
   getIt.registerFactory<RegisterBloc>(
     () => RegisterBloc(
       uploadImageUsecase: getIt<UploadImageUsecase>(),

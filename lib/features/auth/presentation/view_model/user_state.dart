@@ -10,10 +10,12 @@ class UserState extends Equatable {
   final String? image;
   final bool isLoading;
   final bool isSuccess;
+  final bool? profileUpdated;
 
   const UserState.initial()
       : isLoading = false,
         isSuccess = false,
+        profileUpdated = false,
         email = "",
         fullName = "",
         password = "",
@@ -26,6 +28,7 @@ class UserState extends Equatable {
       {required this.userId,
       required this.username,
       this.image,
+      this.profileUpdated,
       required this.email,
       required this.phoneNo,
       required this.isLoading,
@@ -42,6 +45,7 @@ class UserState extends Equatable {
     String? password,
     String? email,
     bool? isLoading,
+    bool? profileUpdated,
     bool? isSuccess,
   }) {
     return UserState(
@@ -51,6 +55,7 @@ class UserState extends Equatable {
         image: image ?? this.image,
         password: password ?? this.password,
         email: email ?? this.email,
+        profileUpdated: profileUpdated??this.profileUpdated,
         userId: userId ?? this.userId,
         isLoading: isLoading ?? this.isLoading,
         isSuccess: isSuccess ?? this.isSuccess);

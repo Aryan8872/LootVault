@@ -11,9 +11,9 @@ class SkinApiModel extends Equatable {
   final String skinName;
   final String skinDescription;
   final String skinImagePath;
-  final String category;
-  final String skinPrice;
-  final String skinPlatform;
+  final dynamic category;
+  final num skinPrice;
+  final dynamic skinPlatform;
 
   const SkinApiModel(
       {required this.skinId,

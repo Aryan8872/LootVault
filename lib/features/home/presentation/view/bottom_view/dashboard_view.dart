@@ -1,8 +1,11 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:loot_vault/app/widget/horizontal_productcard_list.dart';
 import 'package:loot_vault/app/widget/skin_carousel.dart';
+import 'package:loot_vault/features/games/presentation/view_model/game_bloc.dart';
+import 'package:loot_vault/features/skins/presentation/view_model/skin_bloc.dart';
 
 class DashBoardView extends StatefulWidget {
   const DashBoardView({super.key});
@@ -88,9 +91,8 @@ class _DashBoardViewState extends State<DashBoardView> {
                 builder: (BuildContext context, SearchController controller) {
                   return SearchBar(
                     controller: controller,
-                    backgroundColor:
-                        const MaterialStatePropertyAll(Colors.white),
-                    padding: const MaterialStatePropertyAll<EdgeInsets>(
+                    backgroundColor: const WidgetStatePropertyAll(Colors.white),
+                    padding: const WidgetStatePropertyAll<EdgeInsets>(
                       EdgeInsets.symmetric(horizontal: 16.0),
                     ),
                     onTap: () {
@@ -101,7 +103,7 @@ class _DashBoardViewState extends State<DashBoardView> {
                     },
                     leading: const Icon(Icons.search),
                     hintText: "Search",
-                    hintStyle: const MaterialStatePropertyAll(
+                    hintStyle: const WidgetStatePropertyAll(
                       TextStyle(
                         color: Colors.grey,
                         fontSize: 16,
@@ -213,47 +215,6 @@ class _DashBoardViewState extends State<DashBoardView> {
                 height: 30,
               ),
 
-              //****************************************BUY GAMES HEADER SECTION*************************************************
-
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    "Buy Games",
-                    style:
-                        Theme.of(context).textTheme.displayMedium!.copyWith(),
-                  ),
-                  TextButton(
-                    style: const ButtonStyle(
-                        // backgroundColor: MaterialStateProperty.all(Colors.red),
-                        ),
-                    onPressed: () => {
-                      Navigator.pushNamed(
-                        context,
-                        "/popular",
-                      )
-                    },
-                    child: const Text(
-                      "See all",
-                      style: TextStyle(color: Colors.black),
-                    ),
-                  )
-                ],
-              ),
-
-              const SizedBox(
-                height: 10,
-              ),
-
-              //***************************************BUY GAMES CARDS*****************************************************************
-
-              HorizontalProductCard(
-                cardData: popularGameData,
-                itemName: "csgo",
-                price: "2000",
-                type: "game",
-              ),
-
               const SizedBox(
                 height: 20,
               ),
@@ -261,7 +222,7 @@ class _DashBoardViewState extends State<DashBoardView> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text(" Gift Cards",
+                  Text(" Buy Games",
                       style: Theme.of(context)
                           .textTheme
                           .displayMedium!
@@ -289,12 +250,19 @@ class _DashBoardViewState extends State<DashBoardView> {
               ),
 
               // *********************************************************GIFT CARD SECTION**************************************
-              HorizontalProductCard(
-                cardData: giftcardData,
-                itemName: "csgo",
-                price: "1225",
-                rating: "4.5",
-                type: "giftcard",
+              BlocBuilder<GameBloc, GameState>(
+                builder: (context, state) {
+                  if (state.isLoading) {
+                    return const Center(child: CircularProgressIndicator());
+                  }
+
+                  if (state.games.isEmpty) {
+                    return const Center(child: Text('No games available'));
+                  }
+                  return HorizontalProductCard(
+                    cardData: state.games,
+                  );
+                },
               ),
 
               const SizedBox(
@@ -332,7 +300,22 @@ class _DashBoardViewState extends State<DashBoardView> {
               ),
 
               //////////////////////////////////////////////////////skins and game items
-              const SkinCarousel(),
+              BlocBuilder<SkinBloc, SkinState>(
+                builder: (context, state) {
+                  if (state.isLoading) {
+                    return const Center(
+                        child:
+                            CircularProgressIndicator()); // Loading indicator
+                  }
+
+                  if (state.skins.isEmpty) {
+                    return const Center(child: Text("No skins available"));
+                  }
+
+                  return SkinCarousel(
+                      skins: state.skins); // Pass skins dynamically
+                },
+              ),
 
               const SizedBox(
                 height: 20,

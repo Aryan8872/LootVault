@@ -23,7 +23,7 @@ class GameHiveModelAdapter extends TypeAdapter<GameHiveModel> {
       gameDescription: fields[2] as String,
       gameImagePath: fields[3] as String,
       category: fields[4] as String,
-      gamePrice: fields[5] as String,
+      gamePrice: fields[5] as num,
     );
   }
 

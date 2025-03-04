@@ -22,14 +22,15 @@ class GameHiveModelAdapter extends TypeAdapter<GameHiveModel> {
       gameDescription: fields[2] as String,
       gameImagePath: fields[3] as String,
       category: fields[4] as String,
-      gamePrice: fields[5] as String,
+      gamePlatform: fields[6] as String,
+      gamePrice: fields[5] as num,
     );
   }
 
   @override
   void write(BinaryWriter writer, GameHiveModel obj) {
     writer
-      ..writeByte(6)
+      ..writeByte(7)
       ..writeByte(0)
       ..write(obj.gameId)
       ..writeByte(1)
@@ -41,7 +42,9 @@ class GameHiveModelAdapter extends TypeAdapter<GameHiveModel> {
       ..writeByte(4)
       ..write(obj.category)
       ..writeByte(5)
-      ..write(obj.gamePrice);
+      ..write(obj.gamePrice)
+      ..writeByte(6)
+      ..write(obj.gamePlatform);
   }
 
   @override

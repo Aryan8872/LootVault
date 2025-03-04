@@ -10,7 +10,7 @@ class CreateSkinParams extends Equatable {
   final String skinDescription;
   final String skinImagePath;
   final String category;
-  final String skinPrice;
+  final num skinPrice;
   final String skinPlatform;
 
 
@@ -25,7 +25,7 @@ class CreateSkinParams extends Equatable {
   const CreateSkinParams.initial()
       : skinName = '',
         skinDescription = '',
-        skinPrice = '',
+        skinPrice = 0,
         category = '',
         skinPlatform = '',
         skinImagePath = '';

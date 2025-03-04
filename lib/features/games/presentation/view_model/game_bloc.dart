@@ -44,7 +44,6 @@ class GameBloc extends Bloc<GameEvent, GameState> {
     // Call this event whenever the bloc is created to load the batches
     add(LoadCategories());
     add(LoadPlatform());
-    add(LoadGames());
   }
 
   Future<void> _onLoadGames(LoadGames event, Emitter<GameState> emit) async {
@@ -81,13 +80,11 @@ class GameBloc extends Bloc<GameEvent, GameState> {
   Future<void> _onLoadGamePlatorm(
       LoadPlatform event, Emitter<GameState> emit) async {
     emit(state.copyWith(isLoading: true));
-    print("load plat from trigerrred");
     final result = await _getallPlatformUsecase.call();
     result.fold(
       (failure) =>
           emit(state.copyWith(isLoading: false, error: failure.message)),
       (categories) {
-        print("bloc ko event ma $categories");
         emit(state.copyWith(
             isLoading: false,
             platform: categories));

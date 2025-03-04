@@ -5,14 +5,19 @@ part 'get_all_games_dto.g.dart';
 
 @JsonSerializable()
 class GetAllGameDTO {
-  final bool success;
-  final int count;
-  final List<GameApiModel> data;
+  final bool error; 
+  final int total;
+  final int page;
+  final int limit;
+  @JsonKey(name: 'games')
+  final List<GameApiModel> games; 
 
   GetAllGameDTO({
-    required this.success,
-    required this.count,
-    required this.data,
+    required this.error,
+    required this.total,
+    required this.page,
+    required this.limit,
+    required this.games,
   });
 
   Map<String, dynamic> toJson() => _$GetAllGameDTOToJson(this);

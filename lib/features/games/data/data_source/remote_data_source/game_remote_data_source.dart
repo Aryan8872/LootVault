@@ -3,14 +3,12 @@ import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:loot_vault/app/constants/api_endpoints.dart';
 import 'package:loot_vault/features/games/data/data_source/game_data_source.dart';
-import 'package:loot_vault/features/games/data/dto/get_all_games_dto.dart';
 import 'package:loot_vault/features/games/data/model/game_api_model.dart';
 import 'package:loot_vault/features/games/data/model/game_category_api_model.dart';
 import 'package:loot_vault/features/games/data/model/game_platform_api_model.dart';
 import 'package:loot_vault/features/games/domain/entity/game_category_entity.dart';
 import 'package:loot_vault/features/games/domain/entity/game_entity.dart';
 import 'package:loot_vault/features/games/domain/entity/platform_entity.dart';
-import 'package:loot_vault/features/skins/data/model/platform_api_model.dart';
 
 class GameRemoteDataSource implements IGameDataSource {
   final Dio _dio;
@@ -27,7 +25,7 @@ class GameRemoteDataSource implements IGameDataSource {
         "gamePrice": entity.gamePrice,
         "gameImagePath": entity.gameImagePath,
         "category": entity.category,
-        "gamePlatform":entity.gamePlatform,
+        "gamePlatform": entity.gamePlatform,
       });
       if (response.statusCode == 201) {
         return;
@@ -46,8 +44,17 @@ class GameRemoteDataSource implements IGameDataSource {
     try {
       var response = await _dio.get(ApiEndpoints.getAllgames);
       if (response.statusCode == 200) {
-        GetAllGameDTO gameaddDTO = GetAllGameDTO.fromJson(response.data);
-        return GameApiModel.toEntityList(gameaddDTO.data);
+
+        // Extract the "games" list from the API response
+        final gamesData = response.data['games'] as List;
+
+        // Convert each game JSON into a GameApiModel instance
+        List<GameApiModel> gamedataList = gamesData
+            .map((game) => GameApiModel.fromJson(game as Map<String, dynamic>))
+            .toList();
+
+
+        return GameApiModel.toEntityList(gamedataList);
       } else {
         throw Exception(response.statusMessage);
       }
@@ -90,17 +97,14 @@ class GameRemoteDataSource implements IGameDataSource {
   @override
   Future<List<GameCategoryEntity>> getallGameCategories() async {
     try {
-      print("Data source fetching categories...");
       var response = await _dio.get(ApiEndpoints.getallGameCategories);
 
       if (response.statusCode == 200) {
         final List<dynamic> data = response.data;
-        print("Raw API Data: $data");
 
         final categories =
             data.map((json) => GameCategoryApiModel.fromJson(json)).toList();
 
-        print("Mapped Categories: $categories");
         return GameCategoryApiModel.toEntityList(categories);
       } else {
         throw Exception(response.statusMessage);
@@ -115,19 +119,16 @@ class GameRemoteDataSource implements IGameDataSource {
   }
 
   @override
-  Future<List<GamePlatformEntity>> getallPlatorm() async{
-        try {
-      print("Data source fetching categories...");
+  Future<List<GamePlatformEntity>> getallPlatorm() async {
+    try {
       var response = await _dio.get(ApiEndpoints.getAllPlatform);
 
       if (response.statusCode == 200) {
         final List<dynamic> data = response.data;
-        print("Raw API Data: $data");
 
         final platforms =
             data.map((json) => GamePlatformApiModel.fromJson(json)).toList();
 
-        print("Mapped Categories: $platforms");
         return GamePlatformApiModel.toEntityList(platforms);
       } else {
         throw Exception(response.statusMessage);

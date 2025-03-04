@@ -5,9 +5,9 @@ class GameEntity extends Equatable {
   final String gameName;
   final String gameDescription;
   final String gameImagePath;
-  final String gamePlatform;
-  final String category;
-  final String gamePrice;
+  final dynamic gamePlatform;
+  final dynamic category;
+  final num gamePrice;
 
   const GameEntity(
       { this.gameId,

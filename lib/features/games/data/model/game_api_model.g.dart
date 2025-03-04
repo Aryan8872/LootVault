@@ -8,12 +8,12 @@ part of 'game_api_model.dart';
 
 GameApiModel _$GameApiModelFromJson(Map<String, dynamic> json) => GameApiModel(
       gameId: json['_id'] as String?,
-      gamePlatform: json['gamePlatform'] as String,
+      gamePlatform: json['gamePlatform'],
       gameName: json['gameName'] as String,
       gameDescription: json['gameDescription'] as String,
-      gamePrice: json['gamePrice'] as String,
+      gamePrice: json['gamePrice'] as num,
       gameImagePath: json['gameImagePath'] as String,
-      category: json['category'] as String,
+      category: json['category'],
     );
 
 Map<String, dynamic> _$GameApiModelToJson(GameApiModel instance) =>

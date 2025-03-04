@@ -48,9 +48,8 @@ class AuthRemoteRepository implements IAuthRepository {
   @override
   Future<Either<Failure, AuthEntity>> updateProfile(AuthEntity user) async {
     try {
-      final authApiModel = AuthApiModel.fromEntity(user);
       final updatedUser =
-          await authRemoteDataSource.updateProfile(authApiModel);
+          await authRemoteDataSource.updateProfile(user);
       return Right(updatedUser.toEntity());
     } catch (e) {
       return Left(ApiFailure(message: "updare failed :${e.toString()}"));
@@ -68,7 +67,7 @@ class AuthRemoteRepository implements IAuthRepository {
   Future<Either<Failure, AuthEntity>> getUserdata(String userId) async {
     try {
       final userdata = await authRemoteDataSource.getUserData(userId);
-      return Right(userdata);
+      return Right(userdata.toEntity());
     } catch (e) {
       throw Exception(e);
     }

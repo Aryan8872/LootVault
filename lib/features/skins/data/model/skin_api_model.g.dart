@@ -10,10 +10,10 @@ SkinApiModel _$SkinApiModelFromJson(Map<String, dynamic> json) => SkinApiModel(
       skinId: json['_id'] as String?,
       skinName: json['skinName'] as String,
       skinDescription: json['skinDescription'] as String,
-      skinPrice: json['skinPrice'] as String,
-      skinPlatform: json['skinPlatform'] as String,
+      skinPrice: json['skinPrice'] as num,
+      skinPlatform: json['skinPlatform'],
       skinImagePath: json['skinImagePath'] as String,
-      category: json['category'] as String,
+      category: json['category'],
     );
 
 Map<String, dynamic> _$SkinApiModelToJson(SkinApiModel instance) =>

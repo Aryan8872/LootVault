@@ -10,7 +10,7 @@ class CreateGameParams extends Equatable {
   final String gameDescription;
   final String gameImagePath;
   final String category;
-  final String gamePrice;
+  final num gamePrice;
   final String gamePlatform;
 
   const CreateGameParams(
@@ -24,7 +24,7 @@ class CreateGameParams extends Equatable {
   const CreateGameParams.initial()
       : gameName = '',
         gameDescription = '',
-        gamePrice = '',
+        gamePrice = 0,
         category = '',
         gamePlatform = '',
         gameImagePath = '';

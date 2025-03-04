@@ -383,7 +383,7 @@ class _AddSkinScreenState extends State<AddSkinScreen> {
             context: context,
             category: _categoryDropdown!.categoryId,
             skinPlatform: _platformDropdown!.categoryId,
-            skinPrice: gamePriceController.text));
+            skinPrice: int.parse(gamePriceController.text)));
       },
       style: const ButtonStyle(iconColor: WidgetStatePropertyAll(Colors.white)),
       child: const Row(

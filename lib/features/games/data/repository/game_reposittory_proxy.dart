@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:dartz/dartz.dart';
+import 'package:loot_vault/core/common/internet_checker/connectivity_listener.dart';
 import 'package:loot_vault/core/common/internet_checker/internet_checker.dart';
 import 'package:loot_vault/core/error/failure.dart';
 import 'package:loot_vault/features/games/data/repository/game_local_repository.dart';
@@ -11,12 +12,12 @@ import 'package:loot_vault/features/games/domain/entity/platform_entity.dart';
 import 'package:loot_vault/features/games/domain/repository/game_repository.dart';
 
 class GameRepositoryProxy implements IGameRepository {
-  final IInternetChecker internetChecker;
+  final ConnectivityListener connectivityListener;
   final GameRemoteRepository remoteRepository;
   final GameLocalRepository localRepository;
 
   GameRepositoryProxy({
-    required this.internetChecker,
+    required this.connectivityListener,
     required this.remoteRepository,
     required this.localRepository,
   });
@@ -41,33 +42,88 @@ class GameRepositoryProxy implements IGameRepository {
   // }
 
   @override
-  Future<Either<Failure, void>> createGame(GameEntity entity) {
-    // TODO: implement createGame
-    throw UnimplementedError();
+  Future<Either<Failure, void>> createGame(GameEntity entity)async {
+    if (await connectivityListener.isConnected) {
+      // ✅ Fetch latest status
+      try {
+        print("Connected to the internet");
+        return await remoteRepository.createGame(entity);
+      } catch (e) {
+        print("Remote call failed, falling back to local storage");
+        return await localRepository.createGame(entity);
+      }
+    } else {
+      print("No internet, saving post locally");
+      return await localRepository.createGame(entity);
+    }
   }
 
   @override
-  Future<Either<Failure, List<GamePlatformEntity>>> getAllPlatform() {
-    // TODO: implement getAllPlatform
-    throw UnimplementedError();
+  Future<Either<Failure, List<GamePlatformEntity>>> getAllPlatform() async{
+       if (await connectivityListener.isConnected) {
+      // ✅ Fetch latest status
+      try {
+        print("Connected to the internet");
+        return await remoteRepository.getAllPlatform();
+      } catch (e) {
+        print("Remote call failed, falling back to local storage");
+        return await localRepository.getAllPlatform();
+      }
+    } else {
+      print("No internet, saving post locally");
+      return await localRepository.getAllPlatform();
+    }
   }
 
   @override
-  Future<Either<Failure, List<GameCategoryEntity>>> getallGameCategories() {
-    // TODO: implement getallGameCategories
-    throw UnimplementedError();
+  Future<Either<Failure, List<GameCategoryEntity>>> getallGameCategories()async {
+    if (await connectivityListener.isConnected) {
+      // ✅ Fetch latest status
+      try {
+        print("Connected to the internet");
+        return await remoteRepository.getallGameCategories();
+      } catch (e) {
+        print("Remote call failed, falling back to local storage");
+        return await localRepository.getallGameCategories();
+      }
+    } else {
+      print("No internet, saving post locally");
+      return await localRepository.getallGameCategories();
+    }
   }
 
   @override
-  Future<Either<Failure, String>> uploadGamePicture(File file) {
-    // TODO: implement uploadGamePicture
-    throw UnimplementedError();
+  Future<Either<Failure, String>> uploadGamePicture(File file) async{
+        if (await connectivityListener.isConnected) {
+      // ✅ Fetch latest status
+      try {
+        print("Connected to the internet");
+        return await remoteRepository.uploadGamePicture(file);
+      } catch (e) {
+        print("Remote call failed, falling back to local storage");
+        return await localRepository.uploadGamePicture(file);
+      }
+    } else {
+      print("No internet, saving post locally");
+      return await localRepository.uploadGamePicture(file);
+    }
   }
   
   @override
-  Future<Either<Failure, List<GameEntity>>> getAllGames() {
-    // TODO: implement getAllGames
-    throw UnimplementedError();
+  Future<Either<Failure, List<GameEntity>>> getAllGames() async{
+       if (await connectivityListener.isConnected) {
+      // ✅ Fetch latest status
+      try {
+        print("Connected to the internet");
+        return await remoteRepository.getAllGames();
+      } catch (e) {
+        print("Remote call failed, falling back to local storage");
+        return await localRepository.getAllGames();
+      }
+    } else {
+      print("No internet, saving post locally");
+      return await localRepository.getAllGames();
+    }
   }
 
 }

@@ -109,7 +109,7 @@ Future<void> _onLoadPosts(
   Future<void> _getComments(GetCommentsEvent event, Emitter<ForumState> emit) async {
   emit(state.copyWith(isLoading: true)); // Show loading state while fetching comments.
   
-  final result = await _getCommentsUseCase.call(GetCommentsParams(postId: event.postId)); // Assuming you have a use case to fetch comments.
+  final result = await _getCommentsUseCase.call(GetCommentsParams(postId: event.postId)); 
 
   result.fold(
     (failure) {

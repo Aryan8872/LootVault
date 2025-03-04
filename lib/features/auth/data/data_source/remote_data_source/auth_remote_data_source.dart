@@ -103,22 +103,41 @@ class AuthRemoteDataSource implements IAuthDataSource {
   }
 
   @override
-  Future<AuthApiModel> updateProfile(AuthApiModel user) async {
+  Future<AuthApiModel> updateProfile(AuthEntity user) async {
     final userId = user.userId;
     final response = await _dio.put(
-      '${ApiEndpoints.getComments}$userId',
-      data: user.toJson(),
+      '${ApiEndpoints.updateProfile}$userId',
+      data: {
+        "fullName":user.fullName,
+        "email":user.email,
+        "username":user.username,
+        "phoneNo":user.phoneNo,
+        "password":user.password,
+        "image":user.image
+      },
     );
 
     if (response.statusCode == 200) {
-      return AuthApiModel.fromJson(jsonDecode(response.data));
+      var data =  AuthApiModel.fromJson(jsonDecode(response.data));
+      return data;
     } else {
       throw Exception('Failed to update profile');
     }
   }
 
   @override
-  Future<AuthApiModel> getUserData(String userId) {
-    
+  Future<AuthApiModel> getUserData(String userId) async {
+    final response = await _dio.get(
+      '${ApiEndpoints.getUserbyId}$userId',
+    );
+    print('user data get vako ${response.data}');
+
+    if (response.statusCode == 200) {
+      final apimodel =  AuthApiModel.fromJson(response.data['user']);
+      print('after converting to the apimodel ${apimodel}');
+      return apimodel;
+    } else {
+      throw Exception('Failed to update get data');
+    }
   }
 }

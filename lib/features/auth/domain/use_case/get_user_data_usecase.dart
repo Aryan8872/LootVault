@@ -8,6 +8,8 @@ import 'package:loot_vault/features/auth/domain/repository/auth_repository.dart'
 class GetUserParams extends Equatable {
   final String userId;
 
+  GetUserParams({required this.userId});
+
   const GetUserParams.initial() : userId = '';
 
   @override

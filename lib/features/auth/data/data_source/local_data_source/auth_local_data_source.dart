@@ -51,7 +51,7 @@ Future<String> loginUser(String username, String password) async {
   }
 
   @override
-  Future<AuthApiModel> updateProfile(AuthApiModel user) {
+  Future<AuthApiModel> updateProfile(AuthEntity user) {
     // TODO: implement updateProfile
     throw UnimplementedError();
   }

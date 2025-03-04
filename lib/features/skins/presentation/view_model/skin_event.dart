@@ -20,7 +20,7 @@ final class Addskin extends SkinEvent {
   final String skinDescription;
   final String skinImagePath;
   final String category;
-  final String skinPrice;
+  final num skinPrice;
   final String skinPlatform;
 
   const Addskin(

@@ -533,6 +533,7 @@ Widget _buildReply(BuildContext context, CommentEntity reply) {
                       print('Failed to get user data: ${failure.message}'),
                   (userData) {
                     final userId = userData['userId'];
+                    print('${controller.text}');
                     if (userId != null && userId.isNotEmpty) {
                       context.read<ForumBloc>().add(CreateCommentEvent(
                             postId: postId,

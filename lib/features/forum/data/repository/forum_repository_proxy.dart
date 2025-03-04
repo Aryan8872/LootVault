@@ -19,10 +19,22 @@ class ForumRepositoryProxy implements IForumRepository {
   });
 
   @override
-  Future<Either<Failure, void>> commentPost(CommentEntity entity) {
-    // TODO: implement commentPost
-    throw UnimplementedError();
+  Future<Either<Failure, void>> commentPost(CommentEntity entity)async {
+     if (await connectivityListener.isConnected) {
+      // ✅ Fetch latest status
+      try {
+        print("Connected to the internet");
+        return await remoteRepository.commentPost(entity);
+      } catch (e) {
+        print("Remote call failed, falling back to local storage");
+        return await localRepository.commentPost(entity);
+      }
+    } else {
+      print("No internet, saving post locally");
+      return await localRepository.commentPost(entity);
+    }
   }
+  
 
   @override
   Future<Either<Failure, void>> createPost(PostEntity entity) async {

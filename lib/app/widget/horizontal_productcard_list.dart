@@ -1,51 +1,23 @@
 import 'package:flutter/material.dart';
+import 'package:loot_vault/app/constants/api_endpoints.dart';
+import 'package:loot_vault/features/games/domain/entity/game_entity.dart';
 
 class HorizontalProductCard extends StatelessWidget {
-  HorizontalProductCard({
+  const HorizontalProductCard({
     super.key,
     required this.cardData,
-    required this.itemName,
-    required this.price,
-    required this.type,
-    this.rating = "0",
   });
 
-  final List cardData;
-  final String rating;
-  final String price;
-  final String itemName;
-  final String type;
-
-  List<String> gamename = [
-    "Dark Souls",
-    "God of war",
-    "Last of us",
-    "Assasins creed",
-    "Elden ring",
-    "Farcry 3",
-    "Plague tale"
-  ];
-
-  List<String> cardname = [
-    "Fantasy card",
-    "Discord Nitro",
-    "Fortnite card",
-    "Roblox card",
-    "LOL card",
-    "Valo card",
-    "PS card"
-  ];
+  final List<GameEntity> cardData;
 
   @override
   Widget build(BuildContext context) {
-    // Get screen width and height for responsiveness
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
-    final isLandscape = screenWidth > screenHeight; // Detect landscape mode
+    final isLandscape = screenWidth > screenHeight;
 
     return SizedBox(
-      height: screenHeight *
-          (isLandscape ? 0.5 : 0.3), // Adjust height based on orientation
+      height: screenHeight * (isLandscape ? 0.5 : 0.3),
       child: LayoutBuilder(
         builder: (BuildContext context, BoxConstraints constraints) {
           double parentWidth = constraints.maxWidth;
@@ -55,13 +27,11 @@ class HorizontalProductCard extends StatelessWidget {
             itemCount: cardData.length,
             scrollDirection: Axis.horizontal,
             itemBuilder: (context, index) {
+              final game = cardData[index];
+
               return Container(
-                width: parentWidth *
-                    (isLandscape
-                        ? 0.30
-                        : 0.37), // Adjust width based on orientation
-                margin: EdgeInsets.only(
-                    right: screenWidth * 0.05), // Responsive margin
+                width: parentWidth * (isLandscape ? 0.30 : 0.37),
+                margin: EdgeInsets.only(right: screenWidth * 0.05),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(12),
                 ),
@@ -80,97 +50,43 @@ class HorizontalProductCard extends StatelessWidget {
                           ),
                         ],
                       ),
-                      child: Stack(children: [
-                        Container(
-                          height: parentHeight *
-                              0.76, // Adjust height of image container
-                          decoration: const BoxDecoration(),
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.circular(12),
-                            child: type == "game"
-                                ? Image.network(
-                                    cardData[index],
-                                    fit: BoxFit.cover,
-                                  )
-                                : Image.asset(cardData[index]),
-                          ),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(12),
+                        child: Image.network(
+                          'http://192.168.1.64:3000/public/uploads/${game.gameImagePath}',
+                          fit: BoxFit.cover,
+                          height: parentHeight * 0.76, // Adjust height dynamically
                         ),
-                        type == "giftcard"
-                            ? Container(
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(5),
-                                  color: Colors.white,
-                                ),
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 4, vertical: 4),
-                                child: Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    Icon(
-                                      Icons.star_rate,
-                                      color: Colors.yellow[600],
-                                      size: (isLandscape
-                                          ? 17
-                                          : 20), // Responsive icon size
-                                    ),
-                                    SizedBox(width: screenWidth * 0.01),
-                                    Text(rating,
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .titleMedium!
-                                            .copyWith(fontSize: 15)),
-                                  ],
-                                ),
-                              )
-                            : Container(),
-                      ]),
-                    ),
-                    // Item name and rating row
-                    Padding(
-                      padding: const EdgeInsets.fromLTRB(
-                        3,
-                        2,
-                        0,
-                        0,
-                      ),
-                      child: Row(
-                        children: [
-                          Text(
-                              type == "game"
-                                  ? gamename[index]
-                                  : cardname[index],
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .titleMedium!
-                                  .copyWith()),
-                        ],
                       ),
                     ),
-                    // Price row
-
                     Padding(
-                      padding: const EdgeInsets.fromLTRB(
-                        0,
-                        0,
-                        0,
-                        0,
+                      padding: const EdgeInsets.fromLTRB(3, 2, 0, 0),
+                      child: Text(
+                        game.gameName,
+                        style: Theme.of(context)
+                            .textTheme
+                            .titleMedium!
+                            .copyWith(),
                       ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          Icon(
+                          const Icon(
                             Icons.attach_money_rounded,
                             color: Colors.green,
-                            size: (isLandscape
-                                ? 0.05
-                                : 16.6), // Responsive icon size
+                            size: 16.6,
                           ),
-                          Text(price,
-                              overflow: TextOverflow.ellipsis,
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .titleSmall!
-                                  .copyWith(color: Colors.green)),
+                          Text(
+                            game.gamePrice.toString(),
+                            overflow: TextOverflow.ellipsis,
+                            style: Theme.of(context)
+                                .textTheme
+                                .titleSmall!
+                                .copyWith(color: Colors.green),
+                          ),
                         ],
                       ),
                     ),

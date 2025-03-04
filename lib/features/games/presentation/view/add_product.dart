@@ -373,7 +373,7 @@ class _AddGameScreenState extends State<AddGameScreen> {
             gameImagePath: imageName,
             category: _categoryDropdown!.categoryId,
             gamePlatform:_platformDropdown!.categoryId,
-            gamePrice: gamePriceController.text));
+            gamePrice: int.parse(gamePriceController.text)));
       },
       style: const ButtonStyle(iconColor: WidgetStatePropertyAll(Colors.white)),
       child: const Row(

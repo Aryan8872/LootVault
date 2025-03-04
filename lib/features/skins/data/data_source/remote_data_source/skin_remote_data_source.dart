@@ -44,9 +44,20 @@ class SkinRemoteDataSource implements ISkinsDataSource {
   Future<List<SkinEntity>> getallSkins() async {
     try {
       var response = await _dio.get(ApiEndpoints.getAllSkins);
-      if (response.statusCode == 200) {
-        GetAllSkinsDTO skinaddDTO = GetAllSkinsDTO.fromJson(response.data);
-        return SkinApiModel.toEntityList(skinaddDTO.data);
+       if (response.statusCode == 200) {
+        print('getall skins vitra ko ${response.data}');
+
+        // Extract the "games" list from the API response
+        final skinData = response.data as List;
+
+        // Convert each game JSON into a GameApiModel instance
+        List<SkinApiModel> skindataList = skinData
+            .map((game) => SkinApiModel.fromJson(game))
+            .toList();
+
+        print("after getting games $skindataList");
+
+        return SkinApiModel.toEntityList(skindataList);
       } else {
         throw Exception(response.statusMessage);
       }

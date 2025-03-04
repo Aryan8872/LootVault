@@ -1,18 +1,17 @@
+// features/games/presentation/view/game_detail_view.dart
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:loot_vault/app/di/di.dart';
+import 'package:loot_vault/app/shared_prefs/token_shared_prefs.dart';
+import 'package:loot_vault/features/cart/presentation/view_model/cart_bloc.dart';
+import 'package:loot_vault/features/cart/presentation/view_model/cart_event.dart';
 import 'package:loot_vault/features/games/domain/entity/game_entity.dart';
 
 class GameDetailView extends StatelessWidget {
   final GameEntity game;
+  final TokenSharedPrefs tokenSharedPrefs = getIt<TokenSharedPrefs>();
 
-  const GameDetailView({super.key, required this.game});
-
-  void _checkout(BuildContext context) {
-    // Implement your checkout logic here
-    // For example, add the product to a cart or proceed to payment
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('${game.gameName} added to cart!')),
-    );
-  }
+  GameDetailView({super.key, required this.game});
 
   @override
   Widget build(BuildContext context) {
@@ -45,14 +44,35 @@ class GameDetailView extends StatelessWidget {
             ),
             const SizedBox(height: 16),
             Text(
-              'Description: ${game.gameDescription}', // Assuming you have a description field
+              'Description: ${game.gameDescription}',
               style: Theme.of(context).textTheme.bodyLarge,
             ),
             const Spacer(),
             Center(
               child: ElevatedButton(
-                onPressed: () => _checkout(context),
-                child: const Text('Checkout'),
+                onPressed: () async {
+                  final userDataResult = await tokenSharedPrefs.getUserData();
+                  userDataResult.fold(
+                    (failure) =>
+                        print('Failed to get user data: ${failure.message}'),
+                    (userData) {
+                      final gameid = game.gameId;
+                      final userId = userData['userId'];
+
+                      context.read<CartBloc>().add(
+                            AddToCartEvent(
+                              userId: userId!,
+                              productId: gameid!,
+                              productName: game.gameName,
+                              productPrice: game.gamePrice.toDouble(),
+                              productImage: game.gameImagePath,
+                              quantity: 1,
+                            ),
+                          );
+                    },
+                  );
+                },
+                child: const Text('Add to Cart'),
               ),
             ),
           ],

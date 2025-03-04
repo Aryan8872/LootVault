@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:loot_vault/app/constants/api_endpoints.dart';
+import 'package:loot_vault/app/di/di.dart';
+import 'package:loot_vault/features/cart/presentation/view_model/cart_bloc.dart';
 import 'package:loot_vault/features/games/domain/entity/game_entity.dart';
 import 'package:loot_vault/features/games/presentation/view/game_detail_view.dart';
 
@@ -35,12 +38,14 @@ class HorizontalProductCard extends StatelessWidget {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => GameDetailView(game: game),
+                      builder: (context) => BlocProvider.value(
+                        value: getIt<CartBloc>(),
+                        child: GameDetailView(game: game),
+                      ),
                     ),
                   );
                 },
                 child: Container(
-                
                   width: parentWidth * (isLandscape ? 0.30 : 0.37),
                   margin: EdgeInsets.only(right: screenWidth * 0.05),
                   decoration: BoxDecoration(
@@ -66,7 +71,8 @@ class HorizontalProductCard extends StatelessWidget {
                           child: Image.network(
                             'http://192.168.1.64:3000/public/uploads/${game.gameImagePath}',
                             fit: BoxFit.cover,
-                            height: parentHeight * 0.76, // Adjust height dynamically
+                            height: parentHeight *
+                                0.76, // Adjust height dynamically
                           ),
                         ),
                       ),

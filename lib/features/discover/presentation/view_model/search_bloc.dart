@@ -1,10 +1,11 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:loot_vault/features/discover/presentation/view_model/search_event.dart';
+import 'package:loot_vault/features/discover/presentation/view_model/search_state.dart';
 
 
 
 class SearchBloc extends Bloc<SearchEvent, SearchState> {
-  final SearchGames searchGames;
 
   SearchBloc(this.searchGames) : super(SearchInitial()) {
     on<SearchQueryChanged>((event, emit) async {

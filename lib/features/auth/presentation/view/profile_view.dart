@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -9,6 +10,7 @@ import 'package:loot_vault/core/common/snackbar/my_snackbar.dart';
 import 'package:loot_vault/features/auth/presentation/view_model/user_bloc.dart';
 import 'package:loot_vault/features/auth/presentation/view_model/user_event.dart';
 import 'package:loot_vault/features/auth/presentation/view_model/user_state.dart';
+import 'package:sensors_plus/sensors_plus.dart';
 
 class ProfileView extends StatelessWidget {
   const ProfileView({super.key});
@@ -17,9 +19,10 @@ class ProfileView extends StatelessWidget {
   Widget build(BuildContext context) {
     final userBloc = getIt<UserBloc>();
     final tokenSharedPrefs = getIt<TokenSharedPrefs>();
-    
+
     // Fetch user data when the widget is first built
     _fetchUserData(context, userBloc, tokenSharedPrefs);
+    listenToShake(userBloc, tokenSharedPrefs, context);
 
     return BlocProvider.value(
       value: userBloc,
@@ -35,7 +38,8 @@ class ProfileView extends StatelessWidget {
                 physics: const AlwaysScrollableScrollPhysics(),
                 child: Column(
                   children: [
-                    _buildProfileHeader(context, state, tokenSharedPrefs, userBloc),
+                    _buildProfileHeader(
+                        context, state, tokenSharedPrefs, userBloc),
                     _buildAccountSettings(context, state),
                     const SizedBox(height: 80), // Bottom padding
                   ],
@@ -48,7 +52,58 @@ class ProfileView extends StatelessWidget {
     );
   }
 
-  Future<void> _fetchUserData(BuildContext context, UserBloc userBloc, TokenSharedPrefs tokenSharedPrefs) async {
+  void listenToShake(UserBloc userBloc, TokenSharedPrefs tokenSharedPrefs,
+      BuildContext context) {
+    bool isCurrentlyShaking = false;
+    DateTime? lastShakeTime;
+    const double shakeThreshold =
+        11.0; // Adjusted threshold for shake sensitivity
+    const int cooldownPeriod = 2; // Cooldown period in seconds
+
+    accelerometerEvents.listen((AccelerometerEvent event) {
+      final now = DateTime.now();
+
+      // Check cooldown period
+      if (lastShakeTime != null &&
+          now.difference(lastShakeTime!).inSeconds < cooldownPeriod) {
+        return;
+      }
+
+      // Calculate total acceleration magnitude
+      final acceleration =
+          sqrt(event.x * event.x + event.y * event.y + event.z * event.z);
+
+      // Debugging: Print acceleration values
+      debugPrint('Acceleration: $acceleration');
+
+      // Detect shake if acceleration exceeds the threshold
+      if (acceleration > shakeThreshold && !isCurrentlyShaking) {
+        debugPrint('Shake detected! Triggering refresh...');
+
+        // Set shake state to prevent multiple triggers
+        isCurrentlyShaking = true;
+        lastShakeTime = now;
+
+        // Show a snackbar to indicate refresh
+        showMySnackBar(
+          context: context,
+          message: 'Refreshing profile data...',
+          color: Colors.blue,
+        );
+
+        // Fetch updated user data
+        _fetchUserData(context, userBloc, tokenSharedPrefs).then((_) {
+          // Reset shake state after cooldown
+          Future.delayed(const Duration(seconds: cooldownPeriod), () {
+            isCurrentlyShaking = false;
+          });
+        });
+      }
+    });
+  }
+
+  Future<void> _fetchUserData(BuildContext context, UserBloc userBloc,
+      TokenSharedPrefs tokenSharedPrefs) async {
     final userDataResult = await tokenSharedPrefs.getUserData();
     return userDataResult.fold(
       (failure) {
@@ -69,12 +124,8 @@ class ProfileView extends StatelessWidget {
     );
   }
 
-  Widget _buildProfileHeader(
-    BuildContext context, 
-    UserState state, 
-    TokenSharedPrefs tokenSharedPrefs,
-    UserBloc userBloc
-  ) {
+  Widget _buildProfileHeader(BuildContext context, UserState state,
+      TokenSharedPrefs tokenSharedPrefs, UserBloc userBloc) {
     ImageProvider profileImage;
     if (state.isSuccess && state.image != null && state.image!.isNotEmpty) {
       profileImage = NetworkImage(state.image!);
@@ -97,7 +148,9 @@ class ProfileView extends StatelessWidget {
                   debugPrint('Error loading profile image: $exception');
                 },
                 backgroundColor: Colors.grey.shade300,
-                child: state.isSuccess && state.image != null && state.image!.isNotEmpty
+                child: state.isSuccess &&
+                        state.image != null &&
+                        state.image!.isNotEmpty
                     ? null
                     : const Icon(Icons.person, size: 50, color: Colors.grey),
               ),
@@ -110,7 +163,8 @@ class ProfileView extends StatelessWidget {
                 ),
                 child: InkWell(
                   onTap: () async {
-                    final didUpdate = await _showEditProfileDialog(context, state, tokenSharedPrefs);
+                    final didUpdate = await _showEditProfileDialog(
+                        context, state, tokenSharedPrefs);
                     if (didUpdate == true) {
                       // Force refresh profile data
                       _fetchUserData(context, userBloc, tokenSharedPrefs);
@@ -127,7 +181,9 @@ class ProfileView extends StatelessWidget {
           ),
           const SizedBox(height: 15),
           Text(
-            state.isSuccess && state.username.isNotEmpty ? state.username : 'Username',
+            state.isSuccess && state.username.isNotEmpty
+                ? state.username
+                : 'Username',
             style: const TextStyle(
               fontSize: 24,
               fontWeight: FontWeight.bold,
@@ -135,7 +191,9 @@ class ProfileView extends StatelessWidget {
           ),
           const SizedBox(height: 5),
           Text(
-            state.isSuccess && state.fullName.isNotEmpty ? state.fullName : 'Full Name',
+            state.isSuccess && state.fullName.isNotEmpty
+                ? state.fullName
+                : 'Full Name',
             style: const TextStyle(
               color: Colors.grey,
               fontSize: 14,
@@ -144,7 +202,8 @@ class ProfileView extends StatelessWidget {
           const SizedBox(height: 15),
           ElevatedButton(
             onPressed: () async {
-              final didUpdate = await _showEditProfileDialog(context, state, tokenSharedPrefs);
+              final didUpdate = await _showEditProfileDialog(
+                  context, state, tokenSharedPrefs);
               if (didUpdate == true) {
                 // Force refresh profile data
                 _fetchUserData(context, userBloc, tokenSharedPrefs);
@@ -193,7 +252,9 @@ class ProfileView extends StatelessWidget {
           _buildSettingItem(
             icon: Icons.email,
             title: 'Email Address',
-            subtitle: state.isSuccess && state.email.isNotEmpty ? state.email : 'No email provided',
+            subtitle: state.isSuccess && state.email.isNotEmpty
+                ? state.email
+                : 'No email provided',
             isEditable: false,
           ),
           _buildSettingItem(
@@ -205,7 +266,9 @@ class ProfileView extends StatelessWidget {
           _buildSettingItem(
             icon: Icons.phone,
             title: 'Phone Number',
-            subtitle: state.isSuccess && state.phoneNo.isNotEmpty ? state.phoneNo : 'No phone number provided',
+            subtitle: state.isSuccess && state.phoneNo.isNotEmpty
+                ? state.phoneNo
+                : 'No phone number provided',
             isEditable: false,
           ),
           _buildSettingItem(
@@ -276,11 +339,8 @@ class ProfileView extends StatelessWidget {
     );
   }
 
-  Future<bool?> _showEditProfileDialog(
-    BuildContext context, 
-    UserState state,
-    TokenSharedPrefs tokenSharedPrefs
-  ) async {
+  Future<bool?> _showEditProfileDialog(BuildContext context, UserState state,
+      TokenSharedPrefs tokenSharedPrefs) async {
     // Return true if profile was updated, false otherwise
     return showDialog<bool>(
       context: context,
@@ -298,7 +358,7 @@ class ProfileView extends StatelessWidget {
 class EditProfileDialog extends StatefulWidget {
   final UserState initialState;
   final TokenSharedPrefs tokenSharedPrefs;
-  
+
   const EditProfileDialog({
     super.key,
     required this.initialState,
@@ -325,7 +385,7 @@ class _EditProfileDialogState extends State<EditProfileDialog> {
   @override
   void initState() {
     super.initState();
-    
+
     // Initialize controllers with existing data
     emailCont = TextEditingController(text: widget.initialState.email);
     passwordCont = TextEditingController();
@@ -393,7 +453,7 @@ class _EditProfileDialogState extends State<EditProfileDialog> {
       setState(() {
         _isUploading = true;
       });
-      
+
       final userDataResult = await widget.tokenSharedPrefs.getUserData();
       userDataResult.fold(
         (failure) {
@@ -408,22 +468,21 @@ class _EditProfileDialogState extends State<EditProfileDialog> {
         },
         (userData) async {
           final userId = userData['userId'];
-          if (userId != null && 
+          if (userId != null &&
               emailCont.text.isNotEmpty &&
               passwordCont.text.isNotEmpty) {
-            
             // Extract filename from image path if available
             String? filename;
             if (imagePath != null) {
               filename = imagePath!.split('/').last;
-              
+
               // If there's a new image, upload it first
               if (_img != null) {
                 context.read<UserBloc>().add(UploadImageEvent(
-                  context: context,
-                  img: _img!,
-                ));
-                
+                      context: context,
+                      img: _img!,
+                    ));
+
                 // Small delay to ensure image upload is processed
                 await Future.delayed(const Duration(milliseconds: 500));
               }
@@ -431,19 +490,19 @@ class _EditProfileDialogState extends State<EditProfileDialog> {
 
             // Update user data
             context.read<UserBloc>().add(UpdateUser(
-              context: context,
-              image: filename,
-              fullName: fullName.text,
-              userId: userId,
-              userName: userNameCont.text,
-              email: emailCont.text,
-              phoneNo: phNo.text,
-              password: passwordCont.text,
-            ));
+                  context: context,
+                  image: filename,
+                  fullName: fullName.text,
+                  userId: userId,
+                  userName: userNameCont.text,
+                  email: emailCont.text,
+                  phoneNo: phNo.text,
+                  password: passwordCont.text,
+                ));
 
             // Return true to indicate profile was updated
             Navigator.pop(context, true);
-            
+
             // Show success message
             showMySnackBar(
               context: context,
@@ -475,9 +534,9 @@ class _EditProfileDialogState extends State<EditProfileDialog> {
         radius: 40,
         backgroundImage: FileImage(_img!),
       );
-    } else if (widget.initialState.isSuccess && 
-               widget.initialState.image != null && 
-               widget.initialState.image!.isNotEmpty) {
+    } else if (widget.initialState.isSuccess &&
+        widget.initialState.image != null &&
+        widget.initialState.image!.isNotEmpty) {
       // Show existing profile image from network
       profileImage = CircleAvatar(
         radius: 40,
@@ -605,21 +664,23 @@ class _EditProfileDialogState extends State<EditProfileDialog> {
       ),
       actions: [
         TextButton(
-          onPressed: () => Navigator.of(context).pop(false), // Return false to indicate no update
+          onPressed: () => Navigator.of(context)
+              .pop(false), // Return false to indicate no update
           child: const Text('Cancel'),
         ),
         ElevatedButton(
-          onPressed: _isUploading ? null : _saveProfile, // Disable when uploading
+          onPressed:
+              _isUploading ? null : _saveProfile, // Disable when uploading
           style: ElevatedButton.styleFrom(
             backgroundColor: const Color(0xFF1E88E5),
           ),
-          child: _isUploading 
-            ? const SizedBox(
-                width: 20, 
-                height: 20, 
-                child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white)
-              ) 
-            : const Text('Save'),
+          child: _isUploading
+              ? const SizedBox(
+                  width: 20,
+                  height: 20,
+                  child: CircularProgressIndicator(
+                      strokeWidth: 2, color: Colors.white))
+              : const Text('Save'),
         ),
       ],
     );

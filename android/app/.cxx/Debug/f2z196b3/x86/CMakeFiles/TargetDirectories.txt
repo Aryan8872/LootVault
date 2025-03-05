@@ -1,0 +1,2 @@
+F:/Mobile/loot_vault/android/app/.cxx/Debug/f2z196b3/x86/CMakeFiles/edit_cache.dir
+F:/Mobile/loot_vault/android/app/.cxx/Debug/f2z196b3/x86/CMakeFiles/rebuild_cache.dir

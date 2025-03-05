@@ -3,6 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:loot_vault/core/error/failure.dart';
 import 'package:loot_vault/features/auth/domain/entity/auth_entity.dart';
 import 'package:loot_vault/features/auth/domain/use_case/register_user_usecase.dart';
+import 'package:loot_vault/features/auth/domain/use_case/update_user_usecase.dart';
 import 'package:mocktail/mocktail.dart';
 
 import 'auth_repo.mock.dart';

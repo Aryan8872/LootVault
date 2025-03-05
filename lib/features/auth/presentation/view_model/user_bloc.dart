@@ -23,7 +23,6 @@ class UserBloc extends Bloc<UserEvent, UserState> {
     on<UploadImageEvent>(_onUploadImageEvent);
     on<GetUserData>(_onGetData);
   }
-
   void _onUpdateUserEvent(
     UpdateUser event,
     Emitter<UserState> emit,
@@ -42,7 +41,8 @@ class UserBloc extends Bloc<UserEvent, UserState> {
 
     result.fold(
       (failure) {
-        emit(state.copyWith(isLoading: false, isSuccess: false, profileUpdated: false));
+        emit(state.copyWith(
+            isLoading: false, isSuccess: false, profileUpdated: false));
         showMySnackBar(
           context: event.context,
           message: "Failed to update profile: ${failure.message}",
@@ -53,11 +53,14 @@ class UserBloc extends Bloc<UserEvent, UserState> {
           isLoading: false,
           isSuccess: true,
           profileUpdated: true, // Trigger UI update
+          userId: success.userId, // Update state with new user details
+          username: success.username,
+          fullName: success.fullName,
+          email: success.email,
+          phoneNo: success.phoneNo,
+          password: success.password,
+          image: success.image,
         ));
-        showMySnackBar(
-          context: event.context,
-          message: "Profile updated successfully",
-        );
 
         // Reset profileUpdated after a short delay
         Future.delayed(const Duration(seconds: 1), () {
@@ -69,7 +72,8 @@ class UserBloc extends Bloc<UserEvent, UserState> {
 
   void _onGetData(GetUserData event, Emitter<UserState> emit) async {
     emit(state.copyWith(isLoading: true));
-    final result = await _getUserDataUsecase.call(GetUserParams(userId: event.userId));
+    final result =
+        await _getUserDataUsecase.call(GetUserParams(userId: event.userId));
     result.fold(
       (failure) => emit(state.copyWith(isLoading: false, isSuccess: false)),
       (userData) => emit(state.copyWith(
@@ -92,25 +96,25 @@ class UserBloc extends Bloc<UserEvent, UserState> {
   ) async {
     emit(state.copyWith(isLoading: true));
 
-    final result = await _uploadImageUsecase.call(UploadImageParams(image: event.img));
+    final result =
+        await _uploadImageUsecase.call(UploadImageParams(image: event.img));
 
     result.fold(
       (failure) {
-        emit(state.copyWith(isLoading: false, isSuccess: false));
+        emit(state.copyWith(
+            isLoading: false, isSuccess: false, profileUpdated: false));
         showMySnackBar(
           context: event.context,
-          message: "Failed to upload image: ${failure.message}",
+          message: "Image upload failed: ${failure.message}",
         );
       },
       (success) {
         emit(state.copyWith(
           isLoading: false,
-          isSuccess: true, // Update image in state
+          isSuccess: true,
+          profileUpdated: false,
+          image: event.img.path ?? state.image, // Keep previous image if null
         ));
-        showMySnackBar(
-          context: event.context,
-          message: "Image uploaded successfully",
-        );
       },
     );
   }

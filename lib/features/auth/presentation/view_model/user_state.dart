@@ -12,6 +12,19 @@ class UserState extends Equatable {
   final bool isSuccess;
   final bool? profileUpdated;
 
+  const UserState({
+    required this.userId,
+    required this.username,
+    required this.phoneNo,
+    required this.fullName,
+    required this.password,
+    required this.email,
+    this.image,
+    this.isLoading = false,
+    this.isSuccess = false,
+    this.profileUpdated = false,
+  });
+
   const UserState.initial()
       : isLoading = false,
         isSuccess = false,
@@ -24,24 +37,12 @@ class UserState extends Equatable {
         username = "",
         userId = "";
 
-  const UserState(
-      {required this.userId,
-      required this.username,
-      this.image,
-      this.profileUpdated,
-      required this.email,
-      required this.phoneNo,
-      required this.isLoading,
-      required this.isSuccess,
-      required this.fullName,
-      required this.password});
-
   UserState copyWith({
     String? userId,
     String? username,
     String? phoneNo,
     String? fullName,
-    String? image,
+    String? image, // Nullable image
     String? password,
     String? email,
     bool? isLoading,
@@ -49,19 +50,31 @@ class UserState extends Equatable {
     bool? isSuccess,
   }) {
     return UserState(
-        username: username ?? this.username,
-        phoneNo: phoneNo ?? this.phoneNo,
-        fullName: fullName ?? this.fullName,
-        image: image ?? this.image,
-        password: password ?? this.password,
-        email: email ?? this.email,
-        profileUpdated: profileUpdated??this.profileUpdated,
-        userId: userId ?? this.userId,
-        isLoading: isLoading ?? this.isLoading,
-        isSuccess: isSuccess ?? this.isSuccess);
+      userId: userId ?? this.userId,
+      username: username ?? this.username,
+      phoneNo: phoneNo ?? this.phoneNo,
+      fullName: fullName ?? this.fullName,
+      image: image ?? this.image, // Allow explicit `null`
+      password: password ?? this.password,
+      email: email ?? this.email,
+      profileUpdated: profileUpdated ?? this.profileUpdated,
+      isLoading: isLoading ?? this.isLoading,
+      isSuccess: isSuccess ?? this.isSuccess,
+    );
   }
 
   @override
   // TODO: implement props
-  List<Object?> get props => [userId, username, phoneNo, fullName, password];
+  List<Object?> get props => [
+        userId,
+        username,
+        phoneNo,
+        fullName,
+        password,
+        email,
+        image,
+        isLoading,
+        isSuccess,
+        profileUpdated
+      ];
 }

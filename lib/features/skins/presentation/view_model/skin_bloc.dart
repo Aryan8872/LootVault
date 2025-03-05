@@ -29,7 +29,6 @@ class SkinBloc extends Bloc<SkinEvent, SkinState> {
     required GetallskinsUsecase getAllskinsUseCase,
     required UploadskinImageUsecase uploadImageUsecase,
     required GetallPlatformUsecase getallPlatformUsecase,
-
   })  : _createskinUseCase = createskinUseCase,
         _getAllskinsUseCase = getAllskinsUseCase,
         _getallCategoriesUsecase = getallCategoriesUsecase,
@@ -53,7 +52,11 @@ class SkinBloc extends Bloc<SkinEvent, SkinState> {
     result.fold(
       (failure) =>
           emit(state.copyWith(isLoading: false, error: failure.message)),
-      (skins) => emit(state.copyWith(isLoading: false, skins: skins)),
+      (skins) {
+        print('skins');
+        print(skins);
+        emit(state.copyWith(isLoading: false, skins: skins));
+      },
     );
   }
 
@@ -63,7 +66,6 @@ class SkinBloc extends Bloc<SkinEvent, SkinState> {
     final result = await _createskinUseCase.call(CreateSkinParams(
         skinName: event.skinName,
         category: event.category,
-        
         skinDescription: event.skinDescription,
         skinPlatform: event.skinPlatform,
         skinImagePath: event.skinImagePath,
@@ -73,7 +75,8 @@ class SkinBloc extends Bloc<SkinEvent, SkinState> {
           emit(state.copyWith(isLoading: false, error: failure.message)),
       (batches) {
         emit(state.copyWith(isLoading: false, error: null));
-        showMySnackBar(context: event.context, message: "Skin added succesfully");
+        showMySnackBar(
+            context: event.context, message: "Skin added succesfully");
         add(Loadskins());
       },
     );
@@ -93,7 +96,7 @@ class SkinBloc extends Bloc<SkinEvent, SkinState> {
     );
   }
 
-    Future<void> _onLoadskinPlatorm(
+  Future<void> _onLoadskinPlatorm(
       LoadPlatform event, Emitter<SkinState> emit) async {
     emit(state.copyWith(isLoading: true));
     final result = await _getallPlatformUsecase.call();

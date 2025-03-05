@@ -69,7 +69,7 @@ class ForumView extends StatelessWidget {
                                   post.postId ?? '',
                                   post.title,
                                   post.content,
-                                  post.postUser,
+                                  post.postUser!,
                                   post.postComments?.length ?? 0,
                                   post.likes ?? [],
                                   post.dislikes ?? []);

@@ -12,4 +12,8 @@ abstract interface class IForumDataSource {
   Future<void> getPostDetails(String postId);
   Future<PostApiModel> replyComment(String postId, String commentId, String userId, String reply);
   Future<List<CommentEntity>>getComments(String postId);
+  Future<void> deletePost(String postId);
+  Future<void> editPost(String postId, String title, String content);
+  
+  Future<Map<String, String?>> getPostById(String postId) ;
 }

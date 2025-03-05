@@ -47,7 +47,9 @@ class PostApiModel extends Equatable {
       dislikes: dislikes ?? const [],
       likes: likes ?? const [],
       postComments: CommentApiModel.toEntityList(postComments ?? []),
-      postUser: user.id, // Map user._id to postUser
+      postUser: user.id,
+      postUsername:user.username
+       // Map user._id to postUser
     );
   }
 
@@ -55,7 +57,7 @@ class PostApiModel extends Equatable {
     return PostApiModel(
       postId: entity.postId,
       user: UserApiModel(
-        id: entity.postUser,
+        id: entity.postUser!,
         email: '', // Placeholder, adjust if email is needed
         username: '', // Placeholder, adjust if username is needed
       ),

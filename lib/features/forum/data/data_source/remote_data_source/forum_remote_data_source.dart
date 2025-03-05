@@ -61,7 +61,6 @@ class ForumRemoteDataSource implements IForumDataSource {
           await _dio.put('${ApiEndpoints.disLikePost}$postId', data: {
         "user": {"id": userId}
       });
-      print(response.data);
       if (response.statusCode == 200) {
         print("sucess ");
         return PostApiModel.fromJson(response.data);
@@ -81,16 +80,14 @@ class ForumRemoteDataSource implements IForumDataSource {
   }
 
   @override
-  Future<List<PostEntity>> getAllPosts(
-      {int page = 1, int limit = 2}) async {
+  Future<List<PostEntity>> getAllPosts({int page = 1, int limit = 2}) async {
     try {
       var response = await _dio.get(
         ApiEndpoints.getAllPosts,
       );
       if (response.statusCode == 200) {
-        print(response.data);
         GetAllPostDTO postAddDTO = GetAllPostDTO.fromJson(response.data);
-          return PostApiModel.toEntityList(postAddDTO.posts);
+        return PostApiModel.toEntityList(postAddDTO.posts);
       } else {
         throw Exception(response.statusMessage);
       }
@@ -112,16 +109,12 @@ class ForumRemoteDataSource implements IForumDataSource {
   @override
   Future<PostApiModel> likePost(String userId, String postId) async {
     try {
-      print('Making API request to like post: $postId');
       final response = await _dio.put(
         '${ApiEndpoints.likePost}$postId',
         data: {
           "user": {"id": userId}
         },
       );
-
-      print('API response: ${response.data}');
-      print('Status code: ${response.statusCode}');
 
       if (response.statusCode == 200) {
         return PostApiModel.fromJson(response.data);
@@ -149,31 +142,31 @@ class ForumRemoteDataSource implements IForumDataSource {
     );
     return PostApiModel.fromJson(response.data); // Ass
   }
-  
+
   @override
-  Future<List<CommentEntity>> getComments(String postId)async {
+  Future<List<CommentEntity>> getComments(String postId) async {
     try {
       var response = await _dio.get(
         '${ApiEndpoints.getComments}$postId',
       );
       if (response.statusCode == 200) {
         List<GetAllCommentDTO> commentDTOs = (response.data as List)
-          .map((data) => GetAllCommentDTO.fromJson(data))
-          .toList();
+            .map((data) => GetAllCommentDTO.fromJson(data))
+            .toList();
 
-      List<CommentEntity> comments = commentDTOs
-          .map((commentDTO) => CommentEntity(
-                commentId: commentDTO.id,
-                commentUser: commentDTO.user.id,
-                content: commentDTO.content,
-                createdAt: commentDTO.createdAt,
-                updatedAt: commentDTO.updatedAt,
-                replies: commentDTO.replies, // Assuming it's already in the correct format
-              ))
-          .toList();
+        List<CommentEntity> comments = commentDTOs
+            .map((commentDTO) => CommentEntity(
+                  commentId: commentDTO.id,
+                  commentUser: commentDTO.user.id,
+                  content: commentDTO.content,
+                  createdAt: commentDTO.createdAt,
+                  updatedAt: commentDTO.updatedAt,
+                  replies: commentDTO
+                      .replies, // Assuming it's already in the correct format
+                ))
+            .toList();
 
-      return comments;
-        
+        return comments;
       } else {
         throw Exception(response.statusMessage);
       }
@@ -184,5 +177,56 @@ class ForumRemoteDataSource implements IForumDataSource {
       print("Unexpected error: $e");
       throw Exception(e.toString());
     }
-   }
+  }
+
+  @override
+  Future<void> deletePost(String postId) {
+    try {
+      return _dio.delete(ApiEndpoints.deletePost + postId);
+    } on DioException catch (e) {
+      print('Dio error: ${e.message}');
+      throw Exception('Dio error: ${e.message}');
+    } catch (e) {
+      print('Unexpected error: $e');
+      throw Exception('Unexpected error: $e');
+    }
+  }
+
+  @override
+  Future<void> editPost(String postId, String title, String content) {
+    try {
+      return _dio.put(ApiEndpoints.editPost + postId,
+          data: {"title": title, "content": content});
+    } on DioException catch (e) {
+      print('Dio error: ${e.message}');
+      throw Exception('Dio error: ${e.message}');
+    } catch (e) {
+      print('Unexpected error: $e');
+      throw Exception('Unexpected error: $e');
+    }
+  }
+
+ @override
+Future<Map<String, String?>> getPostById(String postId) async {
+  try {
+    var response = await _dio.get('${ApiEndpoints.getPostById}$postId');
+    print('get post by id ${response.data}');
+
+    if (response.statusCode == 200) {
+      final Map<String, dynamic> post = response.data;
+
+      return {
+        'postId': post['_id']?.toString(), // Convert to String if needed
+        'title': post['title'] ?? '',
+        'content': post['content'] ?? '',
+      };
+    } else {
+      throw Exception(response.statusMessage);
+    }
+  } catch (e) {
+    print("Unexpected error: $e");
+    throw Exception(e.toString());
+  }
+}
+
 }

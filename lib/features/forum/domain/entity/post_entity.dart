@@ -3,7 +3,7 @@ import 'package:loot_vault/features/forum/domain/entity/comment_entity.dart';
 
 class PostEntity extends Equatable {
   final String? postId;
-  final String postUser;
+  final String? postUser;
   final String title;
   final String content;
   final List<String>? likes;
@@ -11,17 +11,31 @@ class PostEntity extends Equatable {
   final List<CommentEntity>? postComments;
   final String? createdAt;
   final String? updatedAt;
+  final String? postUsername;
 
   const PostEntity(
       {this.postId,
-      required this.postUser,
+       this.postUser,
       required this.title,
       required this.content,
       this.likes,
+      this.postUsername,
       this.dislikes,
       this.postComments,
       this.createdAt,
       this.updatedAt});
+
+  const PostEntity.empty()
+      : postId = "",
+        postUser = "",
+        postUsername="",
+        title = "",
+        content = "",
+        likes = const [],
+        dislikes =const  [],
+        postComments = const [],
+        createdAt = "",
+        updatedAt = "";
 
   @override
   // TODO: implement props
@@ -29,6 +43,7 @@ class PostEntity extends Equatable {
         postId,
         postUser,
         title,
+        postUsername,
         content,
         likes,
         dislikes,

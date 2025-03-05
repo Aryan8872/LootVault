@@ -12,6 +12,7 @@ abstract interface class IForumRepository {
   Future<Either<Failure, PostEntity>> getPostDetails(String postId);
   Future<Either<Failure, PostEntity>> replyComment(String postId, String commentId, String userId, String reply); // New Method
     Future<Either<Failure, List<CommentEntity>>> getComments(String postId);
-
-
+  Future<Either<Failure, void>> deletePost(String postId);
+  Future<Either<Failure, void>> editPost(String postId, String title, String content);
+   Future<Either<Failure, PostEntity>> getPostById(String postId); 
 }

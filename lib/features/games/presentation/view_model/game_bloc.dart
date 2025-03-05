@@ -52,7 +52,11 @@ class GameBloc extends Bloc<GameEvent, GameState> {
     result.fold(
       (failure) =>
           emit(state.copyWith(isLoading: false, error: failure.message)),
-      (games) => emit(state.copyWith(isLoading: false, games: games)),
+      (games) {
+        print('games');
+        print(games);
+        emit(state.copyWith(isLoading: false, games: games));
+      },
     );
   }
 
@@ -64,14 +68,15 @@ class GameBloc extends Bloc<GameEvent, GameState> {
         category: event.category,
         gameDescription: event.gameDescription,
         gameImagePath: event.gameImagePath,
-        gamePlatform :event.gamePlatform,
+        gamePlatform: event.gamePlatform,
         gamePrice: event.gamePrice));
     result.fold(
       (failure) =>
           emit(state.copyWith(isLoading: false, error: failure.message)),
       (batches) {
         emit(state.copyWith(isLoading: false, error: null));
-        showMySnackBar(context: event.context, message: "Game added successfully");
+        showMySnackBar(
+            context: event.context, message: "Game added successfully");
         add(LoadGames());
       },
     );
@@ -85,9 +90,7 @@ class GameBloc extends Bloc<GameEvent, GameState> {
       (failure) =>
           emit(state.copyWith(isLoading: false, error: failure.message)),
       (categories) {
-        emit(state.copyWith(
-            isLoading: false,
-            platform: categories));
+        emit(state.copyWith(isLoading: false, platform: categories));
       },
     );
   }

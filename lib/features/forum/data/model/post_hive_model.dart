@@ -56,7 +56,7 @@ class PostHiveModel extends Equatable {
   factory PostHiveModel.fromEntity(PostEntity entity) {
     return PostHiveModel(
       postId: entity.postId,
-      postUser: entity.postUser ,
+      postUser: entity.postUser !,
      postComments: entity.postComments != null
         ? CommentHiveModel.fromEntityList(entity.postComments!)
         : [], 

@@ -57,5 +57,7 @@ class ApiEndpoints {
   static const String replyComment =
       "/forum/posts/{postId}/comments/{commentId}/reply";
 
+  static const String getPostById = "/forum/posts/";
+
   static const String getComments = "/forum/posts/comments/get/";
 }

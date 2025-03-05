@@ -69,4 +69,23 @@ class ForumLocalDataSource implements IForumDataSource {
     // TODO: implement replyComment
     throw UnimplementedError();
   }
+  
+  @override
+  Future<void> deletePost(String postId) {
+    // TODO: implement deletePost
+    throw UnimplementedError();
+  }
+  
+  @override
+  Future<void> editPost(String postId, String title, String content) {
+    // TODO: implement editPost
+    throw UnimplementedError();
+  }
+  
+  @override
+  Future<Map<String, String?>> getPostById(String postId) {
+    // TODO: implement getPostById
+    throw UnimplementedError();
+  }
+
 }

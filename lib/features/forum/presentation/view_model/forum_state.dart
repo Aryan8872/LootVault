@@ -12,8 +12,10 @@ class ForumState extends Equatable {
   final String? postId;
   final int? commentLength;
   final int totalPosts;
+  final PostEntity? singlPost;
   final bool? isLoaded;
   final bool hasMore;
+  final bool? postEdit;
   final bool? shouldRefresh;
   final List<CommentEntity> comments; // Store the list of comments here.
 
@@ -22,6 +24,8 @@ class ForumState extends Equatable {
   const ForumState({
     required this.isLoading,
     required this.isSuccess,
+    this.postEdit,
+    this.singlPost = const PostEntity.empty(),
     required this.posts,
     this.commentLength,
     this.isLoaded,
@@ -37,8 +41,10 @@ class ForumState extends Equatable {
 
   const ForumState.initial()
       : isLoading = false,
+        singlPost = const PostEntity.empty(),
         isSuccess = false,
         posts = const [],
+        postEdit = false,
         currentPage = 1,
         postId = "",
         shouldRefresh = false,
@@ -58,6 +64,8 @@ class ForumState extends Equatable {
     int? totalPosts,
     bool? isLoaded,
     bool? hasMore,
+    bool? postEdit,
+    PostEntity? singlPost,
     bool? shouldRefresh,
     String? postId,
     int? limit,
@@ -70,14 +78,16 @@ class ForumState extends Equatable {
       isLoading: isLoading ?? this.isLoading,
       isSuccess: isSuccess ?? this.isSuccess,
       posts: posts ?? this.posts,
+      postEdit: postEdit ?? this.postEdit,  
+      singlPost: singlPost ?? this.singlPost,
       shouldRefresh: shouldRefresh ?? this.shouldRefresh,
       isLoaded: isLoaded ?? this.isLoaded,
-      comments: comments??this.comments,
+      comments: comments ?? this.comments,
       currentPage: currentPage ?? this.currentPage,
       totalPosts: totalPosts ?? this.totalPosts,
       hasMore: hasMore ?? this.hasMore,
       limit: limit ?? this.limit,
-      postId: postId??this.postId,
+      postId: postId ?? this.postId,
       error: error,
     );
   }
@@ -88,10 +98,12 @@ class ForumState extends Equatable {
         isSuccess,
         posts,
         currentPage,
+        singlPost,
         shouldRefresh,
         totalPosts,
         hasMore,
         comments,
+        postEdit,
         limit,
         postId,
         error,

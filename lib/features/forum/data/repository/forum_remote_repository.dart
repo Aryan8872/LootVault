@@ -18,8 +18,10 @@ class ForumRemoteRepository implements IForumRepository {
       return Left(ApiFailure(message: e.toString()));
     }
   }
+
   @override
-  Future<Either<Failure, List<CommentEntity>>> getComments(String postId) async {
+  Future<Either<Failure, List<CommentEntity>>> getComments(
+      String postId) async {
     try {
       final comments = await remoteDataSource.getComments(postId);
       return Right(comments);
@@ -82,6 +84,43 @@ class ForumRemoteRepository implements IForumRepository {
       final updatedPost =
           await remoteDataSource.replyComment(postId, commentId, userId, reply);
       return Right(updatedPost.toEntity());
+    } catch (e) {
+      return Left(ApiFailure(message: e.toString()));
+    }
+  }
+
+  @override
+  Future<Either<Failure, void>> deletePost(String postId) async {
+    try {
+      await remoteDataSource.deletePost(postId);
+      return const Right(null);
+    } catch (e) {
+      return Left(ApiFailure(message: e.toString()));
+    }
+  }
+
+  @override
+  Future<Either<Failure, void>> editPost(
+      String postId, String title, String content) async {
+    try {
+      await remoteDataSource.editPost(postId, title, content);
+      return const Right(null);
+    } catch (e) {
+      return Left(ApiFailure(message: e.toString()));
+    }
+  }
+
+  @override
+  Future<Either<Failure, PostEntity>> getPostById(String postId) async {
+    try {
+      final post = await remoteDataSource.getPostById(postId);
+      print('remote reposioty ko post ${post}');
+      final entity = PostEntity(
+        postId: post['postId'] ?? '',
+        title: post['title'] ?? '',
+        content: post['content'] ?? '',
+      );
+      return Right(entity);
     } catch (e) {
       return Left(ApiFailure(message: e.toString()));
     }

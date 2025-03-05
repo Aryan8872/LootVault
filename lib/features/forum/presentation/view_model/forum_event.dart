@@ -26,6 +26,29 @@ class CreatePostEvent extends ForumBlocEvent {
       {required this.postUser, required this.title, required this.content});
 }
 
+class ResetPostEditEvent extends ForumBlocEvent {}
+
+class EditPostEvent extends ForumBlocEvent {
+  final String postId;
+  final String title;
+  final String content;
+
+  const EditPostEvent(
+      {required this.postId, required this.title, required this.content});
+}
+
+class DeletePostEvent extends ForumBlocEvent {
+  final String postId;
+
+  const DeletePostEvent({required this.postId});
+}
+
+class GetPostByIdEvent extends ForumBlocEvent {
+  final String postId;
+
+  const GetPostByIdEvent({required this.postId});
+}
+
 class CreateCommentEvent extends ForumBlocEvent {
   final String comment;
   final String userId;

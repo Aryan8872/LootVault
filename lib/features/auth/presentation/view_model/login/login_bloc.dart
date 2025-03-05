@@ -66,33 +66,33 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
           });
 
           emit(state.copyWith(isLoading: false, isSuccess: true));
-          // add(
-          //   NavigateHomeScreenEvent(
-          //     context: event.context,
-          //     destination: const HomePageView(),
-          //   ),
-          // );
+          add(
+            NavigateHomeScreenEvent(
+              context: event.context,
+              destination: const HomePageView(),
+            ),
+          );
 
           // Check the role and navigate accordingly
           if (loginResponse.user.role == 'buyer') {
             // Navigate to BuyerHomePage if the role is 'buyer'
-            // add(
-            //   NavigateHomeScreenEvent(
-            //     context: event.context,
-            //     destination: const HomePageView(),
-            //   ),
-            // );
+            add(
+              NavigateHomeScreenEvent(
+                context: event.context,
+                destination: const HomePageView(),
+              ),
+            );
           } else if (loginResponse.user.role == 'seller') {
             // Navigate to SellerDashboard if the role is 'seller'
-            // add(
-            //   NavigateHomeScreenEvent(
-            //     context: event.context,
-            //     destination: BlocProvider.value(
-            //       value: getIt<SellerCubit>(),
-            //       child: const SellerHomePageView(),
-            //     ),
-            //   ),
-            // );
+            add(
+              NavigateHomeScreenEvent(
+                context: event.context,
+                destination: BlocProvider.value(
+                  value: getIt<SellerCubit>(),
+                  child: const SellerHomePageView(),
+                ),
+              ),
+            );
           }
         },
       );

@@ -34,9 +34,12 @@ import 'package:loot_vault/features/forum/data/repository/forum_repository_proxy
 import 'package:loot_vault/features/forum/domain/repository/forum_repository.dart';
 import 'package:loot_vault/features/forum/domain/use_case/create_comment_usecase.dart';
 import 'package:loot_vault/features/forum/domain/use_case/create_post_usecase.dart';
+import 'package:loot_vault/features/forum/domain/use_case/delete_post_usecase.dart';
 import 'package:loot_vault/features/forum/domain/use_case/dislike_post_usecae.dart';
+import 'package:loot_vault/features/forum/domain/use_case/edit_post_usecase.dart';
 import 'package:loot_vault/features/forum/domain/use_case/get_all_post_usecase.dart';
 import 'package:loot_vault/features/forum/domain/use_case/get_comments_usecase.dart';
+import 'package:loot_vault/features/forum/domain/use_case/get_post_usecase.dart';
 import 'package:loot_vault/features/forum/domain/use_case/like_post_usecase.dart';
 import 'package:loot_vault/features/forum/domain/use_case/reply_comment_usecase.dart';
 import 'package:loot_vault/features/forum/presentation/view_model/forum_bloc.dart';
@@ -329,9 +332,18 @@ _initForumDependencies() async {
       () => ReplyCommentUsecase(repository: getIt<ForumRemoteRepository>()));
   getIt.registerLazySingleton<GetCommentsUseCase>(
       () => GetCommentsUseCase(repositoy: getIt<ForumRemoteRepository>()));
+      getIt.registerLazySingleton<DeletePostUsecase>(
+      () => DeletePostUsecase(repository: getIt<ForumRemoteRepository>()));
+      getIt.registerLazySingleton<EditPostUsecase>(
+      () => EditPostUsecase(repository: getIt<ForumRemoteRepository>()));
+        getIt.registerLazySingleton<GetPostUsecase>(
+      () => GetPostUsecase(repository: getIt<ForumRemoteRepository>()));
 
   getIt.registerFactory<ForumBloc>(() => ForumBloc(
       createCommentUsecase: getIt(),
+      deletePostUsecase: getIt(),
+      getPostUsecase: getIt(),
+      editPostUsecase: getIt(),
       createPostUseCase: getIt(),
       dislikePostUseCse: getIt(),
       likePostUseCase: getIt(),

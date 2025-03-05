@@ -5,6 +5,7 @@ import 'package:loot_vault/app/shared_prefs/token_shared_prefs.dart';
 import 'package:loot_vault/core/common/snackbar/my_snackbar.dart';
 import 'package:loot_vault/features/forum/domain/entity/comment_entity.dart';
 import 'package:loot_vault/features/forum/domain/entity/post_entity.dart';
+import 'package:loot_vault/features/forum/presentation/view/edit_post_view.dart';
 import 'package:loot_vault/features/forum/presentation/view_model/forum_bloc.dart';
 import 'package:loot_vault/features/forum/presentation/view_model/forum_event.dart';
 import 'package:loot_vault/features/forum/presentation/view_model/forum_state.dart';
@@ -29,9 +30,7 @@ class ForumView extends StatelessWidget {
         listener: (context, state) {},
         child: BlocBuilder<ForumBloc, ForumState>(
           builder: (context, state) {
-            if (state.isLoading && state.posts.isEmpty) {
-              return const Center(child: CircularProgressIndicator());
-            } else if (state.error != null) {
+            if (state.error != null) {
               return Center(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -71,7 +70,7 @@ class ForumView extends StatelessWidget {
                                   post.postId ?? '',
                                   post.title,
                                   post.content,
-                                  post.postUser,
+                                  post.postUsername!,
                                   post.postComments?.length ?? 0,
                                   post.likes ?? [],
                                   post.dislikes ?? []);
@@ -117,138 +116,221 @@ class ForumView extends StatelessWidget {
   ) {
     final TokenSharedPrefs tokenSharedPrefs = getIt<TokenSharedPrefs>();
 
-    return Card(
-      margin: const EdgeInsets.only(bottom: 16.0),
-      color: Colors.white,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
-      elevation: 5,
-      shadowColor: Colors.deepPurple.withOpacity(0.2),
-      child: InkWell(
-        borderRadius: BorderRadius.circular(12.0),
-        onTap: () async {
-          final shouldRefresh = await Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => BlocProvider.value(
-                value: getIt<ForumBloc>()
-                  ..add(const GetAllPostEvent())
-                  ..add(GetCommentsEvent(postId: postId)),
-                child: PostDetailScreen(
-                  postId: postId,
-                  title: title,
-                  content: content,
-                  author: author,
-                  comments: comments,
-                  likes: likes,
-                  dislikes: dislikes,
+    return FutureBuilder(
+      future: tokenSharedPrefs.getUserData(),
+      builder: (context, snapshot) {
+        if (snapshot.hasError) {
+          return Center(child: Text('Error: ${snapshot.error}'));
+        } else {
+          final userData = snapshot.data;
+          final userId =
+              userData?.fold((failure) => '', (data) => data['userId'] ?? '');
+
+          return Card(
+            margin: const EdgeInsets.only(bottom: 16.0),
+            color: Colors.white,
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12.0)),
+            elevation: 5,
+            shadowColor: Colors.deepPurple.withOpacity(0.2),
+            child: InkWell(
+              borderRadius: BorderRadius.circular(12.0),
+              onTap: () async {
+                final shouldRefresh = await Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => BlocProvider.value(
+                      value: getIt<ForumBloc>()
+                        ..add(const GetAllPostEvent())
+                        ..add(GetCommentsEvent(postId: postId)),
+                      child: PostDetailScreen(
+                        postId: postId,
+                        title: title,
+                        content: content,
+                        author: author,
+                        comments: comments,
+                        likes: likes,
+                        dislikes: dislikes,
+                      ),
+                    ),
+                  ),
+                );
+                if (shouldRefresh == true) {
+                  context.read<ForumBloc>().add(const GetAllPostEvent());
+                }
+              },
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        const CircleAvatar(
+                          backgroundColor: Colors.deepPurple,
+                          child: Icon(Icons.person, color: Colors.white),
+                        ),
+                        const SizedBox(width: 8.0),
+                        Text(author,
+                            style: const TextStyle(
+                                color: Colors.black,
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold)),
+                        const Spacer(),
+                        if (author ==
+                            userId) // Show option button only if the post belongs to the current user
+                          IconButton(
+                            icon: const Icon(Icons.more_vert,
+                                color: Colors.deepPurple),
+                            onPressed: () {
+                              _showPostOptions(context, postId);
+                            },
+                          ),
+                      ],
+                    ),
+                    const SizedBox(height: 12.0),
+                    Text(title,
+                        style: const TextStyle(
+                            fontSize: 20, fontWeight: FontWeight.bold)),
+                    const SizedBox(height: 8.0),
+                    Text(content,
+                        style:
+                            const TextStyle(fontSize: 16, color: Colors.grey)),
+                    const SizedBox(height: 12.0),
+                    Row(
+                      children: [
+                        IconButton(
+                          icon: Icon(
+                            likes.contains(userId)
+                                ? Icons.thumb_up
+                                : Icons.thumb_up_outlined,
+                            color: Colors.deepPurple,
+                          ),
+                          onPressed: () async {
+                            if (userId!.isNotEmpty) {
+                              context.read<ForumBloc>().add(LikePostEvent(
+                                  postId: postId, userId: userId));
+                            } else {
+                              showMySnackBar(
+                                  context: context,
+                                  message: 'Unable to like post',
+                                  color: Colors.red);
+                            }
+                          },
+                        ),
+                        Text('${likes.length}',
+                            style: const TextStyle(color: Colors.deepPurple)),
+                        const SizedBox(width: 35),
+                        Text('${dislikes.length}',
+                            style: const TextStyle(color: Colors.deepPurple)),
+                        IconButton(
+                          icon: const Icon(Icons.thumb_down_alt_outlined,
+                              color: Colors.deepPurple),
+                          onPressed: () async {
+                            if (userId!.isNotEmpty) {
+                              context.read<ForumBloc>().add(DisLikePostEvent(
+                                  postId: postId, userId: userId));
+                            } else {
+                              showMySnackBar(
+                                  context: context,
+                                  message: 'Unable to dislike post',
+                                  color: Colors.red);
+                            }
+                          },
+                        ),
+                        const SizedBox(width: 16.0),
+                        const Icon(Icons.comment, color: Colors.deepPurple),
+                        const SizedBox(width: 8.0),
+                        Text('$comments',
+                            style: const TextStyle(color: Colors.deepPurple)),
+                        const Spacer(),
+                        const Icon(Icons.share, color: Colors.deepPurple),
+                      ],
+                    ),
+                  ],
                 ),
               ),
             ),
           );
-          // Refresh the posts if shouldRefresh is true
-          if (shouldRefresh == true) {
-            context.read<ForumBloc>().add(const GetAllPostEvent());
-          }
-        },
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                children: [
-                  const CircleAvatar(
-                    backgroundColor: Colors.deepPurple,
-                    child: Icon(Icons.person, color: Colors.white),
-                  ),
-                  const SizedBox(width: 8.0),
-                  Text(author,
-                      style: const TextStyle(
-                          color: Colors.black,
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold)),
-                ],
-              ),
-              const SizedBox(height: 12.0),
-              Text(title,
-                  style: const TextStyle(
-                      fontSize: 20, fontWeight: FontWeight.bold)),
-              const SizedBox(height: 8.0),
-              Text(content,
-                  style: const TextStyle(fontSize: 16, color: Colors.grey)),
-              const SizedBox(height: 12.0),
-              Row(
-                children: [
-                  IconButton(
-                    icon: Icon(
-                      likes.contains(tokenSharedPrefs.getUserData())
-                          ? Icons.thumb_up
-                          : Icons.thumb_up_outlined,
-                      color: Colors.deepPurple,
-                    ),
-                    onPressed: () async {
-                      final userDataResult =
-                          await tokenSharedPrefs.getUserData();
-                      userDataResult.fold(
-                        (failure) => print(
-                            'Failed to get user data: ${failure.message}'),
-                        (userData) {
-                          final userId = userData['userId'];
-                          if (userId != null && userId.isNotEmpty) {
-                            context.read<ForumBloc>().add(
-                                LikePostEvent(postId: postId, userId: userId));
-                          } else {
-                            showMySnackBar(
-                                context: context,
-                                message: 'Unable to like post',
-                                color: Colors.red);
-                          }
-                        },
-                      );
-                    },
-                  ),
-                  Text('${likes.length}',
-                      style: const TextStyle(color: Colors.deepPurple)),
-                  const SizedBox(width: 35),
-                  Text('${dislikes.length}',
-                      style: const TextStyle(color: Colors.deepPurple)),
-                  IconButton(
-                    icon: const Icon(Icons.thumb_down_alt_outlined,
-                        color: Colors.deepPurple),
-                    onPressed: () async {
-                      final userDataResult =
-                          await tokenSharedPrefs.getUserData();
-                      userDataResult.fold(
-                        (failure) => print(
-                            'Failed to get user data: ${failure.message}'),
-                        (userData) {
-                          final userId = userData['userId'];
-                          if (userId != null && userId.isNotEmpty) {
-                            context.read<ForumBloc>().add(DisLikePostEvent(
-                                postId: postId, userId: userId));
-                          } else {
-                            showMySnackBar(
-                                context: context,
-                                message: 'Unable to dislike post',
-                                color: Colors.red);
-                          }
-                        },
-                      );
-                    },
-                  ),
-                  const SizedBox(width: 16.0),
-                  const Icon(Icons.comment, color: Colors.deepPurple),
-                  const SizedBox(width: 8.0),
-                  Text('$comments',
-                      style: const TextStyle(color: Colors.deepPurple)),
-                  const Spacer(),
-                  const Icon(Icons.share, color: Colors.deepPurple),
-                ],
-              ),
-            ],
-          ),
+        }
+      },
+    );
+  }
+
+  void _showPostOptions(BuildContext context, String postId) {
+    showModalBottomSheet(
+      context: context,
+      builder: (context) {
+        return Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            ListTile(
+              leading: const Icon(Icons.edit, color: Colors.deepPurple),
+              title: const Text('Edit Post'),
+              onTap: () {
+                Navigator.pop(context); // Close the bottom sheet
+                _navigateToEditPostScreen(context, postId);
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.delete, color: Colors.red),
+              title: const Text('Delete Post'),
+              onTap: () {
+                Navigator.pop(context); // Close the bottom sheet
+                _deletePost(context, postId);
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _navigateToEditPostScreen(BuildContext context, String postId) {
+    // Navigate to the edit post screen
+    // You can implement this based on your app's navigation structure
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => BlocProvider.value(
+          value: getIt<ForumBloc>(),
+          child: EditPostScreen(postId: postId),
         ),
       ),
+    );
+    context.read<ForumBloc>().add(const GetAllPostEvent());
+  }
+
+  void _deletePost(BuildContext context, String postId) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('Delete Post'),
+          content: const Text('Are you sure you want to delete this post?'),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context); // Close the dialog
+              },
+              child: const Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: () {
+                getIt<ForumBloc>().add(DeletePostEvent(postId: postId));
+                Navigator.pop(context); // Close the dialog
+                showMySnackBar(
+                  context: context,
+                  message: 'Post deleted successfully',
+                  color: Colors.green,
+                );
+                context.read<ForumBloc>().add(const GetAllPostEvent());
+              },
+              child: const Text('Delete', style: TextStyle(color: Colors.red)),
+            ),
+          ],
+        );
+      },
     );
   }
 }

@@ -68,4 +68,22 @@ class ForumLocalRepository implements IForumRepository {
     // TODO: implement replyComment
     throw UnimplementedError();
   }
+  
+  @override
+  Future<Either<Failure, void>> deletePost(String postId) {
+    // TODO: implement deletePost
+    throw UnimplementedError();
+  }
+  
+  @override
+  Future<Either<Failure, void>> editPost(String postId, String title, String content) {
+    // TODO: implement editPost
+    throw UnimplementedError();
+  }
+  
+  @override
+  Future<Either<Failure, PostEntity>> getPostById(String postId) {
+    // TODO: implement getPostById
+    throw UnimplementedError();
+  }
 }

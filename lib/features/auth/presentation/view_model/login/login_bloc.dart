@@ -47,11 +47,11 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
       await result.fold(
         (failure) async {
           emit(state.copyWith(isLoading: false, isSuccess: false));
-          showMySnackBar(
-            context: event.context,
-            message: failure.message ?? "Login failed",
-            color: Colors.red,
-          );
+          // showMySnackBar(
+          //   context: event.context,
+          //   message: failure.message ?? "Login failed",
+          //   color: Colors.red,
+          // );
         },
         (loginResponse) async {
           // Store data using TokenSharedPrefs
@@ -66,40 +66,40 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
           });
 
           emit(state.copyWith(isLoading: false, isSuccess: true));
-          add(
-            NavigateHomeScreenEvent(
-              context: event.context,
-              destination: const HomePageView(),
-            ),
-          );
+          // add(
+          //   NavigateHomeScreenEvent(
+          //     context: event.context,
+          //     destination: const HomePageView(),
+          //   ),
+          // );
 
           // Check the role and navigate accordingly
           if (loginResponse.user.role == 'buyer') {
             // Navigate to BuyerHomePage if the role is 'buyer'
-            add(
-              NavigateHomeScreenEvent(
-                context: event.context,
-                destination: const HomePageView(),
-              ),
-            );
+            // add(
+            //   NavigateHomeScreenEvent(
+            //     context: event.context,
+            //     destination: const HomePageView(),
+            //   ),
+            // );
           } else if (loginResponse.user.role == 'seller') {
             // Navigate to SellerDashboard if the role is 'seller'
-            add(
-              NavigateHomeScreenEvent(
-                context: event.context,
-                destination: BlocProvider.value(
-                  value: getIt<SellerCubit>(),
-                  child: const SellerHomePageView(),
-                ),
-              ),
-            );
+            // add(
+            //   NavigateHomeScreenEvent(
+            //     context: event.context,
+            //     destination: BlocProvider.value(
+            //       value: getIt<SellerCubit>(),
+            //       child: const SellerHomePageView(),
+            //     ),
+            //   ),
+            // );
           }
         },
       );
     });
 
     on<NavigateHomeScreenEvent>((event, emit) {
-      Navigator.push(
+      Navigator.pushReplacement(
         event.context,
         MaterialPageRoute(
           builder: (context) => BlocProvider.value(
@@ -111,7 +111,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     });
 
     on<NavigateRegisterScreenEvent>((event, emit) {
-      Navigator.push(
+      Navigator.pushReplacement(
         event.context,
         MaterialPageRoute(
           builder: (context) => BlocProvider.value(

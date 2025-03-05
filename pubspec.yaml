@@ -33,6 +33,8 @@ dependencies:
   google_fonts: ^5.0.0
   flutter_native_splash: 2.4.0
   flutter_vector_icons: ^1.0.0
+  sensors_plus: ^6.1.1
+  proximity_sensor: ^1.3.7
   
 
 

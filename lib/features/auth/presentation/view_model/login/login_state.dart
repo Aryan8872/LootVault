@@ -1,6 +1,6 @@
 part of 'login_bloc.dart';
 
- class LoginState {
+ class LoginState extends Equatable{
    final bool isLoading;
   final bool isSuccess;
 
@@ -22,6 +22,10 @@ part of 'login_bloc.dart';
       isSuccess: isSuccess ?? this.isSuccess,
     );
   }
+  
+  @override
+  // TODO: implement props
+  List<Object?> get props => [isLoading, isSuccess];
   
 
 }

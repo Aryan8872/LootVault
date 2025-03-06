@@ -6,6 +6,8 @@ class ApiEndpoints {
   // static const String baseUrl = "http://10.0.2.2:3000/api";
     static const String baseUrl = "http://192.168.1.64:3000/api";
 
+    static const String ImagebaseUrl = "http://192.168.1.64:3000/public/uploads/";
+
 
 // ============================Auth Routes ==================================
 
@@ -45,6 +47,9 @@ class ApiEndpoints {
   //skins
   static const String getAllSkins = "/skins/";
   static const String addSkins = "/skins/add";
+
+    static const String search = '/advanced-search'; // Replace with your actual search endpoint
+
 
   //forum
   static const String getAllPosts = "/forum/posts/";

@@ -26,6 +26,10 @@ import 'package:loot_vault/features/cart/domain/usecase/add_to_cart_usecase.dart
 import 'package:loot_vault/features/cart/domain/usecase/clear_cart_usecase.dart';
 import 'package:loot_vault/features/cart/domain/usecase/get_cart_items_usecase.dart';
 import 'package:loot_vault/features/cart/presentation/view_model/cart_bloc.dart';
+import 'package:loot_vault/features/discover/data/data_source/remote_data_source/search_remote_data_source.dart';
+import 'package:loot_vault/features/discover/data/repository/searc_remote_repository.dart';
+import 'package:loot_vault/features/discover/domain/use_case/search_usecase.dart';
+import 'package:loot_vault/features/discover/presentation/view_model/search_bloc.dart';
 import 'package:loot_vault/features/forum/data/data_source/local_data_source/forum_local_data_source.dart';
 import 'package:loot_vault/features/forum/data/data_source/remote_data_source/forum_remote_data_source.dart';
 import 'package:loot_vault/features/forum/data/repository/forum_local_repository.dart';
@@ -94,6 +98,7 @@ Future<void> initDependencies() async {
   await _initOnboardingDependency();
   await _initForumDependencies();
   await _initCartDependency();
+  await _initSearchDependencies();
   await _initSellerDependencies();
 
 }
@@ -382,6 +387,34 @@ _initCartDependency() async {
     getCartItemsUseCase: getIt(),
     clearCartUsecase: getIt()
   ));
+}
+
+_initSearchDependencies()async{
+
+    getIt.registerLazySingleton<SearchRemoteDataSource>(
+      () => SearchRemoteDataSource(getIt<Dio>()));
+
+
+  getIt.registerLazySingleton<SearchRemoteRepository>(
+      () => SearchRemoteRepository(searchRemoteDataSource: getIt()));
+
+
+  // getIt.registerLazySingleton<ICartRepository>(() {
+  //   return ForumRepositoryProxy(
+  //     connectivityListener: getIt<ConnectivityListener>(),
+  //     remoteRepository: getIt<ForumRemoteRepository>(),
+  //     localRepository: getIt<ForumLocalRepository>(),
+  //   );
+  // });
+  getIt.registerLazySingleton<SearchGamesAndSkinsUsecase>(
+    () => SearchGamesAndSkinsUsecase(repository: getIt<SearchRemoteRepository>()),
+  );
+ 
+  
+  getIt.registerFactory<SearchBloc>(() => SearchBloc(
+    searchGamesAndSkinsUsecase: getIt()
+  ));
+
 }
 
 _initSellerDependencies() {

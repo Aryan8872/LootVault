@@ -24,9 +24,14 @@ class GameLocalRepository implements IGameRepository {
   }
 
   @override
-  Future<Either<Failure, List<GameEntity>>> getAllGames() {
-    // TODO: implement getAllGames
-    throw UnimplementedError();
+  Future<Either<Failure, List<GameEntity>>> getAllGames() async{
+    try{
+      final games = await gameLocalDataSource.getallGames();
+      return Right(games);
+    }
+    catch(e){
+      return Future.value(Left(LocalDatabaseFailure(message: '$e')));
+    }
   }
 
   @override

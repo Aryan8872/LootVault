@@ -10,10 +10,11 @@ import 'package:loot_vault/core/common/snackbar/my_snackbar.dart';
 import 'package:loot_vault/features/auth/presentation/view_model/user_bloc.dart';
 import 'package:loot_vault/features/auth/presentation/view_model/user_event.dart';
 import 'package:loot_vault/features/auth/presentation/view_model/user_state.dart';
+import 'package:loot_vault/features/home/presentation/view_model/home_cubit.dart';
 import 'package:sensors_plus/sensors_plus.dart';
 
 class ProfileView extends StatelessWidget {
-  const ProfileView({super.key});
+   ProfileView({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -74,7 +75,7 @@ class ProfileView extends StatelessWidget {
           sqrt(event.x * event.x + event.y * event.y + event.z * event.z);
 
       // Debugging: Print acceleration values
-      debugPrint('Acceleration: $acceleration');
+      // debugPrint('Acceleration: $acceleration');
 
       // Detect shake if acceleration exceeds the threshold
       if (acceleration > shakeThreshold && !isCurrentlyShaking) {
@@ -128,7 +129,9 @@ class ProfileView extends StatelessWidget {
       TokenSharedPrefs tokenSharedPrefs, UserBloc userBloc) {
     ImageProvider profileImage;
     if (state.isSuccess && state.image != null && state.image!.isNotEmpty) {
-      profileImage = NetworkImage(state.image!);
+      profileImage = NetworkImage(
+        'http://192.168.1.64:3000/public/uploads/${state.image}',
+      );
     } else {
       profileImage = const AssetImage('assets/images/avatar_placeholder.png');
     }
@@ -258,12 +261,6 @@ class ProfileView extends StatelessWidget {
             isEditable: false,
           ),
           _buildSettingItem(
-            icon: Icons.vpn_key,
-            title: 'Password',
-            subtitle: 'Last changed 3 months ago',
-            isEditable: false,
-          ),
-          _buildSettingItem(
             icon: Icons.phone,
             title: 'Phone Number',
             subtitle: state.isSuccess && state.phoneNo.isNotEmpty
@@ -273,9 +270,13 @@ class ProfileView extends StatelessWidget {
           ),
           _buildSettingItem(
             icon: Icons.login_outlined,
-            title: 'Linked Accounts',
-            subtitle: 'Steam, Xbox, PlayStation',
+            title: 'Log out',
+            subtitle: '',
             isEditable: false,
+            onTap: () {
+              Navigator.pop(context);
+              getIt<HomeCubit>().logout(context);
+            },
           ),
         ],
       ),

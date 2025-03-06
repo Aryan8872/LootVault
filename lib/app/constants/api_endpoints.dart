@@ -22,7 +22,7 @@ class ApiEndpoints {
 
   //auth
 
-  static const String registerStudent = "/auth/register";
+  static const String registerStudent = "/user/register";
   static const String loginStudent = "/user/login";
   static const String uploadImage = "/customer/uploadImage";
   static const String refreshToken = "/user/refresh";

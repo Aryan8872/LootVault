@@ -2,7 +2,6 @@ import 'dart:io';
 
 import 'package:dartz/dartz.dart';
 import 'package:loot_vault/core/common/internet_checker/connectivity_listener.dart';
-import 'package:loot_vault/core/common/internet_checker/internet_checker.dart';
 import 'package:loot_vault/core/error/failure.dart';
 import 'package:loot_vault/features/games/data/repository/game_local_repository.dart';
 import 'package:loot_vault/features/games/data/repository/game_remote_repository.dart';
@@ -115,7 +114,24 @@ class GameRepositoryProxy implements IGameRepository {
       // ✅ Fetch latest status
       try {
         print("Connected to the internet");
-        return await remoteRepository.getAllGames();
+        
+         final eitherGames = await remoteRepository.getAllGames();
+
+      return eitherGames.fold(
+        (failure) {
+          print("Remote call failed, falling back to local storage");
+          return localRepository.getAllGames();
+        },
+        (games) async {
+          // ✅ Save to Hive database
+         // ✅ Save each game individually
+          for (var game in games) {
+            await localRepository.createGame(game);
+          }
+          return Right(games);
+        },
+      );
+      
       } catch (e) {
         print("Remote call failed, falling back to local storage");
         return await localRepository.getAllGames();

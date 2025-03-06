@@ -13,6 +13,7 @@ class HiveService {
     Hive.init(path);
     Hive.registerAdapter(AuthHiveModelAdapter());
     Hive.registerAdapter(PostHiveModelAdapter());
+    Hive.registerAdapter(GameHiveModelAdapter());
   }
 
   Future<AuthHiveModel?> login(String email, String password) async {
@@ -50,17 +51,15 @@ class HiveService {
   }
 
   Future<void> createPost(PostHiveModel model) async {
-    print('hive service ma data ${model}');
+    print('hive service ma data $model');
     var box = await Hive.openBox<PostHiveModel>(HiveTableConstant.postBox);
     await box.put(model.postId, model);
   }
 
   Future<List<PostHiveModel>> getallPost() async {
     var box = await Hive.openBox<PostHiveModel>(HiveTableConstant.postBox);
-    var post =  box.values.toList();
+    var post = box.values.toList();
     print("post haru hive bata ${post.toList()}");
     return post;
   }
-
-
 }

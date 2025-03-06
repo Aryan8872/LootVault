@@ -1,6 +1,7 @@
 import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:loot_vault/core/error/failure.dart';
+import 'package:loot_vault/features/auth/domain/entity/login_response.dart';
 import 'package:loot_vault/features/auth/domain/use_case/login_usecase.dart';
 import 'package:mocktail/mocktail.dart';
 
@@ -19,13 +20,15 @@ void main() {
 
   test("should call the authrepo.login with correct username and password",
       () async {
+    // Arrange
     when(() => repository.loginUser(any(), any()))
         .thenAnswer((invocation) async {
       final email = invocation.positionalArguments[0] as String;
       final password = invocation.positionalArguments[1] as String;
 
       if (email == "i@gmail.com" && password == "ishiki123") {
-        return const Right('token');
+        // Return a JSON string that matches the expected structure of LoginResponse
+        return const Right('{"accessToken": "token", "refreshToken": "refreshToken", "user": {"id": "1", "email": "i@gmail.com", "role": "user"}}');
       } else {
         return Left(ApiFailure(message: "invalid email or password"));
       }
@@ -37,11 +40,19 @@ void main() {
     when(() => tokenSharedPrefs.getToken())
         .thenAnswer((_) async => const Right<Failure, String>('token'));
 
+    // Act
     final result = await usecase(
         const LoginParams(email: "i@gmail.com", password: "ishiki123"));
 
-    // Assertions
-    expect(result, const Right('token'));
+    // Assert
+    expect(result, isA<Right<Failure, LoginResponse>>());
+    expect(
+        result.getOrElse(() => LoginResponse(
+              accessToken: '',
+              refreshToken: '',
+              user: User(id: '', email: '', role: ''),
+            )).accessToken,
+        'token');
 
     verify(() => repository.loginUser("i@gmail.com", "ishiki123")).called(1);
     verify(() => tokenSharedPrefs.saveToken('token')).called(1);
@@ -61,7 +72,8 @@ void main() {
       if (email != "i@gmail.com" || password != "ishiki123") {
         return Left(ApiFailure(message: "invalid email or password"));
       } else {
-        return const Right('token');
+        return const Right(
+            '{"accessToken": "token", "refreshToken": "refreshToken", "user": {"id": "1", "email": "i@gmail.com", "role": "user"}}');
       }
     });
 
@@ -70,14 +82,9 @@ void main() {
         const LoginParams(email: "wrong@gmail.com", password: "wrongpass"));
 
     // Assert
-    expect(
-      result,
-      isA<Left<Failure, String>>().having(
-        (l) => (l as Left).value.message,
-        'message',
-        equals("invalid email or password"),
-      ),
-    );
+    expect(result, isA<Left<Failure, LoginResponse>>());
+    expect((result as Left<Failure, LoginResponse>).value.message,
+        equals("invalid email or password"));
 
     verify(() => repository.loginUser("wrong@gmail.com", "wrongpass"))
         .called(1);

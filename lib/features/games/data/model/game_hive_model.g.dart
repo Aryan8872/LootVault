@@ -19,10 +19,10 @@ class GameHiveModelAdapter extends TypeAdapter<GameHiveModel> {
     return GameHiveModel(
       gameId: fields[0] as String?,
       gameName: fields[1] as String,
-      gamePlatform: fields[6] as String,
+      gamePlatform: fields[6] as dynamic,
       gameDescription: fields[2] as String,
       gameImagePath: fields[3] as String,
-      category: fields[4] as String,
+      category: fields[4] as dynamic,
       gamePrice: fields[5] as num,
     );
   }

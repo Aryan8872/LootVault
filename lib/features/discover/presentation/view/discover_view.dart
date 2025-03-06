@@ -6,7 +6,11 @@ import 'package:loot_vault/features/discover/presentation/view_model/search_bloc
 import 'package:loot_vault/features/discover/presentation/view_model/search_event.dart';
 import 'package:loot_vault/features/discover/presentation/view_model/search_state.dart';
 import 'package:loot_vault/features/games/domain/entity/game_entity.dart';
+import 'package:loot_vault/features/games/presentation/view/game_detail_view.dart';
+import 'package:loot_vault/features/games/presentation/view_model/game_bloc.dart';
 import 'package:loot_vault/features/skins/domain/entity/skin_entity.dart';
+import 'package:loot_vault/features/skins/presentation/view/skin_detail_view.dart';
+import 'package:loot_vault/features/skins/presentation/view_model/skin_bloc.dart';
 
 class DiscoverView extends StatelessWidget {
   const DiscoverView({super.key});
@@ -278,45 +282,57 @@ class _GameCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: 120,
-      margin: const EdgeInsets.only(right: 12),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Expanded(
-            child: AspectRatio(
-              aspectRatio: 3 / 4,
-              child: Container(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(8),
-                  color: Colors.grey.shade200,
-                ),
-                clipBehavior: Clip.antiAlias,
-                child: Image.network(
-                  '${ApiEndpoints.ImagebaseUrl}${game.gameImagePath}',
-                  fit: BoxFit.cover,
-                  errorBuilder: (context, error, stackTrace) {
-                    return const Icon(Icons.image_not_supported);
-                  },
+    return GestureDetector(
+      onTap: () async {
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => BlocProvider.value(
+                    value: getIt<GameBloc>(),
+                    child: GameDetailView(
+                      game: game,
+                    ))));
+      },
+      child: Container(
+        width: 120,
+        margin: const EdgeInsets.only(right: 12),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Expanded(
+              child: AspectRatio(
+                aspectRatio: 3 / 4,
+                child: Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(8),
+                    color: Colors.grey.shade200,
+                  ),
+                  clipBehavior: Clip.antiAlias,
+                  child: Image.network(
+                    '${ApiEndpoints.ImagebaseUrl}${game.gameImagePath}',
+                    fit: BoxFit.cover,
+                    errorBuilder: (context, error, stackTrace) {
+                      return const Icon(Icons.image_not_supported);
+                    },
+                  ),
                 ),
               ),
             ),
-          ),
-          const SizedBox(height: 4),
-          Text(
-            game.gameName,
-            style: const TextStyle(fontWeight: FontWeight.bold),
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-          ),
-          Text(
-            game.gameDescription,
-            style: TextStyle(fontSize: 12, color: Colors.grey.shade700),
-            maxLines: 2,
-            overflow: TextOverflow.ellipsis,
-          ),
-        ],
+            const SizedBox(height: 4),
+            Text(
+              game.gameName,
+              style: const TextStyle(fontWeight: FontWeight.bold),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+            ),
+            Text(
+              game.gameDescription,
+              style: TextStyle(fontSize: 12, color: Colors.grey.shade700),
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -329,46 +345,78 @@ class _SkinCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: 120,
-      margin: const EdgeInsets.only(right: 12),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Expanded(
-            child: AspectRatio(
-              aspectRatio: 3 / 4,
-              child: Container(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(8),
-                  color: Colors.grey.shade200,
-                ),
-                clipBehavior: Clip.antiAlias,
-                child: Image.network(
-                  '${ApiEndpoints.ImagebaseUrl}${skin.skinImagePath}',
-                  fit: BoxFit.cover,
-                  errorBuilder: (context, error, stackTrace) {
-                    return const Icon(Icons.image_not_supported);
-                  },
+    return GestureDetector(
+      onTap: () {
+        final categoryName = skin.category.categoryName;
+        final platformName = skin.skinPlatform.platformName; 
+        
+        Navigator.push(context, MaterialPageRoute(
+          builder: (context) {
+            return BlocProvider.value(
+              value: getIt<SkinBloc>(),
+              child: SkinDetailView(game:skin,categoryName: categoryName,platformName: platformName,),
+            );
+          },
+        ));
+      },
+      child: Container(
+        width: 120,
+        margin: const EdgeInsets.only(right: 12),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Expanded(
+              child: AspectRatio(
+                aspectRatio: 3 / 4,
+                child: Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(8),
+                    color: Colors.grey.shade200,
+                  ),
+                  clipBehavior: Clip.antiAlias,
+                  child: Image.network(
+                    '${ApiEndpoints.ImagebaseUrl}${skin.skinImagePath}',
+                    fit: BoxFit.cover,
+                    errorBuilder: (context, error, stackTrace) {
+                      return const Icon(Icons.image_not_supported);
+                    },
+                  ),
                 ),
               ),
             ),
-          ),
-          const SizedBox(height: 4),
-          Text(
-            skin.skinName,
-            style: const TextStyle(fontWeight: FontWeight.bold),
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-          ),
-          Text(
-            skin.skinDescription,
-            style: TextStyle(fontSize: 12, color: Colors.grey.shade700),
-            maxLines: 2,
-            overflow: TextOverflow.ellipsis,
-          ),
-        ],
+            const SizedBox(height: 4),
+            Text(
+              skin.skinName,
+              style: const TextStyle(fontWeight: FontWeight.bold),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+            ),
+            Text(
+              skin.skinDescription,
+              style: TextStyle(fontSize: 12, color: Colors.grey.shade700),
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+            ),
+          ],
+        ),
       ),
     );
   }
+}
+Map<String, dynamic> skinToMap(SkinEntity skin) {
+  return {
+    'skinId': skin.skinId,
+    'skinName': skin.skinName,
+    'skinDescription': skin.skinDescription,
+    'skinPrice': skin.skinPrice,
+    'skinImagePath': skin.skinImagePath,
+    'category': {
+      'categoryId': skin.category.categoryId,
+      'categoryName': skin.category.categoryName,
+    },
+    'skinPlatform': {
+      'platformId': skin.skinPlatform.platformId,
+      'platformName': skin.skinPlatform.platformName,
+    },
+  };
 }

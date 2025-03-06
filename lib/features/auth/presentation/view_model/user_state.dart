@@ -78,3 +78,4 @@ class UserState extends Equatable {
         profileUpdated
       ];
 }
+  

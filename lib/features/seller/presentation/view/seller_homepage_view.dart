@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:loot_vault/app/di/di.dart';
+import 'package:loot_vault/features/home/presentation/view_model/home_cubit.dart';
 import 'package:loot_vault/features/seller/presentation/view_model/seller_cubit.dart';
 import 'package:loot_vault/features/seller/presentation/view_model/seller_state.dart';
 
@@ -25,15 +27,14 @@ class _SellerHomePageViewState extends State<SellerHomePageView> {
         ),
         actions: [
           IconButton(
-            icon: const Icon(Icons.notifications),
+            icon: const Icon(Icons.logout),
             onPressed: () {
-              // Navigate to notifications
+              getIt<HomeCubit>().logout(context);
             },
           ),
           IconButton(
             icon: const Icon(Icons.settings),
             onPressed: () {
-              // Navigate to settings
             },
           ),
         ],
@@ -66,9 +67,8 @@ class _SellerHomePageViewState extends State<SellerHomePageView> {
             child: BottomNavigationBar(
               items: [
                 _buildBarItem(Icons.dashboard, "Dashboard", 0, state.selectedIndex),
-                _buildBarItem(Icons.add_circle, "Add Product", 1, state.selectedIndex),
-                _buildBarItem(Icons.inventory, "Products", 2, state.selectedIndex),
-                _buildBarItem(Icons.person, "Profile", 3, state.selectedIndex),
+                _buildBarItem(Icons.add_circle, "Add Game", 1, state.selectedIndex),
+                _buildBarItem(Icons.inventory, "Add skin", 2, state.selectedIndex),
               ],
               currentIndex: state.selectedIndex,
               onTap: (index) {

@@ -2,14 +2,13 @@ import 'package:dio/dio.dart';
 import 'package:get_it/get_it.dart';
 import 'package:loot_vault/app/shared_prefs/token_shared_prefs.dart';
 import 'package:loot_vault/core/common/internet_checker/connectivity_listener.dart';
-import 'package:loot_vault/core/common/internet_checker/internet_checker.dart';
-import 'package:loot_vault/core/common/internet_checker/internet_checker_impl.dart';
 import 'package:loot_vault/core/network/api_service.dart';
 import 'package:loot_vault/core/network/hive_service.dart';
 import 'package:loot_vault/features/auth/data/data_source/local_data_source/auth_local_data_source.dart';
 import 'package:loot_vault/features/auth/data/data_source/remote_data_source/auth_remote_data_source.dart';
 import 'package:loot_vault/features/auth/data/repository/auth_local_repository.dart';
 import 'package:loot_vault/features/auth/data/repository/auth_remote_repository.dart';
+import 'package:loot_vault/features/auth/domain/entity/login_response.dart';
 import 'package:loot_vault/features/auth/domain/repository/auth_repository.dart';
 import 'package:loot_vault/features/auth/domain/use_case/get_user_data_usecase.dart';
 import 'package:loot_vault/features/auth/domain/use_case/login_usecase.dart';
@@ -85,7 +84,6 @@ Future<void> initDependencies() async {
 
   // Register InternetChecker
 // Register InternetChecker
-  getIt.registerLazySingleton<IInternetChecker>(() => InternetCheckerImpl());
   getIt.registerLazySingleton<ConnectivityListener>(
       () => ConnectivityListener());
 
@@ -388,6 +386,7 @@ _initCartDependency() async {
     clearCartUsecase: getIt()
   ));
 }
+
 
 _initSearchDependencies()async{
 

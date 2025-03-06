@@ -16,8 +16,29 @@ class DashBoardView extends StatefulWidget {
 
 class _DashBoardViewState extends State<DashBoardView> {
   late final PageController pageController;
+  late final Timer heroSliderTimer;
+  int pageNo = 0;
 
-  late final heroSliderTimer;
+  final List<String> heroSlider = [
+    "https://i.pinimg.com/736x/29/c5/48/29c548cfeadcd3dd44458d1ce5be3a0a.jpg",
+    "https://xxboxnews.blob.core.windows.net/prod/sites/2/2021/11/Black-Friday-Hero-Image.jpg",
+    "https://xxboxnews.blob.core.windows.net/prod/sites/2/2021/02/Xbox-Lunar-New-Year-16x9-NA.jpg",
+    "https://media.rockstargames.com/rockstargames/img/global/news/upload/actual_1345843377.jpg",
+    "https://2game.com/wp/wp-content/uploads/2022/06/TestBanner1.jpg",
+    "https://i.ytimg.com/vi/ILDRSvXJIsM/maxresdefault.jpg",
+    "https://www.pcworld.com/wp-content/uploads/2023/07/epic-games-sale-header-image.jpg?quality=50&strip=all&w=1024",
+    "https://cdn.europosters.eu/image/hp/106405.jpg",
+    "https://sm.ign.com/t/ign_in/screenshot/default/steam_kd57.1280.jpg",
+  ];
+
+  @override
+  void initState() {
+    super.initState();
+    pageController = PageController(
+        initialPage: heroSlider.length ~/ 2, viewportFraction: 0.85);
+    pageNo = heroSlider.length ~/ 2;
+    heroSliderTimer = getTimer();
+  }
 
   Timer getTimer() {
     return Timer.periodic(const Duration(seconds: 3), (timer) {
@@ -30,127 +51,89 @@ class _DashBoardViewState extends State<DashBoardView> {
     });
   }
 
-  final List heroSlider = [
-    "https://i.pinimg.com/736x/29/c5/48/29c548cfeadcd3dd44458d1ce5be3a0a.jpg",
-    "https://xxboxnews.blob.core.windows.net/prod/sites/2/2021/11/Black-Friday-Hero-Image.jpg",
-    "https://xxboxnews.blob.core.windows.net/prod/sites/2/2021/02/Xbox-Lunar-New-Year-16x9-NA.jpg",
-    "https://media.rockstargames.com/rockstargames/img/global/news/upload/actual_1345843377.jpg",
-    "https://2game.com/wp/wp-content/uploads/2022/06/TestBanner1.jpg",
-    "https://i.ytimg.com/vi/ILDRSvXJIsM/maxresdefault.jpg",
-    "https://www.pcworld.com/wp-content/uploads/2023/07/epic-games-sale-header-image.jpg?quality=50&strip=all&w=1024",
-    "https://cdn.europosters.eu/image/hp/106405.jpg",
-    "https://sm.ign.com/t/ign_in/screenshot/default/steam_kd57.1280.jpg",
-  ];
-
-  int pageNo = 0;
-
-  @override
-  void initState() {
-    super.initState();
-    pageController = PageController(
-        initialPage: heroSlider.length ~/ 2, viewportFraction: 0.85);
-    pageNo = heroSlider.length ~/ 2;
-    heroSliderTimer = getTimer();
-  }
-
   @override
   void dispose() {
     pageController.dispose();
+    heroSliderTimer.cancel();
     super.dispose();
   }
 
-  final List popularGameData = [
-    "https://i.pinimg.com/736x/40/dd/1f/40dd1ff8dd574aaaeb3e5e9eabffab9c.jpg",
-    "https://i.pinimg.com/736x/7f/f0/18/7ff018e5d55e5d537d23ae652d586756.jpg",
-    "https://i.pinimg.com/736x/62/2c/d7/622cd7673afb853f034ceaadd690c8b1.jpg",
-    "https://i.pinimg.com/736x/33/45/e3/3345e363bc0079349e43fedd2ecf6c5d.jpg",
-    "https://i.pinimg.com/736x/7c/02/15/7c0215275347ca42a7d208e3ae596b59.jpg",
-    "https://i.pinimg.com/736x/d7/4f/f9/d74ff99b4deb5189b3ea809705912bd7.jpg",
-    "https://i.pinimg.com/736x/1d/39/36/1d393626b103b734b93e960ac33dd6c7.jpg"
-  ];
-
-  final List giftcardData = [
-    "./assets/images/giftcard1.jpg",
-    "./assets/images/giftcard2.jpg",
-    "./assets/images/giftcard3.jpg",
-    "./assets/images/giftcard4.jpg",
-    "./assets/images/giftcard5.jpg",
-    "./assets/images/giftcard6.jpg",
-    "./assets/images/giftcard7.jpg",
-  ];
+  Future<void> _onRefresh(BuildContext context) async {
+    // Dispatch events to reload games and skins
+    context.read<GameBloc>().add(LoadGames());
+    context.read<SkinBloc>().add(Loadskins());
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(12),
+        child: RefreshIndicator(
+          onRefresh: () => _onRefresh(context), // Refresh callback
           child: SingleChildScrollView(
-            child: Column(children: [
-              SearchAnchor(
-                builder: (BuildContext context, SearchController controller) {
-                  return SearchBar(
-                    controller: controller,
-                    backgroundColor: const WidgetStatePropertyAll(Colors.white),
-                    padding: const WidgetStatePropertyAll<EdgeInsets>(
-                      EdgeInsets.symmetric(horizontal: 16.0),
-                    ),
-                    onTap: () {
-                      controller.openView();
-                    },
-                    onChanged: (_) {
-                      controller.openView();
-                    },
-                    leading: const Icon(Icons.search),
-                    hintText: "Search",
-                    hintStyle: const WidgetStatePropertyAll(
-                      TextStyle(
-                        color: Colors.grey,
-                        fontSize: 16,
+            padding: const EdgeInsets.all(12),
+            child: Column(
+              children: [
+                // Search Bar
+                SearchAnchor(
+                  builder: (BuildContext context, SearchController controller) {
+                    return SearchBar(
+                      controller: controller,
+                      backgroundColor: const WidgetStatePropertyAll(Colors.white),
+                      padding: const WidgetStatePropertyAll<EdgeInsets>(
+                        EdgeInsets.symmetric(horizontal: 16.0),
                       ),
-                    ),
-                    trailing: <Widget>[
-                      Tooltip(
-                        message: 'Change brightness mode',
-                        child: IconButton(
-                          // isSelected: isDark,
-                          onPressed: () {
-                            setState(() {
-                              // isDark = !isDark;
-                            });
-                          },
-                          icon: const Icon(Icons.wb_sunny_outlined),
-                          selectedIcon: const Icon(Icons.brightness_2_outlined),
+                      onTap: () {
+                        controller.openView();
+                      },
+                      onChanged: (_) {
+                        controller.openView();
+                      },
+                      leading: const Icon(Icons.search),
+                      hintText: "Search",
+                      hintStyle: const WidgetStatePropertyAll(
+                        TextStyle(
+                          color: Colors.grey,
+                          fontSize: 16,
                         ),
                       ),
-                    ],
-                  );
-                },
-                suggestionsBuilder:
-                    (BuildContext context, SearchController controller) {
-                  return List<ListTile>.generate(5, (int index) {
-                    final String item = 'item $index';
-                    return ListTile(
-                      title: Text(item),
-                      onTap: () {
-                        setState(() {
-                          controller.closeView(item);
-                        });
-                      },
+                      trailing: <Widget>[
+                        Tooltip(
+                          message: 'Change brightness mode',
+                          child: IconButton(
+                            onPressed: () {
+                              setState(() {
+                                // Toggle brightness mode
+                              });
+                            },
+                            icon: const Icon(Icons.wb_sunny_outlined),
+                            selectedIcon: const Icon(Icons.brightness_2_outlined),
+                          ),
+                        ),
+                      ],
                     );
-                  });
-                },
-              ),
+                  },
+                  suggestionsBuilder:
+                      (BuildContext context, SearchController controller) {
+                    return List<ListTile>.generate(5, (int index) {
+                      final String item = 'item $index';
+                      return ListTile(
+                        title: Text(item),
+                        onTap: () {
+                          setState(() {
+                            controller.closeView(item);
+                          });
+                        },
+                      );
+                    });
+                  },
+                ),
 
-              const SizedBox(
-                height: 30,
-              ),
+                const SizedBox(height: 30),
 
-              //***********************************************************HERO BAR*************************************************************
-
-              SizedBox(
-                height: 200,
-                child: Container(
+                // Hero Slider
+                SizedBox(
+                  height: 200,
                   child: PageView.builder(
                     controller: pageController,
                     onPageChanged: (index) {
@@ -167,7 +150,7 @@ class _DashBoardViewState extends State<DashBoardView> {
                         child: GestureDetector(
                           onTap: () {
                             ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                              content: Text("page no $index"),
+                              content: Text("Page no $index"),
                               backgroundColor: Colors.green,
                             ));
                           },
@@ -177,11 +160,18 @@ class _DashBoardViewState extends State<DashBoardView> {
                               borderRadius: BorderRadius.circular(12),
                             ),
                             child: ClipRRect(
-                                borderRadius: BorderRadius.circular(12),
-                                child: Image.network(
-                                  heroSlider[index],
-                                  fit: BoxFit.cover,
-                                )),
+                              borderRadius: BorderRadius.circular(12),
+                              child: Image.network(
+                                heroSlider[index],
+                                fit: BoxFit.cover,
+                                errorBuilder: (context, error, stackTrace) {
+                                  return Image.asset(
+                                    'assets/images/placeholder.png',
+                                    fit: BoxFit.cover,
+                                  );
+                                },
+                              ),
+                            ),
                           ),
                         ),
                       );
@@ -189,167 +179,140 @@ class _DashBoardViewState extends State<DashBoardView> {
                     itemCount: heroSlider.length,
                   ),
                 ),
-              ),
 
-              // Buttons for sliderr
+                const SizedBox(height: 12),
 
-              const SizedBox(
-                height: 12,
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: List.generate(
+                // Slider Indicators
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: List.generate(
                     heroSlider.length,
                     (index) => Container(
-                        margin: const EdgeInsets.only(left: 5),
-                        child: Icon(
-                          Icons.circle,
-                          size: 12,
-                          color: pageNo == index
-                              ? Colors.indigoAccent
-                              : Colors.grey,
-                        ))),
-              ),
+                      margin: const EdgeInsets.only(left: 5),
+                      child: Icon(
+                        Icons.circle,
+                        size: 12,
+                        color: pageNo == index
+                            ? Colors.indigoAccent
+                            : Colors.grey,
+                      ),
+                    ),
+                  ),
+                ),
 
-              const SizedBox(
-                height: 30,
-              ),
+                const SizedBox(height: 30),
 
-              const SizedBox(
-                height: 20,
-              ),
-
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(" Buy Games",
+                // Buy Games Section
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      " Buy Games",
                       style: Theme.of(context)
                           .textTheme
                           .displayMedium!
-                          .copyWith()),
-                  TextButton(
-                    style: const ButtonStyle(
-                        // backgroundColor: MaterialStateProperty.all(Colors.red),
-                        ),
-                    onPressed: () => {
-                      Navigator.pushNamed(
-                        context,
-                        "/popular",
-                      )
-                    },
-                    child: const Text(
-                      "See all",
-                      style: TextStyle(color: Colors.black),
+                          .copyWith(),
                     ),
-                  )
-                ],
-              ),
+                    TextButton(
+                      onPressed: () {
+                        Navigator.pushNamed(context, "/popular");
+                      },
+                      child: const Text(
+                        "See all",
+                        style: TextStyle(color: Colors.black),
+                      ),
+                    ),
+                  ],
+                ),
 
-              const SizedBox(
-                height: 10,
-              ),
+                const SizedBox(height: 10),
 
-              // *********************************************************GIFT CARD SECTION**************************************
-              BlocBuilder<GameBloc, GameState>(
-                builder: (context, state) {
-                  if (state.isLoading) {
-                    return const Center(child: CircularProgressIndicator());
-                  }
+                // Games List
+                BlocBuilder<GameBloc, GameState>(
+                  builder: (context, state) {
+                    if (state.isLoading) {
+                      return const Center(child: CircularProgressIndicator());
+                    }
 
-                  if (state.games.isEmpty) {
-                    return const Center(child: Text('No games available'));
-                  }
-                  return HorizontalProductCard(
-                    cardData: state.games,
-                  );
-                },
-              ),
+                    if (state.games.isEmpty) {
+                      return const Center(child: Text('No games available'));
+                    }
 
-              const SizedBox(
-                height: 20,
-              ),
-              ////////////////////////////////////////////////////////skins///////////////////////////////
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(" Game Skins",
+                    return HorizontalProductCard(cardData: state.games);
+                  },
+                ),
+
+                const SizedBox(height: 20),
+
+                // Game Skins Section
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      " Game Skins",
                       style: Theme.of(context)
                           .textTheme
                           .displayMedium!
-                          .copyWith()),
-                  TextButton(
-                    style: const ButtonStyle(
-                        // backgroundColor: MaterialStateProperty.all(Colors.red),
-                        ),
-                    onPressed: () => {
-                      Navigator.pushNamed(
-                        context,
-                        "/popular",
-                      )
-                    },
-                    child: Text(
-                      "See all",
-                      style: Theme.of(context).textTheme.titleSmall!.copyWith(),
+                          .copyWith(),
                     ),
-                  )
-                ],
-              ),
+                    TextButton(
+                      onPressed: () {
+                        Navigator.pushNamed(context, "/popular");
+                      },
+                      child: Text(
+                        "See all",
+                        style: Theme.of(context).textTheme.titleSmall!.copyWith(),
+                      ),
+                    ),
+                  ],
+                ),
 
-              const SizedBox(
-                height: 10,
-              ),
+                const SizedBox(height: 10),
 
-              //////////////////////////////////////////////////////skins and game items
-              BlocBuilder<SkinBloc, SkinState>(
-                builder: (context, state) {
-                  if (state.isLoading) {
-                    return const Center(
-                        child:
-                            CircularProgressIndicator()); // Loading indicator
-                  }
+                // Skins Carousel
+                BlocBuilder<SkinBloc, SkinState>(
+                  builder: (context, state) {
+                    if (state.isLoading) {
+                      return const Center(child: CircularProgressIndicator());
+                    }
 
-                  if (state.skins.isEmpty) {
-                    return const Center(child: Text("No skins available"));
-                  }
+                    if (state.skins.isEmpty) {
+                      return const Center(child: Text("No skins available"));
+                    }
 
-                  return SkinCarousel(
-                      skins: state.skins); // Pass skins dynamically
-                },
-              ),
+                    return SkinCarousel(skins: state.skins);
+                  },
+                ),
 
-              const SizedBox(
-                height: 20,
-              ),
+                const SizedBox(height: 20),
 
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(" Most Sold",
+                // Most Sold Section
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      " Most Sold",
                       style: Theme.of(context)
                           .textTheme
                           .displayMedium!
-                          .copyWith()),
-                  TextButton(
-                    style: const ButtonStyle(
-                        // backgroundColor: MaterialStateProperty.all(Colors.red),
-                        ),
-                    onPressed: () => {
-                      Navigator.pushNamed(
-                        context,
-                        "/popular",
-                      )
-                    },
-                    child: Text(
-                      "See all",
-                      style: Theme.of(context).textTheme.titleSmall!.copyWith(),
+                          .copyWith(),
                     ),
-                  )
-                ],
-              ),
+                    TextButton(
+                      onPressed: () {
+                        Navigator.pushNamed(context, "/popular");
+                      },
+                      child: Text(
+                        "See all",
+                        style: Theme.of(context).textTheme.titleSmall!.copyWith(),
+                      ),
+                    ),
+                  ],
+                ),
 
-              // most sold
-              HorizontalCardList(),
-            ]),
+                // Most Sold List
+                 HorizontalCardList(),
+              ],
+            ),
           ),
         ),
       ),
@@ -357,6 +320,7 @@ class _DashBoardViewState extends State<DashBoardView> {
   }
 }
 
+// HorizontalCardList and AppCard widgets remain unchanged
 //////////////////////////////////////////////////////////////////most sold////////////////////////////////////////////////////////////////
 
 class HorizontalCardList extends StatelessWidget {
@@ -431,10 +395,11 @@ class AppCard extends StatelessWidget {
                   height: 200,
                   fit: BoxFit.cover,
                   errorBuilder: (context, error, stackTrace) {
-                    return const Icon(
-                      Icons.broken_image,
-                      size: 50,
-                      color: Colors.grey,
+                    return Image.asset(
+                      'assets/images/placeholder.png',
+                      width: 200,
+                      height: 200,
+                      fit: BoxFit.cover,
                     );
                   },
                 ),

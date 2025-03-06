@@ -50,7 +50,7 @@ class HomeState extends Equatable {
         ),
         BlocProvider(
           create: (context) => getIt<UserBloc>(),
-          child: const ProfileView(),
+          child:  ProfileView(),
         )
       ],
     );

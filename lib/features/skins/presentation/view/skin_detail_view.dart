@@ -1,4 +1,3 @@
-// features/games/presentation/view/game_detail_view.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:loot_vault/app/di/di.dart';
@@ -10,9 +9,12 @@ import 'package:loot_vault/features/skins/domain/entity/skin_entity.dart';
 
 class SkinDetailView extends StatelessWidget {
   final SkinEntity game;
+  final String? platformName;
+  final String? categoryName;
   final TokenSharedPrefs tokenSharedPrefs = getIt<TokenSharedPrefs>();
 
-  SkinDetailView({super.key, required this.game});
+  SkinDetailView(
+      {super.key, required this.game, this.platformName, this.categoryName});
 
   @override
   Widget build(BuildContext context) {
@@ -62,12 +64,16 @@ class SkinDetailView extends StatelessWidget {
             Row(
               children: [
                 _buildDetailChip(
-                  label: game.category['categoryName'] ?? 'N/A',
+                  label: (categoryName != null && categoryName!.isNotEmpty)
+                      ? categoryName!
+                      : game.category['categoryName']?.toString() ?? 'N/A',
                   icon: Icons.category,
                 ),
                 const SizedBox(width: 10),
                 _buildDetailChip(
-                  label: game.skinPlatform['platformName'] ?? 'N/A',
+                  label: (platformName != null && platformName!.isNotEmpty)
+                      ? platformName!
+                      : game.skinPlatform['platformName']?.toString() ?? 'N/A',
                   icon: Icons.videogame_asset,
                 ),
               ],
@@ -101,16 +107,33 @@ class SkinDetailView extends StatelessWidget {
                     (failure) =>
                         print('Failed to get user data: ${failure.message}'),
                     (userData) {
-                      final gameid = game.skinId;
+                      final gameId = game.skinId;
+                      if (gameId == null) {
+                        showMySnackBar(
+                          context: context,
+                          message: "Error: Product ID is missing",
+                        );
+                        return;
+                      }
+                      
                       final userId = userData['userId'];
+                      if (userId == null) {
+                        showMySnackBar(
+                          context: context,
+                          message: "Error: User ID is missing",
+                        );
+                        return;
+                      }
 
+                      final imagePath = game.skinImagePath ?? '';
+                      
                       context.read<CartBloc>().add(
                             AddToCartEvent(
-                              userId: userId!,
-                              productId: gameid!,
+                              userId: userId,
+                              productId: gameId,
                               productName: game.skinName,
                               productPrice: game.skinPrice.toDouble(),
-                              productImage: game.skinImagePath,
+                              productImage: imagePath,
                               quantity: 1,
                             ),
                           );

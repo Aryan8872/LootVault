@@ -21,12 +21,12 @@ class GameHiveModel extends Equatable {
   final String gameImagePath;
 
   @HiveField(4)
-  final String category;
+  final dynamic category;
 
   @HiveField(5)
   final num gamePrice;
   @HiveField(6)
-  final String gamePlatform;
+  final dynamic gamePlatform;
 
   GameHiveModel({
     String? gameId,

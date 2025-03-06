@@ -5,27 +5,25 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:loot_vault/core/common/snackbar/my_snackbar.dart';
 import 'package:loot_vault/features/games/domain/entity/game_category_entity.dart';
+import 'package:loot_vault/features/games/domain/entity/platform_entity.dart';
 import 'package:loot_vault/features/games/presentation/view_model/game_bloc.dart';
-import 'package:loot_vault/features/skins/domain/entity/platform_entity.dart';
-import 'package:loot_vault/features/skins/presentation/view_model/skin_bloc.dart';
 import 'package:permission_handler/permission_handler.dart';
 
-class AddSkinScreen extends StatefulWidget {
-  const AddSkinScreen({super.key});
+class AddGameScreen extends StatefulWidget {
+  const AddGameScreen({super.key});
 
   @override
-  State<AddSkinScreen> createState() => _AddSkinScreenState();
+  State<AddGameScreen> createState() => _AddGameScreenState();
 }
 
-class _AddSkinScreenState extends State<AddSkinScreen> {
+class _AddGameScreenState extends State<AddGameScreen> {
   final TextEditingController gameDescriptionController =
       TextEditingController();
   final TextEditingController gameNameController = TextEditingController();
   final TextEditingController gamePriceController = TextEditingController();
   final TextEditingController gameCategoryController = TextEditingController();
   GameCategoryEntity? _categoryDropdown;
-    PlatformEntity? _platformDropdown;
-
+  GamePlatformEntity? _platformDropdown;
 
   checkCameraPermission() async {
     if (await Permission.camera.request().isRestricted ||
@@ -61,8 +59,8 @@ class _AddSkinScreenState extends State<AddSkinScreen> {
     await _browseImage(source);
     print("Selected image: $_img");
     if (_img != null) {
-      context.read<SkinBloc>().add(
-            UploadskinImage(context: context, file: _img!),
+      context.read<GameBloc>().add(
+            UploadGameImage(context: context, file: _img!),
           );
     }
     Navigator.pop(innercontext);
@@ -172,18 +170,10 @@ class _AddSkinScreenState extends State<AddSkinScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    'Pricing',
-                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                  ),
-                  Text(
-                    "Platform",
-                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                  )
-                ]),
+            const Text(
+              'Pricing',
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            ),
             const SizedBox(height: 16),
             Row(
               children: [
@@ -200,17 +190,17 @@ class _AddSkinScreenState extends State<AddSkinScreen> {
                 ),
                 const SizedBox(width: 16),
                 Expanded(
-                  child: BlocBuilder<SkinBloc, SkinState>(
+                  child: BlocBuilder<GameBloc, GameState>(
                     builder: (context, state) {
                       if (state.isLoading) {
                         return const Center(child: CircularProgressIndicator());
                       }
-                      if (state.platform.isEmpty) {
+                      if (state.platform!.isEmpty) {
                         return const Text('No platform available.');
                       }
-                      return DropdownButtonFormField<PlatformEntity>(
-                        items: state.platform
-                            .map((e) => DropdownMenuItem<PlatformEntity>(
+                      return DropdownButtonFormField<GamePlatformEntity>(
+                        items: state.platform!
+                            .map((e) => DropdownMenuItem<GamePlatformEntity>(
                                   value: e,
                                   child: Text(e.platformName),
                                 ))
@@ -358,7 +348,7 @@ class _AddSkinScreenState extends State<AddSkinScreen> {
   Widget _buildButton() {
     return ElevatedButton(
       onPressed: () {
-        final gameState = context.read<SkinBloc>().state;
+        final gameState = context.read<GameBloc>().state;
         final imageName = gameState.imageName;
 
         // ✅ Null checks before proceeding
@@ -372,18 +362,21 @@ class _AddSkinScreenState extends State<AddSkinScreen> {
         if (imageName == null) {
           print(
               "image is empty--------------------------------------------------------------------------------");
-          showMySnackBar(context: context, message: "imahe name is null hyaa");
+          showMySnackBar(
+              context: context,
+              message: "Plese select an image",
+              color: Colors.red);
           return;
         }
 
-        context.read<SkinBloc>().add(Addskin(
-            skinName: gameNameController.text,
-            skinDescription: gameDescriptionController.text,
-            skinImagePath: imageName,
+        context.read<GameBloc>().add(AddGame(
+            gameName: gameNameController.text,
             context: context,
+            gameDescription: gameDescriptionController.text,
+            gameImagePath: imageName,
             category: _categoryDropdown!.categoryId,
-            skinPlatform: _platformDropdown!.categoryId,
-            skinPrice: int.parse(gamePriceController.text)));
+            gamePlatform: _platformDropdown!.categoryId,
+            gamePrice: int.parse(gamePriceController.text)));
       },
       style: const ButtonStyle(iconColor: WidgetStatePropertyAll(Colors.white)),
       child: const Row(

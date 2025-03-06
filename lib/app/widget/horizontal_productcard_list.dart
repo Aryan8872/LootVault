@@ -73,6 +73,14 @@ class HorizontalProductCard extends StatelessWidget {
                             fit: BoxFit.cover,
                             height: parentHeight *
                                 0.76, // Adjust height dynamically
+
+                                errorBuilder: (context, error, stackTrace) {
+                                  return Image.asset(
+                                    'assets/images/placeholder.png',
+                                    fit: BoxFit.cover,
+                                    height: parentHeight * 0.76,
+                                  );
+                                },
                           ),
                         ),
                       ),

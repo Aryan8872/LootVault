@@ -11,7 +11,7 @@ part 'post_api_model.g.dart';
 class PostApiModel extends Equatable {
   @JsonKey(name: '_id')
   final String? postId;
-  final UserApiModel user; // Changed from String to UserApiModel
+  final UserApiModel user; 
   final String title;
   final String content;
   final List<String>? likes;

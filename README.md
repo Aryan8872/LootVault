@@ -1,5 +1,8 @@
 # loot_vault
 
+full video : https://youtu.be/tuhpFAJ77qI?si=l3GKXMwaDYpJ1dBZ
+
+
 Loot Vault is a modern mobile application designed for gamers, offering a seamless platform to connect, engage, and trade within the gaming community. Built using Flutter and Dart, the application follows Clean Architecture and the MVVM design pattern to ensure scalability, maintainability, and a smooth user experience. Loot Vault provides an interactive forum where gamers can create posts, like, dislike, comment, edit, and delete discussions, fostering a dynamic and engaging community. Additionally, the app features a marketplace where users can buy and sell games and other gaming-related items, complete with an add-to-cart and checkout system for seamless transactions. The platform also includes user profile management, allowing gamers to edit their profiles with an intuitive and visually appealing UI for enhanced interactions. MongoDB is used as the backend database to efficiently store and manage data, ensuring high performance and reliability. With Loot Vault, gamers can not only engage in meaningful discussions but also access a dedicated marketplace tailored to their gaming needs, making it the ultimate hub for the gaming community.
 
 
